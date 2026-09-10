@@ -1,0 +1,485 @@
+
+/* =========================
+   RESET
+========================= */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+
+    font-family: 'Poppins', sans-serif;
+}
+
+
+/* =========================
+   BODY
+========================= */
+
+body {
+    min-height: 100vh;
+
+    background-color: #f4f4f4;
+
+    color: #333;
+
+    line-height: 1.6;
+}
+
+
+/* =========================
+   MAIN CONTAINER
+========================= */
+
+.container {
+    position: relative;
+
+    isolation: isolate;
+
+    min-height: 100vh;
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    align-items: center;
+
+    gap: 70px;
+
+    padding: 60px 8%;
+
+    overflow: hidden;
+}
+
+
+/* =========================
+   BACKGROUND
+========================= */
+
+.container::before {
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    z-index: -1;
+
+    background:
+        linear-gradient(
+            rgba(0, 0, 0, 0.55),
+            rgba(0, 0, 0, 0.55)
+        ),
+        url('../image/group1.JPG')
+        no-repeat center center / cover;
+
+    opacity: 0.9;
+}
+
+
+/* =========================
+   LEFT CONTENT
+========================= */
+
+.welcome-content {
+    width: 100%;
+
+    max-width: 650px;
+
+    color: white;
+
+    animation: welcomeAppear 0.8s ease;
+}
+
+
+.welcome-content h1 {
+    margin-bottom: 20px;
+
+    padding: 0;
+
+    color: white;
+
+    font-size: clamp(
+        2.8rem,
+        5vw,
+        4.8rem
+    );
+
+    line-height: 1.1;
+
+    font-weight: 700;
+
+    text-align: left;
+
+    text-shadow:
+        0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+
+.welcome-content p {
+    padding: 0;
+
+    max-width: 620px;
+
+    color: white;
+
+    font-size: clamp(
+        1rem,
+        1.5vw,
+        1.2rem
+    );
+
+    line-height: 1.8;
+
+    font-style: normal;
+
+    text-align: left;
+}
+
+
+@keyframes welcomeAppear {
+
+    from {
+        opacity: 0;
+
+        transform: translateX(-40px);
+    }
+
+    to {
+        opacity: 1;
+
+        transform: translateX(0);
+    }
+}
+
+
+/* =========================
+   FORM CONTAINER
+========================= */
+
+.form-container {
+    position: relative;
+
+    width: 100%;
+
+    max-width: 450px;
+
+    min-height: 470px;
+
+    margin: 0 auto;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+}
+
+
+/* =========================
+   FORM
+========================= */
+
+.form-container form {
+    position: absolute;
+    width: 100%;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow:0 20px 50px rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(5px);
+    opacity: 1;
+    transform: translateX(0);
+    transition:
+        opacity 0.35s ease,
+        transform 0.35s ease;
+}
+
+
+/* =========================
+   FORM TITLE
+========================= */
+
+.form-container form h2 {
+    margin-bottom: 25px;
+    color: #ffffff;
+    font-size: 1.8rem;
+    text-align: center;
+    font-weight: 700;
+}
+
+
+/* =========================
+   HIDDEN FORM
+========================= */
+
+.form-container form.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(30px);
+}
+
+
+/* =========================
+   LABEL
+========================= */
+
+.form-container label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #ffffff;
+
+    font-size: 0.9rem;
+
+    font-weight: 700;
+}
+
+
+/* =========================
+   INPUT
+========================= */
+
+.form-container input[type="text"],
+.form-container input[type="email"],
+.form-container input[type="password"],
+.form-container select[name="department"] {
+    width: 100%;
+
+    padding: 12px 14px;
+
+    margin-bottom: 18px;
+
+    border: 1px solid #ccc;
+
+    border-radius: 8px;
+
+    outline: none;
+
+    background: white;
+
+    color: #333;
+
+    font-size: 0.95rem;
+
+    transition:
+        border-color 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+
+.form-container input:focus {
+    border-color: #04828b;
+
+    box-shadow:
+        0 0 0 3px rgba(4, 130, 139, 0.12);
+}
+
+
+/* =========================
+   LOGIN PROMPT
+========================= */
+
+.login-prompt {
+    padding: 0 !important;
+
+    margin: 0 0 20px;
+
+    color: #ffffff;
+
+    font-size: 0.85rem;
+
+    font-style: normal;
+
+    text-align: center;
+}
+
+
+.login-prompt a {
+    color: #ffffff;
+
+    text-decoration: none;
+
+    font-weight: 700;
+
+    transition: color 0.3s ease;
+}
+
+
+.login-prompt a:hover {
+    color: #036f7a;
+
+    text-decoration: underline;
+}
+
+
+/* =========================
+   BUTTON
+========================= */
+
+.form-container button {
+    width: 100%;
+
+    padding: 13px 20px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background-color: #04828b;
+
+    color: white;
+
+    font-size: 1rem;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.3s ease,
+        transform 0.2s ease,
+        box-shadow 0.3s ease;
+}
+
+
+.form-container button:hover {
+    background-color: #036f7a;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 20px rgba(4, 130, 139, 0.3);
+}
+
+
+.form-container button:active {
+    transform: translateY(0);
+}
+
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 900px) {
+
+    .container {
+        grid-template-columns: 1fr 1fr;
+
+        gap: 30px;
+
+        padding: 40px 5%;
+    }
+
+    .welcome-content h1 {
+        font-size: 3rem;
+    }
+
+    .welcome-content p {
+        font-size: 1rem;
+    }
+
+    .form-container {
+        max-width: 400px;
+    }
+
+    .form-container form {
+        padding: 30px;
+    }
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 768px) {
+
+    .container {
+        min-height: 100vh;
+
+        grid-template-columns: 1fr;
+
+        gap: 30px;
+
+        padding: 50px 20px;
+    }
+
+
+    .welcome-content {
+        max-width: 600px;
+
+        text-align: center;
+    }
+
+
+    .welcome-content h1 {
+        font-size: 2.5rem;
+
+        text-align: center;
+    }
+
+
+    .welcome-content p {
+        font-size: 0.95rem;
+
+        text-align: center;
+    }
+
+
+    .form-container {
+        width: 100%;
+
+        max-width: 450px;
+
+        min-height: 470px;
+    }
+
+
+    .form-container form {
+        padding: 30px 25px;
+    }
+}
+
+
+/* =========================
+   SMALL MOBILE
+========================= */
+
+@media (max-width: 480px) {
+
+    .container {
+        padding: 35px 15px;
+    }
+
+
+    .welcome-content h1 {
+        font-size: 2rem;
+    }
+
+
+    .welcome-content p {
+        font-size: 0.85rem;
+
+        line-height: 1.6;
+    }
+
+
+    .form-container {
+        min-height: 430px;
+    }
+
+
+    .form-container form {
+        padding: 25px 20px;
+
+        border-radius: 15px;
+    }
+
+
+    .form-container form h2 {
+        font-size: 1.5rem;
+    }
+}

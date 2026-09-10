@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <link
+        rel="stylesheet"
+        href="auth.css"
+    >
+
+    <title>G.R.O.W.T.H - Create Account</title>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- =========================================
+             LEFT SIDE - WELCOME
+        ========================================== -->
+
+        <div class="welcome-content">
+
+            <h1>G.R.O.W.T.H</h1>
+
+            <p>
+                Welcome to G.R.O.W.T.H! Please create an
+                account to access our platform and start
+                your journey towards personal and
+                professional growth.
+            </p>
+
+        </div>
+
+
+        <!-- =========================================
+             RIGHT SIDE - FORMS
+        ========================================== -->
+
+        <div class="form-container">
+
+
+            <!-- =====================================
+                 LOGIN FORM
+            ====================================== -->
+
+            <form
+                id="loginForm"
+                class="hidden"
+            >
+
+                <h2>Welcome Back</h2>
+
+
+                <!-- USERNAME -->
+
+                <label for="login-username">
+                    Username:
+                </label>
+
+                <input
+                    type="text"
+                    id="login-username"
+                    name="username"
+                    placeholder="Enter your username"
+                    autocomplete="username"
+                    required
+                >
+
+
+                <!-- PASSWORD -->
+
+                <label for="login-password">
+                    Password:
+                </label>
+
+                <input
+                    type="password"
+                    id="login-password"
+                    name="password"
+                    placeholder="Enter your password"
+                    autocomplete="current-password"
+                    required
+                >
+
+
+                <!-- REGISTER LINK -->
+
+                <p class="login-prompt">
+
+                    Don't have an account?
+
+                    <a
+                        href="#"
+                        id="showRegister"
+                    >
+                        REGISTER
+                    </a>
+
+                </p>
+
+
+                <!-- LOGIN BUTTON -->
+
+                <button type="submit">
+                    Login
+                </button>
+
+            </form>
+
+
+
+            <!-- =====================================
+                 REGISTER FORM
+            ====================================== -->
+
+            <form id="registerForm">
+
+                <h2>Create Account</h2>
+
+
+                <!-- USERNAME -->
+
+                <label for="register-username">
+                    Username:
+                </label>
+
+                <input
+                    type="text"
+                    id="register-username"
+                    name="username"
+                    placeholder="Create a username"
+                    autocomplete="username"
+                    minlength="3"
+                    required
+                >
+
+
+                <!-- DEPARTMENT -->
+
+                <label for="register-department">
+                    Department:
+                </label>
+
+                <select
+                    id="register-department"
+                    name="department"
+                    required
+                >
+
+                    <option
+                        value=""
+                        disabled
+                        selected
+                    >
+                        Select Department
+                    </option>
+
+                    <option value="Adult Men">
+                        Adult Men
+                    </option>
+
+                    <option value="Adult Ladies">
+                        Adult Ladies
+                    </option>
+
+                    <option value="Young Men">
+                        Young Men
+                    </option>
+
+                    <option value="Young Ladies">
+                        Young Ladies
+                    </option>
+
+                </select>
+
+
+                <!-- PASSWORD -->
+
+                <label for="register-password">
+                    Password:
+                </label>
+
+                <input
+                    type="password"
+                    id="register-password"
+                    name="password"
+                    placeholder="Create a password"
+                    autocomplete="new-password"
+                    minlength="8"
+                    required
+                >
+
+
+                <!-- LOGIN LINK -->
+
+                <p class="login-prompt">
+
+                    Already have an account?
+
+                    <a
+                        href="#"
+                        id="showLogin"
+                    >
+                        LOGIN
+                    </a>
+
+                </p>
+
+
+                <!-- REGISTER BUTTON -->
+
+                <button type="submit">
+                    Register
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================
+         SUPABASE JAVASCRIPT
+    ========================================== -->
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+    ></script>
+
+
+    <!-- =========================================
+         YOUR AUTH JAVASCRIPT
+    ========================================== -->
+
+    <script src="auth.js"></script>
+
+</body>
+
+</html>

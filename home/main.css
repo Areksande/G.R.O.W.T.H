@@ -1,0 +1,790 @@
+/* =========================================================
+   RESET
+========================================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --sidebar-width: 250px;
+    --content-offset: 270px;
+    --content-gap: 20px;
+    --content-gap-mobile: 16px;
+    --primary: #007bff;
+    --primary-dark: #0056b3;
+    --text: #1f2937;
+    --muted: #6b7280;
+    --bg: #f5f5f5;
+    --card-bg: #ffffff;
+    --border: #e5e7eb;
+}
+
+html, body {
+    overflow-x: hidden;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+.sidebar {
+    width: var(--sidebar-width);
+    background: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    overflow-y: auto;
+    z-index: 100;
+    transition: transform 0.3s ease;
+}
+
+.logo {
+    text-align: center;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.logo h2 {
+    font-size: 22px;
+    margin-bottom: 8px;
+}
+
+.logo p {
+    font-size: 14px;
+    color: #555;
+}
+
+
+/* =========================================================
+   SIDEBAR NAV
+========================================================= */
+
+.sidebar nav {
+    margin-top: 40px;
+    text-align: center;
+}
+
+.sidebar nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar nav ul li {
+    margin-bottom: 10px;
+}
+
+.sidebar nav a {
+    display: block;
+    padding: 10px 15px;
+    color: #333;
+    background-color: beige;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar nav a:hover {
+    background-color: wheat;
+}
+
+.sidebar nav a.active {
+    background-color: var(--primary);
+    color: #fff;
+}
+
+.sidebar button {
+    display: block;
+    width: 100%;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 30px auto 0;
+    transition: background-color 0.3s ease;
+    font-size: 15px;
+}
+
+.sidebar button a {
+    color: #fff;
+    text-decoration: none;
+    display: block;
+    width: 100%;
+}
+
+.sidebar button:hover {
+    background: var(--primary-dark);
+}
+
+
+/* =========================================================
+   HAMBURGER BUTTON (mobile only)
+========================================================= */
+
+.hamburger {
+    display: none;
+    position: fixed;
+    top: 14px;
+    left: 14px;
+    z-index: 200;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.hamburger:hover {
+    background: var(--primary-dark);
+}
+
+
+/* =========================================================
+   MAIN CONTENT AREAS (dashboard header)
+========================================================= */
+
+.dashboard,
+.content {
+    margin-left: var(--content-offset);
+    margin-right: var(--content-gap);
+    padding: var(--content-gap);
+}
+
+.dashboard h2,
+.content h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.dashboard p,
+.content p {
+    font-size: 15px;
+    color: #555;
+    text-align: center;
+}
+
+
+/* =========================================================
+   SIX COUNTER CARDS (G, R, O, W, T, H)
+========================================================= */
+
+.content-card {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 14px;
+    margin-left: var(--content-offset);
+    margin-right: var(--content-gap);
+    margin-top: var(--content-gap);
+    margin-bottom: var(--content-gap);
+}
+
+.content-card .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 12px;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    transition: box-shadow 0.2s, transform 0.15s;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px;
+    min-height: 92px;
+}
+
+.content-card .card:hover {
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+}
+
+.content-card .card h3 {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--primary);
+    margin: 0;
+    letter-spacing: 0.03em;
+    line-height: 1;
+}
+
+.content-card .card p {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 500;
+    margin: 0;
+    line-height: 1.3;
+    text-align: center;
+}
+
+.content-card .card p span {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    display: block;
+    margin-bottom: 2px;
+}
+
+
+/* =========================================================
+   G.R.O.W.T.H CHECKLIST
+========================================================= */
+
+.checklist-section {
+    margin-left: var(--content-offset);
+    margin-right: var(--content-gap);
+    margin-top: var(--content-gap);
+    margin-bottom: var(--content-gap);
+    padding: 30px 40px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.checklist-title {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    margin-bottom: 24px;
+    color: #111827;
+    text-align: center;
+}
+
+.checklist-header {
+    display: flex;
+    gap: 60px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    font-size: 15px;
+    color: #111827;
+}
+
+.checklist-header p {
+    margin: 0;
+}
+
+.checklist-header .fill-line {
+    display: inline-block;
+    min-width: 220px;
+    border-bottom: 1.5px solid #111827;
+    padding: 0 6px;
+    color: #1f2937;
+    font-weight: 500;
+}
+
+
+/* ---------- TABLE ---------- */
+
+.checklist-table-wrapper {
+    overflow-x: auto;
+    margin-bottom: 24px;
+    border-radius: 8px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.checklist-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 900px;
+    font-size: 13px;
+}
+
+.checklist-table th,
+.checklist-table td {
+    border: 1px solid #cbd5e1;
+    text-align: center;
+    padding: 6px 4px;
+    width: 28px;
+    height: 32px;
+}
+
+.checklist-table thead th {
+    background: #e2e8f0;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.letter-col {
+    width: 30px;
+    background: #cbd5e1 !important;
+}
+
+.letter-cell {
+    background: #e2e8f0;
+    font-weight: 800;
+    font-size: 14px;
+    color: #1e293b;
+    width: 30px;
+    position: sticky;
+    left: 0;
+    z-index: 2;
+}
+
+.checklist-table input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: #1e293b;
+}
+
+.checklist-table tbody tr:nth-child(even) {
+    background: #f8fafc;
+}
+
+.checklist-table tbody tr:hover {
+    background: #f1f5f9;
+}
+
+
+/* ---------- LEGEND ---------- */
+
+.checklist-legend {
+    display: grid;
+    gap: 8px;
+    padding-top: 16px;
+    border-top: 1px solid #e5e7eb;
+    font-size: 14px;
+    color: #111827;
+}
+
+.checklist-legend p {
+    margin: 0;
+    line-height: 1.5;
+}
+
+.checklist-legend strong {
+    display: inline-block;
+    width: 18px;
+    font-weight: 800;
+    color: #1e293b;
+}
+
+.checklist-legend em {
+    color: #6b7280;
+    font-style: normal;
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   REFLECTION SECTION
+========================================================= */
+
+.reflection {
+    margin-left: var(--content-offset);
+    margin-right: var(--content-gap);
+    margin-top: var(--content-gap);
+    margin-bottom: var(--content-gap);
+    padding: 30px 40px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+    border-left: 5px solid var(--primary);
+}
+
+.reflection h2 {
+    font-size: 24px;
+    margin-bottom: 12px;
+    color: var(--text);
+}
+
+.reflection > p {
+    font-size: 15px;
+    color: #555;
+    margin-bottom: 12px;
+}
+
+.reflection ul {
+    list-style: disc;
+    padding-left: 22px;
+    margin-bottom: 18px;
+}
+
+.reflection ul li {
+    font-size: 14.5px;
+    color: #4b5563;
+    margin-bottom: 6px;
+    line-height: 1.55;
+}
+
+.reflection textarea {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14.5px;
+    line-height: 1.6;
+    resize: vertical;
+    min-height: 100px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    background: #fff;
+    color: var(--text);
+}
+
+.reflection textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.12);
+}
+
+.reflection textarea::placeholder {
+    color: #9ca3af;
+}
+
+.reflection button,
+#submitReflection {
+    margin-top: 14px;
+    padding: 11px 24px;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    font-family: inherit;
+}
+
+.reflection button:hover:not(:disabled),
+#submitReflection:hover:not(:disabled) {
+    background: var(--primary-dark);
+}
+
+.reflection button:active:not(:disabled),
+#submitReflection:active:not(:disabled) {
+    transform: scale(0.98);
+}
+
+.reflection button:disabled,
+#submitReflection:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.reflection-status {
+    margin-top: 14px;
+    font-size: 14px;
+    font-weight: 500;
+    min-height: 20px;
+    transition: color 0.2s;
+}
+
+.reflection-status.success {
+    color: #15803d;
+}
+
+.reflection-status.error {
+    color: #b91c1c;
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+footer {
+    background: #fff;
+    padding: 15px 20px;
+    text-align: center;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    margin-left: var(--sidebar-width);
+    font-size: 14px;
+    color: #555;
+}
+
+
+/* =========================================================
+   RESPONSIVE — TABLET (max-width: 1024px)
+========================================================= */
+
+@media (max-width: 1024px) {
+
+    .checklist-section {
+        padding: 24px 24px;
+    }
+
+    .checklist-title {
+        font-size: 24px;
+    }
+
+    .dashboard h2,
+    .content h2 {
+        font-size: 22px;
+    }
+
+    .reflection {
+        padding: 24px 24px;
+    }
+
+    .reflection h2 {
+        font-size: 22px;
+    }
+
+    /* Six cards → three per row */
+    .content-card {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE — MOBILE (max-width: 768px)
+========================================================= */
+
+@media (max-width: 768px) {
+
+    /* ---- SIDEBAR becomes slide-in drawer ---- */
+
+    .sidebar {
+        transform: translateX(-100%);
+        width: 260px;
+        box-shadow: 4px 0 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    /* ---- HAMBURGER visible ---- */
+
+    .hamburger {
+        display: block;
+    }
+
+    /* ---- Main content full width ---- */
+
+    .dashboard,
+    .content,
+    .content-card,
+    .checklist-section,
+    .reflection {
+        margin-left: var(--content-gap-mobile);
+        margin-right: var(--content-gap-mobile);
+        margin-top: var(--content-gap-mobile);
+        margin-bottom: var(--content-gap-mobile);
+    }
+
+    .dashboard,
+    .content {
+        padding: var(--content-gap-mobile);
+    }
+
+    .dashboard h2,
+    .content h2 {
+        font-size: 20px;
+    }
+
+    .dashboard p,
+    .content p {
+        font-size: 14px;
+    }
+
+    /* ---- Six cards → two per row ---- */
+
+    .content-card {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .content-card .card {
+        min-height: 80px;
+        padding: 12px 10px;
+    }
+
+    .content-card .card h3 {
+        font-size: 18px;
+    }
+
+    .content-card .card p span {
+        font-size: 20px;
+    }
+
+    /* ---- Checklist ---- */
+
+    .checklist-section {
+        padding: 16px;
+    }
+
+    .checklist-title {
+        font-size: 20px;
+        margin-bottom: 16px;
+    }
+
+    .checklist-header {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .checklist-header .fill-line {
+        min-width: 160px;
+    }
+
+    .checklist-legend {
+        font-size: 13px;
+    }
+
+    .checklist-legend em {
+        display: block;
+        margin-left: 18px;
+        font-size: 12px;
+    }
+
+    /* ---- Reflection ---- */
+
+    .reflection {
+        padding: 18px 16px;
+    }
+
+    .reflection h2 {
+        font-size: 18px;
+    }
+
+    .reflection > p {
+        font-size: 14px;
+    }
+
+    .reflection ul li {
+        font-size: 13.5px;
+    }
+
+    .reflection textarea {
+        font-size: 14px;
+        padding: 12px 14px;
+        min-height: 90px;
+    }
+
+    .reflection button,
+    #submitReflection {
+        width: 100%;
+        padding: 12px;
+        font-size: 14.5px;
+    }
+
+    .reflection-status {
+        font-size: 13.5px;
+    }
+
+    /* ---- Footer ---- */
+
+    footer {
+        margin-left: 0;
+        padding: 12px;
+        font-size: 13px;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE — SMALL PHONE (max-width: 480px)
+========================================================= */
+
+@media (max-width: 480px) {
+
+    .checklist-title {
+        font-size: 18px;
+    }
+
+    .checklist-header p {
+        font-size: 14px;
+    }
+
+    .checklist-header .fill-line {
+        min-width: 130px;
+    }
+
+    .checklist-table {
+        font-size: 12px;
+    }
+
+    .checklist-table th,
+    .checklist-table td {
+        width: 24px;
+        height: 28px;
+        padding: 4px 2px;
+    }
+
+    .checklist-table input[type="checkbox"] {
+        width: 14px;
+        height: 14px;
+    }
+
+    .letter-cell {
+        font-size: 13px;
+    }
+
+    /* Cards stay 2 per row but tighter */
+    .content-card {
+        gap: 8px;
+    }
+
+    .content-card .card {
+        padding: 10px 8px;
+        min-height: 72px;
+    }
+
+    .content-card .card h3 {
+        font-size: 16px;
+    }
+
+    .content-card .card p {
+        font-size: 11px;
+    }
+
+    .content-card .card p span {
+        font-size: 18px;
+    }
+
+    /* ---- Reflection ---- */
+
+    .reflection {
+        padding: 16px 14px;
+        border-left-width: 4px;
+    }
+
+    .reflection h2 {
+        font-size: 17px;
+    }
+
+    .reflection ul {
+        padding-left: 18px;
+    }
+
+    .reflection ul li {
+        font-size: 13px;
+    }
+
+    .reflection textarea {
+        font-size: 13.5px;
+        padding: 10px 12px;
+    }
+
+    .reflection button,
+    #submitReflection {
+        font-size: 14px;
+        padding: 11px;
+    }
+
+    footer {
+        font-size: 12px;
+    }
+}

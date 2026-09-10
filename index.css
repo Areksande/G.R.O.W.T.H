@@ -1,0 +1,914 @@
+/* =========================
+   RESET
+========================= */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+
+/* =========================
+   NAVIGATION
+========================= */
+
+nav {
+    background-color: #04828b;
+    color: #fff;
+    padding: 1rem;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+nav ul li {
+    display: inline;
+}
+
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+}
+
+nav ul li a:hover {
+    text-decoration: underline;
+    opacity: 0.8;
+}
+
+
+/* =========================
+   HERO
+========================= */
+
+.hero1 {
+    background-color: #571010;
+    padding: 2rem;
+    text-align: center;
+    color: white;
+}
+
+h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+}
+
+p {
+    font-size: 1.2rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    font-style: italic;
+}
+
+h2 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    font-family: 'Poppins', sans-serif;
+    color: #04728d;
+    font-weight: 700;
+}
+
+p1 {
+    font-size: 1.2rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+    color: #04728d;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    font-style: italic;
+}
+
+/* =========================
+   GOALS
+========================= */
+
+.goals {
+    padding: 2rem;
+    text-align: center;
+}
+
+
+/* =========================
+   GROWTH CONTAINER
+========================= */
+
+.growth-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.title {
+    margin-bottom: 60px;
+}
+
+.title h1 {
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    margin-bottom: 10px;
+    color: #04728d;
+}
+
+.title p {
+    color: #607d85;
+    font-size: 1rem;
+}
+
+
+/* =========================
+   GROWTH JOURNEY
+========================= */
+
+.growth-path {
+    position: relative;
+
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    gap: 20px;
+    padding: 20px 0;
+}
+
+
+/* Ground / growth line */
+
+.growth-path::before {
+    content: "";
+
+    position: absolute;
+
+    left: 5%;
+    right: 5%;
+    bottom: 108px;
+
+    height: 5px;
+
+    background: #d8e9ed;
+
+    border-radius: 20px;
+
+    z-index: 0;
+}
+
+
+/* Animated growth line */
+
+.growth-path::after {
+    content: "";
+
+    position: absolute;
+
+    left: 5%;
+    bottom: 108px;
+
+    width: 0;
+    height: 5px;
+
+    background: linear-gradient(
+        90deg,
+        #8bcf69,
+        #55a94f,
+        #04828b
+    );
+
+    border-radius: 20px;
+
+    z-index: 0;
+
+    animation: progress 4s ease forwards;
+}
+
+@keyframes progress {
+    to {
+        width: 90%;
+    }
+}
+
+
+/* =========================
+   STEPS
+========================= */
+
+.step {
+    position: relative;
+    z-index: 2;
+
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    opacity: 0;
+
+    transform: translateY(40px);
+
+    animation: appear 0.8s ease forwards;
+}
+
+.step:nth-child(1) {
+    animation-delay: 0.3s;
+}
+
+.step:nth-child(2) {
+    animation-delay: 0.8s;
+}
+
+.step:nth-child(3) {
+    animation-delay: 1.3s;
+}
+
+.step:nth-child(4) {
+    animation-delay: 1.8s;
+}
+
+.step:nth-child(5) {
+    animation-delay: 2.3s;
+}
+
+@keyframes appear {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* =========================
+   GROWING PLANT
+========================= */
+
+.circle {
+    position: relative;
+
+    border-radius: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: transparent;
+
+    box-shadow: none;
+
+    color: transparent;
+
+    transition:
+        transform 0.5s ease,
+        filter 0.5s ease;
+
+    /* Important */
+    overflow: visible;
+}
+
+
+/* Plant stem */
+
+.circle::before {
+    content: "";
+
+    position: absolute;
+
+    left: 50%;
+    bottom: 15px;
+
+    width: 6px;
+    height: 55%;
+
+    transform: translateX(-50%);
+
+    background: linear-gradient(
+        to right,
+        #367b32,
+        #65ad4e,
+        #367b32
+    );
+
+    border-radius: 100%;
+
+    transform-origin: bottom;
+
+    z-index: 2;
+}
+
+
+/* Leaves */
+
+.circle::after {
+    content: "";
+
+    position: absolute;
+
+    left: 50%;
+    top: 25%;
+
+    width: 45px;
+    height: 25px;
+
+    transform: translateX(-50%);
+
+    background: #62ad4f;
+
+    border-radius: 100% 0 100% 0;
+
+    box-shadow:
+        -25px 18px 0 -3px #78bd5e,
+        25px 35px 0 -5px #4c9d45;
+
+    z-index: 3;
+}
+
+
+/* Hover plant */
+
+.step:hover .circle {
+    transform: translateY(-12px) scale(1.08);
+
+    filter:
+        drop-shadow(0 15px 15px rgba(4, 114, 141, 0.20));
+}
+
+
+/* =========================
+   PLANT SIZE — STAGE 1
+   SEEDLING
+========================= */
+
+.step:nth-child(1) .circle {
+    width: 80px;
+    height: 100px;
+}
+
+
+/* Small stem */
+
+.step:nth-child(1) .circle::before {
+    height: 35px;
+    width: 4px;
+}
+
+
+/* Small leaves */
+
+.step:nth-child(1) .circle::after {
+    width: 28px;
+    height: 16px;
+
+    top: 48%;
+
+    box-shadow:
+        -16px 10px 0 -3px #78bd5e,
+        16px 20px 0 -5px #4c9d45;
+}
+
+
+/* =========================
+   PLANT SIZE — STAGE 2
+   SMALL PLANT
+========================= */
+
+.step:nth-child(2) .circle {
+    width: 95px;
+    height: 125px;
+}
+
+.step:nth-child(2) .circle::before {
+    height: 60px;
+    width: 5px;
+}
+
+.step:nth-child(2) .circle::after {
+    width: 38px;
+    height: 21px;
+
+    top: 38%;
+
+    box-shadow:
+        -22px 15px 0 -3px #78bd5e,
+        22px 27px 0 -5px #4c9d45;
+}
+
+
+/* =========================
+   PLANT SIZE — STAGE 3
+   GROWING PLANT
+========================= */
+
+.step:nth-child(3) .circle {
+    width: 110px;
+    height: 150px;
+}
+
+.step:nth-child(3) .circle::before {
+    height: 85px;
+    width: 6px;
+}
+
+.step:nth-child(3) .circle::after {
+    width: 48px;
+    height: 27px;
+
+    top: 27%;
+
+    box-shadow:
+        -30px 20px 0 -2px #78bd5e,
+        30px 35px 0 -4px #4c9d45;
+}
+
+
+/* =========================
+   PLANT SIZE — STAGE 4
+   MATURE PLANT
+========================= */
+
+.step:nth-child(4) .circle {
+    width: 135px;
+    height: 175px;
+}
+
+.step:nth-child(4) .circle::before {
+    height: 110px;
+    width: 8px;
+}
+
+.step:nth-child(4) .circle::after {
+    width: 58px;
+    height: 32px;
+
+    top: 18%;
+
+    box-shadow:
+        -38px 25px 0 -2px #78bd5e,
+        38px 45px 0 -3px #4c9d45,
+        -28px 60px 0 -5px #68ad4f;
+}
+
+
+/* =========================
+   PLANT SIZE — STAGE 5
+   FRUIT-BEARING TREE
+========================= */
+
+.step:nth-child(5) .circle {
+    width: 170px;
+    height: 210px;
+}
+
+
+/* Large tree trunk */
+
+.step:nth-child(5) .circle::before {
+    height: 125px;
+
+    width: 14px;
+
+    background: linear-gradient(
+        to right,
+        #70452c,
+        #9b6842,
+        #70452c
+    );
+
+    border-radius: 8px;
+}
+
+
+/* Large tree canopy */
+
+.step:nth-child(5) .circle::after {
+    width: 100px;
+    height: 70px;
+
+    top: 5%;
+
+    background: #4f9f45;
+
+    border-radius: 50%;
+
+    box-shadow:
+        -45px 15px 0 5px #65ad4e,
+        45px 15px 0 5px #65ad4e,
+        -25px -15px 0 3px #78bd5e,
+        25px -15px 0 3px #78bd5e;
+}
+
+
+/* =========================
+   FRUIT EFFECT
+========================= */
+
+.step:nth-child(5) .circle {
+    background:
+        radial-gradient(
+            circle at 35% 20%,
+            #f2c94c 0 7px,
+            transparent 8px
+        ),
+        radial-gradient(
+            circle at 65% 30%,
+            #f2c94c 0 7px,
+            transparent 8px
+        ),
+        radial-gradient(
+            circle at 45% 45%,
+            #f2c94c 0 6px,
+            transparent 7px
+        ),
+        transparent;
+}
+
+
+/* =========================
+   STEP NUMBER
+========================= */
+
+.number {
+    position: absolute;
+
+    top: -5px;
+    right: 5px;
+
+    width: 30px;
+    height: 30px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: white;
+
+    color: #04728d;
+
+    border-radius: 50%;
+
+    font-size: 0.8rem;
+    font-weight: bold;
+
+    box-shadow:
+        0 5px 15px rgba(0, 0, 0, 0.15);
+
+    z-index: 10;
+}
+
+
+/* =========================
+   SOIL
+========================= */
+
+.step .circle {
+    margin-bottom: 5px;
+}
+
+
+/* Add soil beneath every plant */
+
+.step-content::before {
+    content: "";
+
+    display: block;
+
+    width: 70px;
+    height: 12px;
+
+    margin: -8px auto 15px;
+
+    background: #70452c;
+
+    border-radius: 50%;
+
+    box-shadow:
+        0 3px 0 #573621;
+
+    opacity: 0.9;
+}
+
+
+/* =========================
+   TEXT
+========================= */
+
+.step-content {
+    margin-top: 20px;
+
+    max-width: 190px;
+
+    position: relative;
+    z-index: 5;
+}
+
+.step-content h2 {
+    color: #04728d;
+
+    font-size: 1.05rem;
+
+    line-height: 1.3;
+
+    margin-bottom: 6px;
+
+    font-family: 'Poppins', sans-serif;
+
+    font-weight: 700;
+}
+
+.step-content p {
+    color: #71878d;
+
+    font-size: 0.82rem;
+
+    line-height: 1.5;
+
+    font-family: 'Poppins', sans-serif;
+
+    font-style: normal;
+}
+
+
+/* =========================
+   FINAL MESSAGE
+========================= */
+
+.final-message {
+    margin-top: 65px;
+
+    padding: 20px 30px;
+
+    display: inline-block;
+
+    background: white;
+
+    border-radius: 50px;
+
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.08);
+
+    color: #04728d;
+
+    font-weight: bold;
+
+    font-family: 'Poppins', sans-serif;
+
+    opacity: 0;
+
+    animation: fadeIn 1s ease forwards;
+
+    animation-delay: 3s;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 768px) {
+
+    .growth-path {
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        gap: 35px;
+
+        padding-left: 25px;
+    }
+
+
+    /* Vertical background line */
+
+    .growth-path::before {
+        left: 85px;
+
+        top: 40px;
+        bottom: 40px;
+
+        width: 5px;
+        height: auto;
+
+        right: auto;
+    }
+
+
+    /* Vertical animated line */
+
+    .growth-path::after {
+        left: 85px;
+
+        top: 40px;
+
+        width: 5px;
+        height: 0;
+
+        right: auto;
+
+        animation:
+            progressMobile 4s ease forwards;
+    }
+
+    @keyframes progressMobile {
+        to {
+            height: calc(100% - 80px);
+        }
+    }
+
+
+    /* Step */
+
+    .step {
+        width: 100%;
+
+        flex-direction: row;
+
+        align-items: center;
+
+        gap: 25px;
+
+        text-align: left;
+    }
+
+
+    /* Plant */
+
+    .step .circle {
+        flex-shrink: 0;
+
+        margin: 0;
+    }
+
+
+    /* Mobile plant sizes */
+
+    .step:nth-child(1) .circle {
+        width: 65px;
+        height: 80px;
+    }
+
+    .step:nth-child(2) .circle {
+        width: 75px;
+        height: 95px;
+    }
+
+    .step:nth-child(3) .circle {
+        width: 85px;
+        height: 110px;
+    }
+
+    .step:nth-child(4) .circle {
+        width: 100px;
+        height: 130px;
+    }
+
+    .step:nth-child(5) .circle {
+        width: 120px;
+        height: 150px;
+    }
+
+
+    /* Mobile text */
+
+    .step-content {
+        margin-top: 0;
+
+        max-width: none;
+
+        flex: 1;
+    }
+
+
+    .step-content::before {
+        margin: 0 0 8px;
+
+        width: 55px;
+    }
+
+
+    .step-content h2 {
+        font-size: 1rem;
+    }
+
+    .step-content p {
+        font-size: 0.8rem;
+    }
+
+
+    /* Step number */
+
+    .number {
+        top: -5px;
+
+        left: 45px;
+        right: auto;
+
+        width: 27px;
+        height: 27px;
+
+        font-size: 0.75rem;
+    }
+
+
+    /* Navigation */
+
+    nav ul {
+        flex-wrap: wrap;
+
+        gap: 0.8rem;
+    }
+
+
+    /* Hero */
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    .hero1 {
+        padding: 1.5rem;
+    }
+}
+
+
+/* =========================
+   EXTRA SMALL DEVICES
+========================= */
+
+@media (max-width: 480px) {
+
+    .growth-container {
+        padding: 0 10px;
+    }
+
+    .growth-path {
+        padding-left: 5px;
+        gap: 25px;
+    }
+
+    .growth-path::before,
+    .growth-path::after {
+        left: 58px;
+    }
+
+    .step {
+        gap: 18px;
+    }
+
+    .step:nth-child(1) .circle {
+        width: 55px;
+        height: 70px;
+    }
+
+    .step:nth-child(2) .circle {
+        width: 65px;
+        height: 85px;
+    }
+
+    .step:nth-child(3) .circle {
+        width: 75px;
+        height: 100px;
+    }
+
+    .step:nth-child(4) .circle {
+        width: 85px;
+        height: 115px;
+    }
+
+    .step:nth-child(5) .circle {
+        width: 105px;
+        height: 135px;
+    }
+
+    .number {
+        left: 35px;
+    }
+
+    .step-content h2 {
+        font-size: 0.9rem;
+    }
+
+    .step-content p {
+        font-size: 0.75rem;
+    }
+}

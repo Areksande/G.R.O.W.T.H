@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="main.css">
+    <title>Home</title>
+</head>
+
+<body>
+
+    <!-- =========================================
+         HAMBURGER BUTTON (visible only on mobile)
+    ========================================== -->
+    <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+        ☰
+    </button>
+
+
+    <!-- =========================================
+         SIDEBAR
+    ========================================== -->
+    <div class="sidebar" id="sidebar">
+        <div class="logo">
+            <h2>G.R.O.W.T.H</h2>
+            <p id="greeting-paragraph">
+                <span id="greeting-time">Hello</span>,
+                <span id="greeting-name">...</span>!
+            </p>
+        </div>
+
+        <nav>
+            <ul>
+                <li><a href="main.html">Home</a></li>
+                <li><a href="documentation.html">G.R.O.W.T.H</a></li>
+                <li><a href="services.html">Checklist</a></li>
+                <li><a href="contact.html">Profile</a></li>
+            </ul>
+        </nav>
+
+        <button id="logoutBtn">
+            <a href="../auth/auth.html">Logout</a>
+        </button>
+    </div>
+
+
+    <!-- =========================================
+         DASHBOARD HEADER
+    ========================================== -->
+    <div class="dashboard">
+        <h2>G.R.O.W.T.H</h2>
+        <p>
+            Welcome to your dashboard! Here you can find an overview
+            of your activities and progress.
+        </p>
+    </div>
+
+
+    <!-- =========================================
+         SIX COUNTER CARDS
+    ========================================== -->
+    <section class="content-card">
+        <div class="card">
+            <h3>G</h3>
+            <p><span id="g-count">0</span> check(s)</p>
+        </div>
+        <div class="card">
+            <h3>R</h3>
+            <p><span id="r-count">0</span> check(s)</p>
+        </div>
+        <div class="card">
+            <h3>O</h3>
+            <p><span id="o-count">0</span> check(s)</p>
+        </div>
+        <div class="card">
+            <h3>W</h3>
+            <p><span id="w-count">0</span> check(s)</p>
+        </div>
+        <div class="card">
+            <h3>T</h3>
+            <p><span id="t-count">0</span> check(s)</p>
+        </div>
+        <div class="card">
+            <h3>H</h3>
+            <p><span id="h-count">0</span> check(s)</p>
+        </div>
+    </section>
+
+
+    <!-- =========================================
+         G.R.O.W.T.H DAILY CHECKLIST
+    ========================================== -->
+    <section class="checklist-section">
+
+        <h1 class="checklist-title">G.R.O.W.T.H DAILY CHECKLIST</h1>
+
+        <div class="checklist-header">
+            <p>
+                <strong>Name:</strong>
+                <span id="checklist-name" class="fill-line">__________________________</span>
+            </p>
+            <p>
+                <strong>Month:</strong>
+                <span id="checklist-month" class="fill-line">__________________________</span>
+            </p>
+        </div>
+
+        <div class="checklist-table-wrapper">
+            <table class="checklist-table">
+                <thead>
+                    <tr>
+                        <th class="letter-col"></th>
+                        <th>1</th>
+                        <th>2</th>
+                        <th>3</th>
+                        <th>4</th>
+                        <th>5</th>
+                        <th>6</th>
+                        <th>7</th>
+                        <th>8</th>
+                        <th>9</th>
+                        <th>10</th>
+                        <th>11</th>
+                        <th>12</th>
+                        <th>13</th>
+                        <th>14</th>
+                        <th>15</th>
+                        <th>16</th>
+                        <th>17</th>
+                        <th>18</th>
+                        <th>19</th>
+                        <th>20</th>
+                        <th>21</th>
+                        <th>22</th>
+                        <th>23</th>
+                        <th>24</th>
+                        <th>25</th>
+                        <th>26</th>
+                        <th>27</th>
+                        <th>28</th>
+                        <th>29</th>
+                        <th>30</th>
+                        <th>31</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- G row -->
+                    <tr>
+                        <td class="letter-cell">G</td>
+                        <td><input type="checkbox" data-row="G" data-day="1"></td>
+                        <td><input type="checkbox" data-row="G" data-day="2"></td>
+                        <td><input type="checkbox" data-row="G" data-day="3"></td>
+                        <td><input type="checkbox" data-row="G" data-day="4"></td>
+                        <td><input type="checkbox" data-row="G" data-day="5"></td>
+                        <td><input type="checkbox" data-row="G" data-day="6"></td>
+                        <td><input type="checkbox" data-row="G" data-day="7"></td>
+                        <td><input type="checkbox" data-row="G" data-day="8"></td>
+                        <td><input type="checkbox" data-row="G" data-day="9"></td>
+                        <td><input type="checkbox" data-row="G" data-day="10"></td>
+                        <td><input type="checkbox" data-row="G" data-day="11"></td>
+                        <td><input type="checkbox" data-row="G" data-day="12"></td>
+                        <td><input type="checkbox" data-row="G" data-day="13"></td>
+                        <td><input type="checkbox" data-row="G" data-day="14"></td>
+                        <td><input type="checkbox" data-row="G" data-day="15"></td>
+                        <td><input type="checkbox" data-row="G" data-day="16"></td>
+                        <td><input type="checkbox" data-row="G" data-day="17"></td>
+                        <td><input type="checkbox" data-row="G" data-day="18"></td>
+                        <td><input type="checkbox" data-row="G" data-day="19"></td>
+                        <td><input type="checkbox" data-row="G" data-day="20"></td>
+                        <td><input type="checkbox" data-row="G" data-day="21"></td>
+                        <td><input type="checkbox" data-row="G" data-day="22"></td>
+                        <td><input type="checkbox" data-row="G" data-day="23"></td>
+                        <td><input type="checkbox" data-row="G" data-day="24"></td>
+                        <td><input type="checkbox" data-row="G" data-day="25"></td>
+                        <td><input type="checkbox" data-row="G" data-day="26"></td>
+                        <td><input type="checkbox" data-row="G" data-day="27"></td>
+                        <td><input type="checkbox" data-row="G" data-day="28"></td>
+                        <td><input type="checkbox" data-row="G" data-day="29"></td>
+                        <td><input type="checkbox" data-row="G" data-day="30"></td>
+                        <td><input type="checkbox" data-row="G" data-day="31"></td>
+                    </tr>
+
+                    <!-- R row -->
+                    <tr>
+                        <td class="letter-cell">R</td>
+                        <td><input type="checkbox" data-row="R" data-day="1"></td>
+                        <td><input type="checkbox" data-row="R" data-day="2"></td>
+                        <td><input type="checkbox" data-row="R" data-day="3"></td>
+                        <td><input type="checkbox" data-row="R" data-day="4"></td>
+                        <td><input type="checkbox" data-row="R" data-day="5"></td>
+                        <td><input type="checkbox" data-row="R" data-day="6"></td>
+                        <td><input type="checkbox" data-row="R" data-day="7"></td>
+                        <td><input type="checkbox" data-row="R" data-day="8"></td>
+                        <td><input type="checkbox" data-row="R" data-day="9"></td>
+                        <td><input type="checkbox" data-row="R" data-day="10"></td>
+                        <td><input type="checkbox" data-row="R" data-day="11"></td>
+                        <td><input type="checkbox" data-row="R" data-day="12"></td>
+                        <td><input type="checkbox" data-row="R" data-day="13"></td>
+                        <td><input type="checkbox" data-row="R" data-day="14"></td>
+                        <td><input type="checkbox" data-row="R" data-day="15"></td>
+                        <td><input type="checkbox" data-row="R" data-day="16"></td>
+                        <td><input type="checkbox" data-row="R" data-day="17"></td>
+                        <td><input type="checkbox" data-row="R" data-day="18"></td>
+                        <td><input type="checkbox" data-row="R" data-day="19"></td>
+                        <td><input type="checkbox" data-row="R" data-day="20"></td>
+                        <td><input type="checkbox" data-row="R" data-day="21"></td>
+                        <td><input type="checkbox" data-row="R" data-day="22"></td>
+                        <td><input type="checkbox" data-row="R" data-day="23"></td>
+                        <td><input type="checkbox" data-row="R" data-day="24"></td>
+                        <td><input type="checkbox" data-row="R" data-day="25"></td>
+                        <td><input type="checkbox" data-row="R" data-day="26"></td>
+                        <td><input type="checkbox" data-row="R" data-day="27"></td>
+                        <td><input type="checkbox" data-row="R" data-day="28"></td>
+                        <td><input type="checkbox" data-row="R" data-day="29"></td>
+                        <td><input type="checkbox" data-row="R" data-day="30"></td>
+                        <td><input type="checkbox" data-row="R" data-day="31"></td>
+                    </tr>
+
+                    <!-- O row -->
+                    <tr>
+                        <td class="letter-cell">O</td>
+                        <td><input type="checkbox" data-row="O" data-day="1"></td>
+                        <td><input type="checkbox" data-row="O" data-day="2"></td>
+                        <td><input type="checkbox" data-row="O" data-day="3"></td>
+                        <td><input type="checkbox" data-row="O" data-day="4"></td>
+                        <td><input type="checkbox" data-row="O" data-day="5"></td>
+                        <td><input type="checkbox" data-row="O" data-day="6"></td>
+                        <td><input type="checkbox" data-row="O" data-day="7"></td>
+                        <td><input type="checkbox" data-row="O" data-day="8"></td>
+                        <td><input type="checkbox" data-row="O" data-day="9"></td>
+                        <td><input type="checkbox" data-row="O" data-day="10"></td>
+                        <td><input type="checkbox" data-row="O" data-day="11"></td>
+                        <td><input type="checkbox" data-row="O" data-day="12"></td>
+                        <td><input type="checkbox" data-row="O" data-day="13"></td>
+                        <td><input type="checkbox" data-row="O" data-day="14"></td>
+                        <td><input type="checkbox" data-row="O" data-day="15"></td>
+                        <td><input type="checkbox" data-row="O" data-day="16"></td>
+                        <td><input type="checkbox" data-row="O" data-day="17"></td>
+                        <td><input type="checkbox" data-row="O" data-day="18"></td>
+                        <td><input type="checkbox" data-row="O" data-day="19"></td>
+                        <td><input type="checkbox" data-row="O" data-day="20"></td>
+                        <td><input type="checkbox" data-row="O" data-day="21"></td>
+                        <td><input type="checkbox" data-row="O" data-day="22"></td>
+                        <td><input type="checkbox" data-row="O" data-day="23"></td>
+                        <td><input type="checkbox" data-row="O" data-day="24"></td>
+                        <td><input type="checkbox" data-row="O" data-day="25"></td>
+                        <td><input type="checkbox" data-row="O" data-day="26"></td>
+                        <td><input type="checkbox" data-row="O" data-day="27"></td>
+                        <td><input type="checkbox" data-row="O" data-day="28"></td>
+                        <td><input type="checkbox" data-row="O" data-day="29"></td>
+                        <td><input type="checkbox" data-row="O" data-day="30"></td>
+                        <td><input type="checkbox" data-row="O" data-day="31"></td>
+                    </tr>
+
+                    <!-- W row -->
+                    <tr>
+                        <td class="letter-cell">W</td>
+                        <td><input type="checkbox" data-row="W" data-day="1"></td>
+                        <td><input type="checkbox" data-row="W" data-day="2"></td>
+                        <td><input type="checkbox" data-row="W" data-day="3"></td>
+                        <td><input type="checkbox" data-row="W" data-day="4"></td>
+                        <td><input type="checkbox" data-row="W" data-day="5"></td>
+                        <td><input type="checkbox" data-row="W" data-day="6"></td>
+                        <td><input type="checkbox" data-row="W" data-day="7"></td>
+                        <td><input type="checkbox" data-row="W" data-day="8"></td>
+                        <td><input type="checkbox" data-row="W" data-day="9"></td>
+                        <td><input type="checkbox" data-row="W" data-day="10"></td>
+                        <td><input type="checkbox" data-row="W" data-day="11"></td>
+                        <td><input type="checkbox" data-row="W" data-day="12"></td>
+                        <td><input type="checkbox" data-row="W" data-day="13"></td>
+                        <td><input type="checkbox" data-row="W" data-day="14"></td>
+                        <td><input type="checkbox" data-row="W" data-day="15"></td>
+                        <td><input type="checkbox" data-row="W" data-day="16"></td>
+                        <td><input type="checkbox" data-row="W" data-day="17"></td>
+                        <td><input type="checkbox" data-row="W" data-day="18"></td>
+                        <td><input type="checkbox" data-row="W" data-day="19"></td>
+                        <td><input type="checkbox" data-row="W" data-day="20"></td>
+                        <td><input type="checkbox" data-row="W" data-day="21"></td>
+                        <td><input type="checkbox" data-row="W" data-day="22"></td>
+                        <td><input type="checkbox" data-row="W" data-day="23"></td>
+                        <td><input type="checkbox" data-row="W" data-day="24"></td>
+                        <td><input type="checkbox" data-row="W" data-day="25"></td>
+                        <td><input type="checkbox" data-row="W" data-day="26"></td>
+                        <td><input type="checkbox" data-row="W" data-day="27"></td>
+                        <td><input type="checkbox" data-row="W" data-day="28"></td>
+                        <td><input type="checkbox" data-row="W" data-day="29"></td>
+                        <td><input type="checkbox" data-row="W" data-day="30"></td>
+                        <td><input type="checkbox" data-row="W" data-day="31"></td>
+                    </tr>
+
+                    <!-- T row -->
+                    <tr>
+                        <td class="letter-cell">T</td>
+                        <td><input type="checkbox" data-row="T" data-day="1"></td>
+                        <td><input type="checkbox" data-row="T" data-day="2"></td>
+                        <td><input type="checkbox" data-row="T" data-day="3"></td>
+                        <td><input type="checkbox" data-row="T" data-day="4"></td>
+                        <td><input type="checkbox" data-row="T" data-day="5"></td>
+                        <td><input type="checkbox" data-row="T" data-day="6"></td>
+                        <td><input type="checkbox" data-row="T" data-day="7"></td>
+                        <td><input type="checkbox" data-row="T" data-day="8"></td>
+                        <td><input type="checkbox" data-row="T" data-day="9"></td>
+                        <td><input type="checkbox" data-row="T" data-day="10"></td>
+                        <td><input type="checkbox" data-row="T" data-day="11"></td>
+                        <td><input type="checkbox" data-row="T" data-day="12"></td>
+                        <td><input type="checkbox" data-row="T" data-day="13"></td>
+                        <td><input type="checkbox" data-row="T" data-day="14"></td>
+                        <td><input type="checkbox" data-row="T" data-day="15"></td>
+                        <td><input type="checkbox" data-row="T" data-day="16"></td>
+                        <td><input type="checkbox" data-row="T" data-day="17"></td>
+                        <td><input type="checkbox" data-row="T" data-day="18"></td>
+                        <td><input type="checkbox" data-row="T" data-day="19"></td>
+                        <td><input type="checkbox" data-row="T" data-day="20"></td>
+                        <td><input type="checkbox" data-row="T" data-day="21"></td>
+                        <td><input type="checkbox" data-row="T" data-day="22"></td>
+                        <td><input type="checkbox" data-row="T" data-day="23"></td>
+                        <td><input type="checkbox" data-row="T" data-day="24"></td>
+                        <td><input type="checkbox" data-row="T" data-day="25"></td>
+                        <td><input type="checkbox" data-row="T" data-day="26"></td>
+                        <td><input type="checkbox" data-row="T" data-day="27"></td>
+                        <td><input type="checkbox" data-row="T" data-day="28"></td>
+                        <td><input type="checkbox" data-row="T" data-day="29"></td>
+                        <td><input type="checkbox" data-row="T" data-day="30"></td>
+                        <td><input type="checkbox" data-row="T" data-day="31"></td>
+                    </tr>
+
+                    <!-- H row -->
+                    <tr>
+                        <td class="letter-cell">H</td>
+                        <td><input type="checkbox" data-row="H" data-day="1"></td>
+                        <td><input type="checkbox" data-row="H" data-day="2"></td>
+                        <td><input type="checkbox" data-row="H" data-day="3"></td>
+                        <td><input type="checkbox" data-row="H" data-day="4"></td>
+                        <td><input type="checkbox" data-row="H" data-day="5"></td>
+                        <td><input type="checkbox" data-row="H" data-day="6"></td>
+                        <td><input type="checkbox" data-row="H" data-day="7"></td>
+                        <td><input type="checkbox" data-row="H" data-day="8"></td>
+                        <td><input type="checkbox" data-row="H" data-day="9"></td>
+                        <td><input type="checkbox" data-row="H" data-day="10"></td>
+                        <td><input type="checkbox" data-row="H" data-day="11"></td>
+                        <td><input type="checkbox" data-row="H" data-day="12"></td>
+                        <td><input type="checkbox" data-row="H" data-day="13"></td>
+                        <td><input type="checkbox" data-row="H" data-day="14"></td>
+                        <td><input type="checkbox" data-row="H" data-day="15"></td>
+                        <td><input type="checkbox" data-row="H" data-day="16"></td>
+                        <td><input type="checkbox" data-row="H" data-day="17"></td>
+                        <td><input type="checkbox" data-row="H" data-day="18"></td>
+                        <td><input type="checkbox" data-row="H" data-day="19"></td>
+                        <td><input type="checkbox" data-row="H" data-day="20"></td>
+                        <td><input type="checkbox" data-row="H" data-day="21"></td>
+                        <td><input type="checkbox" data-row="H" data-day="22"></td>
+                        <td><input type="checkbox" data-row="H" data-day="23"></td>
+                        <td><input type="checkbox" data-row="H" data-day="24"></td>
+                        <td><input type="checkbox" data-row="H" data-day="25"></td>
+                        <td><input type="checkbox" data-row="H" data-day="26"></td>
+                        <td><input type="checkbox" data-row="H" data-day="27"></td>
+                        <td><input type="checkbox" data-row="H" data-day="28"></td>
+                        <td><input type="checkbox" data-row="H" data-day="29"></td>
+                        <td><input type="checkbox" data-row="H" data-day="30"></td>
+                        <td><input type="checkbox" data-row="H" data-day="31"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Legend -->
+        <div class="checklist-legend">
+            <p><strong>G</strong> - O TO CHURCH <em>(PUMUNTA SA PANANAMBAHAN)</em></p>
+            <p><strong>R</strong> - EAD THE BIBLE DAILY <em>(BASAHIN ANG BIBLIYA ARAW-ARAW)</em></p>
+            <p><strong>O</strong> - CCUPY YOUR PLACE IN MINISTRY <em>(GAMPANAN ANG IYONG LUGAR SA MINISTERYO)</em></p>
+            <p><strong>W</strong> - ITNESS FOR CHRIST <em>(MAGING SAKSI PARA KAY CRISTO)</em></p>
+            <p><strong>T</strong> - RUST GOD COMPLETELY <em>(MAGTIWALA NANG LUBOS SA DIYOS)</em></p>
+            <p><strong>H</strong> - ONOR THE LORD THROUGH GIVING <em>(PARANGALAN ANG PANGINOON SA PAMAMAGITAN NG
+                    PAGBIBIGAY)</em></p>
+        </div>
+    </section>
+
+
+    <!-- =========================================
+         REFLECTION
+    ========================================== -->
+    <section class="reflection" id="reflectionSection">
+        <h2>Reflection</h2>
+        <p>
+            Take a moment to reflect on your spiritual journey and growth.
+            Consider the following questions:
+        </p>
+
+        <ul>
+            <li>What is one area of growth you want to focus on this month?</li>
+            <li>How can you better support your church community?</li>
+            <li>In what ways can you deepen your relationship with God?</li>
+        </ul>
+
+        <textarea id="reflectionInput" rows="4" placeholder="Write your reflection here..."></textarea>
+
+        <button id="submitReflection">Submit Reflection</button>
+
+        <p id="reflectionStatus" class="reflection-status"></p>
+    </section>
+
+
+    <footer>
+        <p>&copy; 2026 Multimedia Ministry. All rights reserved.</p>
+    </footer>
+
+
+    <!-- =========================================
+         SUPABASE LIBRARY
+    ========================================== -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+    <!-- =========================================
+         PAGE SCRIPT
+    ========================================== -->
+    <script>
+        /* =========================================================
+           SUPABASE CONFIG
+        ========================================================= */
+
+        const SUPABASE_URL = "https://skoiyiaijqhwqnbziqng.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_wk9YJslv6Ycf4Lffavnmkw_bZFkBK8E";
+
+        const supabaseClient = supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_ANON_KEY
+        );
+
+
+        /* =========================================================
+           TIME-BASED GREETING WORD
+        ========================================================= */
+
+        function getGreetingWord() {
+            const hour = new Date().getHours();
+            if (hour < 12) return "Mapagpalang Umaga";
+            if (hour < 18) return "Mapagpalang Hapon";
+            return "Mapagpalang Gabi";
+        }
+
+
+        /* =========================================================
+           MONTH KEY
+        ========================================================= */
+
+        function getCurrentMonthKey() {
+            const monthNames = [
+                "January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"
+            ];
+            const now = new Date();
+            return `${monthNames[now.getMonth()]} ${now.getFullYear()}`;
+        }
+
+
+        /* =========================================================
+           LOAD USERNAME + GREETING + CHECKLIST NAME
+        ========================================================= */
+
+        async function loadGreeting() {
+
+            const nameSpan = document.getElementById("greeting-name");
+            const timeSpan = document.getElementById("greeting-time");
+            const checklistName = document.getElementById("checklist-name");
+
+            if (!nameSpan) return;
+
+            if (timeSpan) timeSpan.textContent = getGreetingWord();
+
+            try {
+                const { data: { user }, error: userError } =
+                    await supabaseClient.auth.getUser();
+
+                if (userError || !user) {
+                    nameSpan.textContent = "Guest";
+                    return;
+                }
+
+                const { data: profile, error: profileError } = await supabaseClient
+                    .from("profiles")
+                    .select("username")
+                    .eq("id", user.id)
+                    .maybeSingle();
+
+                if (profileError || !profile || !profile.username) {
+                    nameSpan.textContent = "User";
+                    return;
+                }
+
+                const displayName = profile.username.split(/[._-]/)[0];
+                nameSpan.textContent = displayName;
+
+                if (checklistName) checklistName.textContent = profile.username;
+
+            } catch (error) {
+                console.error("Greeting error:", error);
+                if (nameSpan) nameSpan.textContent = "User";
+            }
+        }
+
+
+        /* =========================================================
+           SET CURRENT MONTH ON THE CHECKLIST
+        ========================================================= */
+
+        function setChecklistMonth() {
+            const monthSpan = document.getElementById("checklist-month");
+            if (!monthSpan) return;
+
+            const monthNames = [
+                "January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"
+            ];
+
+            const now = new Date();
+            monthSpan.textContent =
+                `${monthNames[now.getMonth()]} ${now.getFullYear()}`;
+        }
+
+
+        /* =========================================================
+           LOAD SAVED CHECKS FROM SUPABASE
+        ========================================================= */
+
+        async function loadChecklistChecks() {
+
+            try {
+
+                const { data: { user }, error: userError } =
+                    await supabaseClient.auth.getUser();
+
+                if (userError || !user) return;
+
+                const monthKey = getCurrentMonthKey();
+
+                const { data: checks, error } = await supabaseClient
+                    .from("checklist_checks")
+                    .select("row_letter, day, checked")
+                    .eq("user_id", user.id)
+                    .eq("month", monthKey);
+
+                if (error) {
+                    console.error("Checklist load error:", error);
+                    return;
+                }
+
+                if (!checks || checks.length === 0) {
+                    updateRowCounts();
+                    return;
+                }
+
+                checks.forEach(item => {
+                    if (!item.checked) return;
+
+                    const cb = document.querySelector(
+                        `input[data-row="${item.row_letter}"][data-day="${item.day}"]`
+                    );
+
+                    if (cb) cb.checked = true;
+                });
+
+                updateRowCounts();
+
+            } catch (err) {
+                console.error("Unexpected load error:", err);
+            }
+        }
+
+
+        /* =========================================================
+           AUTO-SAVE ON CHECKBOX CHANGE
+        ========================================================= */
+
+        async function saveCheckboxState(checkbox) {
+
+            try {
+
+                const { data: { user }, error: userError } =
+                    await supabaseClient.auth.getUser();
+
+                if (userError || !user) {
+                    console.warn("Cannot save — no user.");
+                    return;
+                }
+
+                const rowLetter = checkbox.dataset.row;
+                const day = parseInt(checkbox.dataset.day, 10);
+                const monthKey = getCurrentMonthKey();
+
+                if (checkbox.checked) {
+
+                    const { error } = await supabaseClient
+                        .from("checklist_checks")
+                        .upsert({
+                            user_id: user.id,
+                            row_letter: rowLetter,
+                            day: day,
+                            month: monthKey,
+                            checked: true,
+                            updated_at: new Date().toISOString()
+                        }, {
+                            onConflict: "user_id,row_letter,day,month"
+                        });
+
+                    if (error) {
+                        console.error("Save error [" + rowLetter + "/" + day + "]:", error);
+                        // Roll back the checkbox if the DB rejected the save
+                        checkbox.checked = false;
+                        updateRowCounts();
+                        return;
+                    }
+
+                } else {
+
+                    const { error } = await supabaseClient
+                        .from("checklist_checks")
+                        .delete()
+                        .eq("user_id", user.id)
+                        .eq("row_letter", rowLetter)
+                        .eq("day", day)
+                        .eq("month", monthKey);
+
+                    if (error) {
+                        console.error("Delete error [" + rowLetter + "/" + day + "]:", error);
+                        // Roll back the checkbox if the DB rejected the delete
+                        checkbox.checked = true;
+                        updateRowCounts();
+                        return;
+                    }
+                }
+
+            } catch (err) {
+                console.error("Unexpected save error:", err);
+            }
+        }
+
+
+        /* =========================================================
+           UPDATE ALL SIX ROW COUNTS
+        ========================================================= */
+
+        function updateRowCounts() {
+
+            const counts = { G: 0, R: 0, O: 0, W: 0, T: 0, H: 0 };
+
+            document.querySelectorAll('.checklist-table input[type="checkbox"]')
+                .forEach(cb => {
+                    if (cb.checked) {
+                        const row = (cb.dataset.row || "").toUpperCase();
+                        if (counts[row] !== undefined) counts[row]++;
+                    }
+                });
+
+            const map = {
+                G: "g-count",
+                R: "r-count",
+                O: "o-count",
+                W: "w-count",
+                T: "t-count",
+                H: "h-count"
+            };
+
+            Object.keys(map).forEach(letter => {
+                const el = document.getElementById(map[letter]);
+                if (el) el.textContent = counts[letter];
+            });
+        }
+
+
+        /* =========================================================
+           ATTACH LISTENERS TO ALL CHECKBOXES
+           (updates counter instantly, then saves to DB in background)
+        ========================================================= */
+
+        function setupChecklistListeners() {
+
+            const checkboxes = document.querySelectorAll(
+                '.checklist-table input[type="checkbox"]'
+            );
+
+            checkboxes.forEach(cb => {
+
+                cb.addEventListener("change", function () {
+
+                    // 1. Update the counter IMMEDIATELY from the DOM.
+                    //    This runs synchronously on the click, so the card
+                    //    updates before the DB call has time to complete.
+                    updateRowCounts();
+
+                    // 2. Save to Supabase in the background.
+                    //    Does not block the counter update.
+                    saveCheckboxState(cb);
+                });
+            });
+        }
+
+
+        /* =========================================================
+           HAMBURGER MENU
+        ========================================================= */
+
+        function setupHamburger() {
+
+            const hamburger = document.getElementById("hamburgerBtn");
+            const sidebar = document.getElementById("sidebar");
+
+            if (!hamburger || !sidebar) return;
+
+            hamburger.addEventListener("click", function (event) {
+                event.stopPropagation();
+                sidebar.classList.toggle("open");
+            });
+
+            document.addEventListener("click", function (event) {
+                if (window.innerWidth > 768) return;
+
+                const clickedInsideSidebar = sidebar.contains(event.target);
+                const clickedHamburger = hamburger.contains(event.target);
+
+                if (!clickedInsideSidebar && !clickedHamburger) {
+                    sidebar.classList.remove("open");
+                }
+            });
+
+            sidebar.querySelectorAll("a").forEach(link => {
+                link.addEventListener("click", () => {
+                    if (window.innerWidth <= 768) {
+                        sidebar.classList.remove("open");
+                    }
+                });
+            });
+        }
+
+
+        /* =========================================================
+           LOGOUT
+        ========================================================= */
+
+        async function handleLogout(event) {
+
+            event.preventDefault();
+
+            const { error } = await supabaseClient.auth.signOut();
+
+            if (error) {
+                console.error("Logout error:", error);
+                alert("Logout failed. Please try again.");
+                return;
+            }
+
+            window.location.href = "../auth/auth.html";
+        }
+
+
+        /* =========================================================
+           SUBMIT REFLECTION (stays on page)
+        ========================================================= */
+
+        async function handleReflectionSubmit(event) {
+
+            event.preventDefault();
+
+            const textarea = document.getElementById("reflectionInput");
+            const button = document.getElementById("submitReflection");
+            const statusEl = document.getElementById("reflectionStatus");
+
+            if (!textarea || !button) return;
+
+            const content = textarea.value.trim();
+
+            /* ---- VALIDATION ---- */
+            if (!content) {
+                if (statusEl) {
+                    statusEl.textContent = "Please write your reflection before submitting.";
+                    statusEl.className = "reflection-status error";
+                }
+                textarea.focus();
+                return;
+            }
+
+            if (content.length < 10) {
+                if (statusEl) {
+                    statusEl.textContent = "Reflection is too short — write at least 10 characters.";
+                    statusEl.className = "reflection-status error";
+                }
+                textarea.focus();
+                return;
+            }
+
+            /* ---- UI: submitting ---- */
+            button.disabled = true;
+            button.textContent = "Submitting...";
+
+            if (statusEl) {
+                statusEl.textContent = "";
+                statusEl.className = "reflection-status";
+            }
+
+            try {
+
+                const { data: { user }, error: userError } =
+                    await supabaseClient.auth.getUser();
+
+                if (userError || !user) {
+                    if (statusEl) {
+                        statusEl.textContent = "You must be logged in to submit.";
+                        statusEl.className = "reflection-status error";
+                    }
+                    button.disabled = false;
+                    button.textContent = "Submit Reflection";
+                    return;
+                }
+
+                const { data: profile, error: profileError } =
+                    await supabaseClient
+                        .from("profiles")
+                        .select("department, role")
+                        .eq("id", user.id)
+                        .maybeSingle();
+
+                if (profileError || !profile || !profile.department) {
+                    if (statusEl) {
+                        statusEl.textContent =
+                            "Unable to find your department. Contact your admin.";
+                        statusEl.className = "reflection-status error";
+                    }
+                    button.disabled = false;
+                    button.textContent = "Submit Reflection";
+                    return;
+                }
+
+                const { error: insertError } = await supabaseClient
+                    .from("reflections")
+                    .insert({
+                        user_id: user.id,
+                        department: profile.department,
+                        content: content
+                    });
+
+                if (insertError) {
+                    console.error("Reflection insert error:", insertError);
+                    if (statusEl) {
+                        statusEl.textContent =
+                            "Failed to save: " + insertError.message;
+                        statusEl.className = "reflection-status error";
+                    }
+                    button.disabled = false;
+                    button.textContent = "Submit Reflection";
+                    return;
+                }
+
+                if (statusEl) {
+                    statusEl.textContent =
+                        "✓ Reflection submitted successfully! Thank you.";
+                    statusEl.className = "reflection-status success";
+                }
+
+                textarea.value = "";
+                button.disabled = false;
+                button.textContent = "Submit Reflection";
+
+                setTimeout(() => {
+                    if (statusEl && statusEl.classList.contains("success")) {
+                        statusEl.textContent = "";
+                        statusEl.className = "reflection-status";
+                    }
+                }, 4000);
+
+            } catch (error) {
+
+                console.error("Unexpected reflection error:", error);
+
+                if (statusEl) {
+                    statusEl.textContent = "Something went wrong. Please try again.";
+                    statusEl.className = "reflection-status error";
+                }
+
+                button.disabled = false;
+                button.textContent = "Submit Reflection";
+            }
+        }
+
+
+        /* =========================================================
+           ATTACH REFLECTION LISTENER
+        ========================================================= */
+
+        function setupReflectionForm() {
+            const button = document.getElementById("submitReflection");
+            if (!button) return;
+            button.addEventListener("click", handleReflectionSubmit);
+        }
+
+
+        /* =========================================================
+           RUN ON PAGE LOAD
+        ========================================================= */
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            loadGreeting();
+            setChecklistMonth();
+            loadChecklistChecks();
+            setupChecklistListeners();
+            setupHamburger();
+            setupReflectionForm();
+
+            const logoutBtn = document.getElementById("logoutBtn");
+            if (logoutBtn) {
+                logoutBtn.addEventListener("click", handleLogout);
+            }
+        });
+    </script>
+
+</body>
+
+</html>
