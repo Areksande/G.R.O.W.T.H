@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="reports.css">
+    <title>Young Men - Reports</title>
+</head>
+<body>
+
+    <!-- =========================================
+         HAMBURGER (mobile)
+    ========================================== -->
+    <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">☰</button>
+
+
+    <!-- =========================================
+         SIDEBAR
+    ========================================== -->
+    <div class="sidebar" id="sidebar">
+        <div class="logo">
+            <h2>Young Men</h2>
+            <p id="greeting-paragraph">
+                <span id="greeting-time">Hello</span>,
+                <span id="greeting-name">...</span>!
+            </p>
+        </div>
+
+        <nav>
+            <ul>
+                <li><a href="YM.html">Dashboard</a></li>
+                <li><a href="Profile.html">Profile</a></li>
+                <li><a href="reports.html" class="active">Reports</a></li>
+            </ul>
+        </nav>
+
+        <button id="logoutBtn">
+            <a href="../../auth/auth.html">Logout</a>
+        </button>
+    </div>
+
+
+    <!-- =========================================
+         HERO
+    ========================================== -->
+    <section class="hero1">
+        <h2>Young Men - Reports</h2>
+        <p>
+            Monthly G.R.O.W.T.H progress report for all Young Men members.
+        </p>
+    </section>
+
+
+    <!-- =========================================
+         SUMMARY CARDS
+    ========================================== -->
+    <section class="summary-section">
+        <div class="summary-grid">
+            <div class="summary-card">
+                <span class="summary-label">Total Members</span>
+                <span class="summary-value" id="stat-members">—</span>
+            </div>
+            <div class="summary-card">
+                <span class="summary-label">Total Checks</span>
+                <span class="summary-value" id="stat-checks">—</span>
+            </div>
+            <div class="summary-card">
+                <span class="summary-label">Avg per Member</span>
+                <span class="summary-value" id="stat-avg">—</span>
+            </div>
+            <div class="summary-card">
+                <span class="summary-label">Most Active</span>
+                <span class="summary-value" id="stat-top">—</span>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- =========================================
+         BAR GRAPH — CHECKS PER MEMBER
+    ========================================== -->
+    <section class="chart-section">
+        <div class="chart-header">
+            <h2 id="chartTitle">G.R.O.W.T.H Checks per Member</h2>
+            <p class="section-subtitle" id="chartSubtitle">Loading…</p>
+        </div>
+
+        <div class="chart-controls">
+            <label>
+                <input type="radio" name="chartFilter" value="total" checked>
+                Total
+            </label>
+            <label>
+                <input type="radio" name="chartFilter" value="G"> G
+            </label>
+            <label>
+                <input type="radio" name="chartFilter" value="R"> R
+            </label>
+            <label>
+                <input type="radio" name="chartFilter" value="O"> O
+            </label>
+            <label>
+                <input type="radio" name="chartFilter" value="W"> W
+            </label>
+            <label>
+                <input type="radio" name="chartFilter" value="T"> T
+            </label>
+            <label>
+                <input type="radio" name="chartFilter" value="H"> H
+            </label>
+        </div>
+
+        <div id="chartContainer" class="chart-container">
+            <p class="loading-text">Loading chart…</p>
+        </div>
+    </section>
+
+
+    <!-- =========================================
+         REFLECTIONS — MONTHLY
+    ========================================== -->
+    <section class="reflections-section">
+        <div class="chart-header">
+            <h2>Monthly Reflections</h2>
+            <p class="section-subtitle" id="reflectionsSubtitle">
+                Reflections submitted this month.
+            </p>
+        </div>
+
+        <div id="reflectionsContainer">
+            <p class="loading-text">Loading reflections…</p>
+        </div>
+    </section>
+
+
+    <footer>
+        <p>&copy; 2026 Multimedia Ministry. All rights reserved.</p>
+    </footer>
+
+
+    <!-- =========================================
+         SUPABASE LIBRARY
+    ========================================== -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+    <!-- =========================================
+         PAGE SCRIPT
+    ========================================== -->
+    <script>
+    /* =========================================================
+       SUPABASE CONFIG
+    ========================================================= */
+
+    const SUPABASE_URL = "https://skoiyiaijqhwqnbziqng.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_wk9YJslv6Ycf4Lffavnmkw_bZFkBK8E";
+
+    const supabaseClient = supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+    );
+
+    const DEPARTMENT_NAME = "Young Men";
+
+    // Cache so switching filters doesn't refetch
+    let membersCache = [];
+    let checksCache = [];
+    let reflectionsCache = [];
+
+
+    /* =========================================================
+       MONTH KEY
+    ========================================================= */
+
+    function getCurrentMonthKey() {
+        const monthNames = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+        const now = new Date();
+        return `${monthNames[now.getMonth()]} ${now.getFullYear()}`;
+    }
+
+
+    /* =========================================================
+       TIME-BASED GREETING
+    ========================================================= */
+
+    function getGreetingWord() {
+        const hour = new Date().getHours();
+        if (hour < 12) return "Mapagpalang Umaga";
+        if (hour < 18) return "Mapagpalang Hapon";
+        return "Mapagpalang Gabi";
+    }
+
+
+    /* =========================================================
+       AUTH GUARD + GREETING
+    ========================================================= */
+
+    async function loadAdminGreeting() {
+
+        const nameSpan = document.getElementById("greeting-name");
+        const timeSpan = document.getElementById("greeting-time");
+
+        if (timeSpan) timeSpan.textContent = getGreetingWord();
+        if (!nameSpan) return;
+
+        try {
+
+            const { data: { user }, error: userError } =
+                await supabaseClient.auth.getUser();
+
+            if (userError || !user) {
+                window.location.href = "../../auth/auth.html";
+                return;
+            }
+
+            const { data: profile, error: profileError } =
+                await supabaseClient
+                    .from("profiles")
+                    .select("username, role, department")
+                    .eq("id", user.id)
+                    .maybeSingle();
+
+            if (profileError || !profile) {
+                nameSpan.textContent = "Admin";
+                return;
+            }
+
+            const role = String(profile.role || "").toLowerCase();
+            const dept = String(profile.department || "").toLowerCase();
+
+            if (role !== "admin" || dept !== DEPARTMENT_NAME.toLowerCase()) {
+                console.warn("Not authorized for Young Men reports.");
+                window.location.href = "../../home/main.html";
+                return;
+            }
+
+            const displayName = (profile.username || "Admin").split(/[._-]/)[0];
+            nameSpan.textContent = displayName;
+
+        } catch (err) {
+            console.error("Greeting error:", err);
+            if (nameSpan) nameSpan.textContent = "Admin";
+        }
+    }
+
+
+    /* =========================================================
+       LOAD EVERYTHING
+    ========================================================= */
+
+    async function loadReports() {
+
+        const monthKey = getCurrentMonthKey();
+
+        try {
+
+            /* 1. Members */
+            const { data: members, error: membersError } =
+                await supabaseClient
+                    .from("profiles")
+                    .select("id, username")
+                    .eq("department", DEPARTMENT_NAME)
+                    .order("username", { ascending: true });
+
+            if (membersError) throw membersError;
+            membersCache = members || [];
+
+            /* 2. Checks for this month */
+            const memberIds = membersCache.map(m => m.id);
+
+            if (memberIds.length > 0) {
+                const { data: checks, error: checksError } =
+                    await supabaseClient
+                        .from("checklist_checks")
+                        .select("user_id, row_letter, checked")
+                        .in("user_id", memberIds)
+                        .eq("month", monthKey)
+                        .eq("checked", true);
+
+                if (checksError) throw checksError;
+                checksCache = checks || [];
+            } else {
+                checksCache = [];
+            }
+
+            /* 3. Reflections for this month */
+            const startOfMonth = new Date();
+            startOfMonth.setDate(1);
+            startOfMonth.setHours(0, 0, 0, 0);
+
+            const { data: reflections, error: reflectionsError } =
+                await supabaseClient
+                    .from("reflections")
+                    .select("id, content, created_at, user_id")
+                    .eq("department", DEPARTMENT_NAME)
+                    .gte("created_at", startOfMonth.toISOString())
+                    .order("created_at", { ascending: false });
+
+            if (reflectionsError) throw reflectionsError;
+            reflectionsCache = reflections || [];
+
+            /* 4. Render */
+            updateSummary();
+            renderChart("total");
+            renderReflections();
+
+            document.getElementById("chartSubtitle").textContent =
+                `Showing data for ${monthKey}`;
+            document.getElementById("reflectionsSubtitle").textContent =
+                `${reflectionsCache.length} reflection${reflectionsCache.length === 1 ? "" : "s"} for ${monthKey}`;
+
+        } catch (err) {
+            console.error("Reports load error:", err);
+            document.getElementById("chartContainer").innerHTML =
+                `<p class="error-text">Failed to load data: ${err.message}</p>`;
+        }
+    }
+
+
+    /* =========================================================
+       TALLY CHECKS PER MEMBER
+    ========================================================= */
+
+    function tallyChecks() {
+
+        const tally = {};
+
+        membersCache.forEach(m => {
+            tally[m.id] = {
+                username: m.username,
+                G: 0, R: 0, O: 0, W: 0, T: 0, H: 0, total: 0
+            };
+        });
+
+        checksCache.forEach(c => {
+            if (!tally[c.user_id]) return;
+            if (tally[c.user_id][c.row_letter] !== undefined) {
+                tally[c.user_id][c.row_letter]++;
+                tally[c.user_id].total++;
+            }
+        });
+
+        return Object.values(tally);
+    }
+
+
+    /* =========================================================
+       SUMMARY CARDS
+    ========================================================= */
+
+    function updateSummary() {
+
+        const rows = tallyChecks();
+
+        const totalMembers = rows.length;
+        const totalChecks = rows.reduce((sum, r) => sum + r.total, 0);
+        const avg = totalMembers > 0
+            ? (totalChecks / totalMembers).toFixed(1)
+            : "0.0";
+
+        let top = "—";
+        let topCount = -1;
+        rows.forEach(r => {
+            if (r.total > topCount) {
+                topCount = r.total;
+                top = r.username;
+            }
+        });
+        if (topCount <= 0) top = "—";
+
+        document.getElementById("stat-members").textContent = totalMembers;
+        document.getElementById("stat-checks").textContent = totalChecks;
+        document.getElementById("stat-avg").textContent = avg;
+        document.getElementById("stat-top").textContent = top;
+
+        // Update chart title
+        const titleEl = document.getElementById("chartTitle");
+        if (titleEl) titleEl.textContent = "G.R.O.W.T.H Checks per Member";
+    }
+
+
+    /* =========================================================
+       RENDER CHART
+    ========================================================= */
+
+    function renderChart(filter) {
+
+        const container = document.getElementById("chartContainer");
+        if (!container) return;
+
+        const rows = tallyChecks();
+
+        if (rows.length === 0) {
+            container.innerHTML =
+                `<p class="empty-text">No members in this department.</p>`;
+            return;
+        }
+
+        // Determine max value for scaling
+        const values = rows.map(r => filter === "total" ? r.total : r[filter]);
+        const maxValue = Math.max(...values, 1);
+
+        // Sort descending for readability
+        const sorted = [...rows].sort((a, b) => {
+            const av = filter === "total" ? a.total : a[filter];
+            const bv = filter === "total" ? b.total : b[filter];
+            return bv - av;
+        });
+
+        container.innerHTML = `
+            <div class="bar-chart">
+                ${sorted.map(r => {
+
+                    const value = filter === "total" ? r.total : r[filter];
+                    const heightPct = Math.max(
+                        (value / maxValue) * 100,
+                        value > 0 ? 6 : 0   // minimum visible bar
+                    );
+
+                    return `
+                        <div class="bar-column" title="${escapeHtml(r.username)} — ${value}">
+                            <span class="bar-value">${value}</span>
+                            <div class="bar-track">
+                                <div class="bar-fill"
+                                     style="height: ${heightPct}%"></div>
+                            </div>
+                            <span class="bar-name">${escapeHtml(r.username)}</span>
+                        </div>
+                    `;
+                }).join("")}
+            </div>
+        `;
+    }
+
+
+    /* =========================================================
+       RENDER REFLECTIONS
+    ========================================================= */
+
+    async function renderReflections() {
+
+        const container = document.getElementById("reflectionsContainer");
+        if (!container) return;
+
+        if (reflectionsCache.length === 0) {
+            container.innerHTML =
+                `<p class="empty-text">No reflections submitted yet this month.</p>`;
+            return;
+        }
+
+        // Fetch usernames in one query
+        const userIds = [...new Set(reflectionsCache.map(r => r.user_id))];
+
+        const { data: profiles } = await supabaseClient
+            .from("profiles")
+            .select("id, username")
+            .in("id", userIds);
+
+        const usernameMap = {};
+        (profiles || []).forEach(p => {
+            usernameMap[p.id] = p.username;
+        });
+
+        container.innerHTML = reflectionsCache.map(r => {
+
+            const rawName = usernameMap[r.user_id] || "Unknown Member";
+            const dateStr = new Date(r.created_at).toLocaleString();
+
+            return `
+                <div class="reflection-card">
+                    <div class="reflection-header">
+                        <span class="reflection-sender">${escapeHtml(rawName)}</span>
+                        <span class="reflection-date">${dateStr}</span>
+                    </div>
+                    <p class="reflection-content">${escapeHtml(r.content)}</p>
+                </div>
+            `;
+        }).join("");
+    }
+
+
+    /* =========================================================
+       ESCAPE HTML
+    ========================================================= */
+
+    function escapeHtml(str) {
+        return String(str)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+
+    /* =========================================================
+       HAMBURGER MENU
+    ========================================================= */
+
+    function setupHamburger() {
+
+        const hamburger = document.getElementById("hamburgerBtn");
+        const sidebar = document.getElementById("sidebar");
+
+        if (!hamburger || !sidebar) return;
+
+        hamburger.addEventListener("click", function (event) {
+            event.stopPropagation();
+            sidebar.classList.toggle("open");
+        });
+
+        document.addEventListener("click", function (event) {
+            if (window.innerWidth > 768) return;
+            if (!sidebar.contains(event.target) &&
+                !hamburger.contains(event.target)) {
+                sidebar.classList.remove("open");
+            }
+        });
+
+        sidebar.querySelectorAll("a").forEach(link => {
+            link.addEventListener("click", () => {
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.remove("open");
+                }
+            });
+        });
+    }
+
+
+    /* =========================================================
+       CHART FILTER CONTROLS
+    ========================================================= */
+
+    function setupChartFilters() {
+        document.querySelectorAll('input[name="chartFilter"]').forEach(radio => {
+            radio.addEventListener("change", e => {
+                renderChart(e.target.value);
+            });
+        });
+    }
+
+
+    /* =========================================================
+       LOGOUT
+    ========================================================= */
+
+    async function handleLogout(event) {
+        event.preventDefault();
+        const { error } = await supabaseClient.auth.signOut();
+        if (error) { alert("Logout failed."); return; }
+        window.location.href = "../../auth/auth.html";
+    }
+
+
+    /* =========================================================
+       RUN ON PAGE LOAD
+    ========================================================= */
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        loadAdminGreeting();
+        loadReports();
+        setupHamburger();
+        setupChartFilters();
+
+        const logoutBtn = document.getElementById("logoutBtn");
+        if (logoutBtn) logoutBtn.addEventListener("click", handleLogout);
+    });
+    </script>
+
+</body>
+</html>

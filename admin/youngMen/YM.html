@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="AM.css">
-    <title>Adult Men - Dashboard</title>
+    <link rel="stylesheet" href="YM.css">
+    <title>Young Men - Dashboard</title>
 </head>
 
 <body>
@@ -21,16 +21,16 @@
     ========================================== -->
     <div class="sidebar" id="sidebar">
         <div class="logo">
-            <h2>Adult Men</h2>
+            <h2>Young Men</h2>
             <p id="greeting-paragraph">
-                <span id="greeting-time">...</span>,
+                <span id="greeting-time">Hello</span>,
                 <span id="greeting-name">...</span>!
             </p>
         </div>
 
         <nav>
             <ul>
-                <li><a href="AM.html" class="active">Dashboard</a></li>
+                <li><a href="YM.html" class="active">Dashboard</a></li>
                 <li><a href="Profile.html">Profile</a></li>
                 <li><a href="reports.html">Reports</a></li>
             </ul>
@@ -46,16 +46,17 @@
          HERO
     ========================================== -->
     <section class="hero1">
-        <h2>Adult Men - Dashboard</h2>
+        <h2>Young Men - Dashboard</h2>
         <p>
-            Dito maaari mong pamahalaan ang mga gumagamit at tingnan ang mga ulat na partikular sa departamentong ito.
+            Welcome to the Young Men section. Here you can manage users
+            and view reports specific to this department.
         </p>
     </section>
 
     <section class="progress-section">
         <h2>Member Progress</h2>
         <p class="section-subtitle">
-            Bilan ng mga natapos na daily checks para sa bawat G.R.O.W.T.H ngayong buwan.
+            Number of daily checks completed per G.R.O.W.T.H pillar this month.
         </p>
 
         <div id="progressContainer">
@@ -68,9 +69,9 @@
          REFLECTIONS SECTION
     ========================================== -->
     <section class="reflections-section">
-        <h2>Department Reflections / Prayer Request / Insights</h2>
+        <h2>Department Reflections</h2>
         <p class="section-subtitle">
-            Mga repleksyon na isinumite ng mga miyembro ng Adult Men
+            Reflections submitted by Young Men members.
         </p>
 
         <div id="reflectionsContainer">
@@ -106,7 +107,7 @@
             SUPABASE_ANON_KEY
         );
 
-        const DEPARTMENT_NAME = "Adult Men";
+        const DEPARTMENT_NAME = "Young Men";
 
 
         /* =========================================================
@@ -159,7 +160,7 @@
                 const dept = String(profile.department || "").toLowerCase();
 
                 if (role !== "admin" || dept !== DEPARTMENT_NAME.toLowerCase()) {
-                    console.warn("Not authorized for Adult Men.");
+                    console.warn("Not authorized for Young Men.");
                     window.location.href = "../../home/main.html";
                     return;
                 }

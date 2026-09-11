@@ -1,102 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="AM.css">
-    <title>Adult Men - Dashboard</title>
-</head>
-
-<body>
-
-    <!-- =========================================
-         HAMBURGER (mobile)
-    ========================================== -->
-    <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">☰</button>
-
-
-    <!-- =========================================
-         SIDEBAR
-    ========================================== -->
-    <div class="sidebar" id="sidebar">
-        <div class="logo">
-            <h2>Adult Men</h2>
-            <p id="greeting-paragraph">
-                <span id="greeting-time">...</span>,
-                <span id="greeting-name">...</span>!
-            </p>
-        </div>
-
-        <nav>
-            <ul>
-                <li><a href="AM.html" class="active">Dashboard</a></li>
-                <li><a href="Profile.html">Profile</a></li>
-                <li><a href="reports.html">Reports</a></li>
-            </ul>
-        </nav>
-
-        <button id="logoutBtn">
-            <a href="../../auth/auth.html">Logout</a>
-        </button>
-    </div>
-
-
-    <!-- =========================================
-         HERO
-    ========================================== -->
-    <section class="hero1">
-        <h2>Adult Men - Dashboard</h2>
-        <p>
-            Dito maaari mong pamahalaan ang mga gumagamit at tingnan ang mga ulat na partikular sa departamentong ito.
-        </p>
-    </section>
-
-    <section class="progress-section">
-        <h2>Member Progress</h2>
-        <p class="section-subtitle">
-            Bilan ng mga natapos na daily checks para sa bawat G.R.O.W.T.H ngayong buwan.
-        </p>
-
-        <div id="progressContainer">
-            <p class="loading-text">Loading progress...</p>
-        </div>
-    </section>
-
-
-    <!-- =========================================
-         REFLECTIONS SECTION
-    ========================================== -->
-    <section class="reflections-section">
-        <h2>Department Reflections / Prayer Request / Insights</h2>
-        <p class="section-subtitle">
-            Mga repleksyon na isinumite ng mga miyembro ng Adult Men
-        </p>
-
-        <div id="reflectionsContainer">
-            <p class="loading-text">Loading reflections...</p>
-        </div>
-    </section>
-
-
-    <footer>
-        <p>&copy; 2026 Multimedia Ministry. All rights reserved.</p>
-    </footer>
-
-
-    <!-- =========================================
-         SUPABASE LIBRARY
-    ========================================== -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-
-    <!-- =========================================
-         PAGE SCRIPT
-    ========================================== -->
-    <script>
-        /* =========================================================
-           SUPABASE CONFIG
-        ========================================================= */
 
         const SUPABASE_URL = "https://skoiyiaijqhwqnbziqng.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_wk9YJslv6Ycf4Lffavnmkw_bZFkBK8E";
@@ -106,7 +7,7 @@
             SUPABASE_ANON_KEY
         );
 
-        const DEPARTMENT_NAME = "Adult Men";
+        const DEPARTMENT_NAME = "Adult Ladies";
 
 
         /* =========================================================
@@ -463,8 +364,3 @@
             const logoutBtn = document.getElementById("logoutBtn");
             if (logoutBtn) logoutBtn.addEventListener("click", handleLogout);
         });
-    </script>
-
-</body>
-
-</html>

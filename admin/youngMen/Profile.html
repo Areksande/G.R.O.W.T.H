@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="Profile.css">
+    <title>Young Men - Profile</title>
+</head>
+<body>
+
+    <!-- =========================================
+         HAMBURGER (mobile)
+    ========================================== -->
+    <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">☰</button>
+
+
+    <!-- =========================================
+         SIDEBAR
+    ========================================== -->
+    <div class="sidebar" id="sidebar">
+        <div class="logo">
+            <h2>Young Men</h2>
+            <p id="greeting-paragraph">
+                <span id="greeting-time">Hello</span>,
+                <span id="greeting-name">...</span>!
+            </p>
+        </div>
+
+        <nav>
+            <ul>
+                <li><a href="YM.html">Dashboard</a></li>
+                <li><a href="Profile.html" class="active">Profile</a></li>
+                <li><a href="reports.html">Reports</a></li>
+            </ul>
+        </nav>
+
+        <button id="logoutBtn">
+            <a href="../../auth/auth.html">Logout</a>
+        </button>
+    </div>
+
+
+    <!-- =========================================
+         HERO
+    ========================================== -->
+    <section class="hero1">
+        <h2>Young Men - Profile</h2>
+        <p>Manage user profiles and settings specific to Young Men.</p>
+    </section>
+
+
+    <!-- =========================================
+         MEMBERS SECTION
+    ========================================== -->
+    <section class="members-section">
+        <h2>Young Men Members</h2>
+
+        <div class="members-controls">
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="Search by username..."
+            >
+            <span id="memberCount" class="member-count">Loading...</span>
+        </div>
+
+        <div class="members-table-wrapper">
+            <table class="members-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Username</th>
+                        <th>Department</th>
+                        <th>Role</th>
+                        <th>Joined</th>
+                    </tr>
+                </thead>
+                <tbody id="membersContainer">
+                    <tr>
+                        <td colspan="5" class="loading-cell">Loading members...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+
+    <footer>
+        <p>&copy; 2026 Multimedia Ministry. All rights reserved.</p>
+    </footer>
+
+
+    <!-- =========================================
+         SUPABASE LIBRARY
+    ========================================== -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+    <!-- =========================================
+         PAGE SCRIPT
+    ========================================== -->
+    <script>
+    /* =========================================================
+       SUPABASE CONFIG
+    ========================================================= */
+
+    const SUPABASE_URL = "https://skoiyiaijqhwqnbziqng.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_wk9YJslv6Ycf4Lffavnmkw_bZFkBK8E";
+
+    const supabaseClient = supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+    );
+
+    const DEPARTMENT_NAME = "Young Men";
+
+    let allMembers = [];
+
+
+    /* =========================================================
+       TIME-BASED GREETING
+    ========================================================= */
+
+    function getGreetingWord() {
+        const hour = new Date().getHours();
+        if (hour < 12) return "Mapagpalang Umaga";
+        if (hour < 18) return "Mapagpalang Hapon";
+        return "Mapagpalang Gabi";
+    }
+
+
+    /* =========================================================
+       AUTH GUARD + GREETING
+    ========================================================= */
+
+    async function verifyAdminAccess() {
+
+        const nameSpan = document.getElementById("greeting-name");
+        const timeSpan = document.getElementById("greeting-time");
+
+        if (timeSpan) timeSpan.textContent = getGreetingWord();
+
+        const { data: { user }, error: userError } =
+            await supabaseClient.auth.getUser();
+
+        if (userError || !user) {
+            console.warn("Not authenticated. Redirecting to login.");
+            window.location.href = "../../auth/auth.html";
+            return false;
+        }
+
+        const { data: profile, error: profileError } =
+            await supabaseClient
+                .from("profiles")
+                .select("username, role, department")
+                .eq("id", user.id)
+                .maybeSingle();
+
+        if (profileError || !profile) {
+            console.error("Profile fetch error:", profileError);
+            window.location.href = "../../home/main.html";
+            return false;
+        }
+
+        const role = String(profile.role || "").toLowerCase();
+        const department = String(profile.department || "").toLowerCase();
+
+        if (role !== "admin" || department !== DEPARTMENT_NAME.toLowerCase()) {
+            console.warn("Not authorized for this department.");
+            window.location.href = "../../home/main.html";
+            return false;
+        }
+
+        // Show the admin's name in the sidebar greeting
+        if (nameSpan) {
+            const displayName = (profile.username || "Admin").split(/[._-]/)[0];
+            nameSpan.textContent = displayName;
+        }
+
+        return true;
+    }
+
+
+    /* =========================================================
+       LOAD ALL MEMBERS IN THIS DEPARTMENT
+    ========================================================= */
+
+    async function loadMembers() {
+
+        const container = document.getElementById("membersContainer");
+        const countSpan = document.getElementById("memberCount");
+
+        try {
+
+            const { data: members, error } = await supabaseClient
+                .from("profiles")
+                .select("id, username, department, role, created_at")
+                .eq("department", DEPARTMENT_NAME)
+                .order("created_at", { ascending: true });
+
+            if (error) {
+                console.error("Fetch members error:", error);
+                container.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="error-cell">
+                            Failed to load members: ${error.message}
+                        </td>
+                    </tr>
+                `;
+                if (countSpan) countSpan.textContent = "Error";
+                return;
+            }
+
+            allMembers = members || [];
+            renderMembers(allMembers);
+
+        } catch (error) {
+
+            console.error("Unexpected error:", error);
+            container.innerHTML = `
+                <tr>
+                    <td colspan="5" class="error-cell">
+                        Something went wrong.
+                    </td>
+                </tr>
+            `;
+        }
+    }
+
+
+    /* =========================================================
+       RENDER MEMBERS INTO THE TABLE
+    ========================================================= */
+
+    function renderMembers(members) {
+
+        const container = document.getElementById("membersContainer");
+        const countSpan = document.getElementById("memberCount");
+
+        if (!container) return;
+
+        if (countSpan) {
+            countSpan.textContent =
+                `${members.length} member${members.length === 1 ? "" : "s"}`;
+        }
+
+        if (members.length === 0) {
+            container.innerHTML = `
+                <tr>
+                    <td colspan="5" class="empty-cell">
+                        No members found in this department.
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        container.innerHTML = members
+            .map((member, index) => {
+
+                const role = String(member.role || "member").toLowerCase();
+                const joined = member.created_at
+                    ? new Date(member.created_at).toLocaleDateString()
+                    : "—";
+
+                return `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td class="username-cell">${escapeHtml(member.username || "—")}</td>
+                        <td>${escapeHtml(member.department || "—")}</td>
+                        <td>
+                            <span class="role-badge role-${role}">
+                                ${escapeHtml(member.role || "member")}
+                            </span>
+                        </td>
+                        <td>${joined}</td>
+                    </tr>
+                `;
+            })
+            .join("");
+    }
+
+
+    /* =========================================================
+       ESCAPE HTML
+    ========================================================= */
+
+    function escapeHtml(str) {
+        return String(str)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+
+    /* =========================================================
+       SEARCH FILTER
+    ========================================================= */
+
+    function handleSearch(event) {
+
+        const query = event.target.value.trim().toLowerCase();
+
+        if (!query) {
+            renderMembers(allMembers);
+            return;
+        }
+
+        const filtered = allMembers.filter(m =>
+            String(m.username || "").toLowerCase().includes(query)
+        );
+
+        renderMembers(filtered);
+    }
+
+
+    /* =========================================================
+       HAMBURGER MENU
+    ========================================================= */
+
+    function setupHamburger() {
+
+        const hamburger = document.getElementById("hamburgerBtn");
+        const sidebar = document.getElementById("sidebar");
+
+        if (!hamburger || !sidebar) return;
+
+        hamburger.addEventListener("click", function (event) {
+            event.stopPropagation();
+            sidebar.classList.toggle("open");
+        });
+
+        document.addEventListener("click", function (event) {
+            if (window.innerWidth > 768) return;
+            if (!sidebar.contains(event.target) &&
+                !hamburger.contains(event.target)) {
+                sidebar.classList.remove("open");
+            }
+        });
+
+        sidebar.querySelectorAll("a").forEach(link => {
+            link.addEventListener("click", () => {
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.remove("open");
+                }
+            });
+        });
+    }
+
+
+    /* =========================================================
+       LOGOUT
+    ========================================================= */
+
+    async function handleLogout(event) {
+
+        event.preventDefault();
+
+        const { error } = await supabaseClient.auth.signOut();
+
+        if (error) {
+            console.error("Logout error:", error);
+            alert("Logout failed.");
+            return;
+        }
+
+        window.location.href = "../../auth/auth.html";
+    }
+
+
+    /* =========================================================
+       RUN ON PAGE LOAD
+    ========================================================= */
+
+    document.addEventListener("DOMContentLoaded", async function () {
+
+        const authorized = await verifyAdminAccess();
+        if (!authorized) return;
+
+        loadMembers();
+        setupHamburger();
+
+        const searchInput = document.getElementById("searchInput");
+        if (searchInput) {
+            searchInput.addEventListener("input", handleSearch);
+        }
+
+        const logoutBtn = document.getElementById("logoutBtn");
+        if (logoutBtn) {
+            logoutBtn.addEventListener("click", handleLogout);
+        }
+    });
+    </script>
+
+</body>
+</html>
