@@ -58,6 +58,18 @@
 
 
     <!-- =========================================
+         YOUR GROWTH JOURNEY — PROGRESS BAR
+    ========================================== -->
+    <div class="line-progress">
+        <h2>Your Growth Journey</h2>
+        <div class="progress-bar" id="progressBar">
+            <div class="progress-fill" id="progressFill"></div>
+            <span class="progress-label" id="progressLabel">0%</span>
+        </div>
+    </div>
+
+
+    <!-- =========================================
          SIX COUNTER CARDS
     ========================================== -->
     <section class="content-card">
@@ -606,7 +618,6 @@
 
                     if (error) {
                         console.error("Save error [" + rowLetter + "/" + day + "]:", error);
-                        // Roll back the checkbox if the DB rejected the save
                         checkbox.checked = false;
                         updateRowCounts();
                         return;
@@ -624,7 +635,6 @@
 
                     if (error) {
                         console.error("Delete error [" + rowLetter + "/" + day + "]:", error);
-                        // Roll back the checkbox if the DB rejected the delete
                         checkbox.checked = true;
                         updateRowCounts();
                         return;
@@ -639,6 +649,7 @@
 
         /* =========================================================
            UPDATE ALL SIX ROW COUNTS
+           (Also refreshes the progress bar)
         ========================================================= */
 
         function updateRowCounts() {
@@ -666,6 +677,47 @@
                 const el = document.getElementById(map[letter]);
                 if (el) el.textContent = counts[letter];
             });
+
+            // Update the progress bar too
+            updateProgressBar();
+        }
+
+
+        /* =========================================================
+           UPDATE THE GROWTH PROGRESS BAR
+           Max possible checks per month: 6 letters × 31 days = 186
+        ========================================================= */
+
+        const MAX_MONTHLY_CHECKS = 6 * 31;  // 186
+
+        function updateProgressBar() {
+
+            const fill = document.getElementById("progressFill");
+            const label = document.getElementById("progressLabel");
+            const bar = document.getElementById("progressBar");
+
+            if (!fill || !label || !bar) return;
+
+            let totalChecked = 0;
+
+            document.querySelectorAll('.checklist-table input[type="checkbox"]')
+                .forEach(cb => {
+                    if (cb.checked) totalChecked++;
+                });
+
+            const percent = Math.round(
+                (totalChecked / MAX_MONTHLY_CHECKS) * 100
+            );
+
+            // Update fill width
+            fill.style.width = percent + "%";
+
+            // Update label text
+            label.textContent =
+                percent + "%  (" + totalChecked + "/" + MAX_MONTHLY_CHECKS + ")";
+
+            // Toggle label color for readability (white over dark fill)
+            bar.setAttribute("data-high", percent >= 40 ? "true" : "false");
         }
 
 
@@ -684,13 +736,10 @@
 
                 cb.addEventListener("change", function () {
 
-                    // 1. Update the counter IMMEDIATELY from the DOM.
-                    //    This runs synchronously on the click, so the card
-                    //    updates before the DB call has time to complete.
+                    // 1. Update the counters + progress bar IMMEDIATELY
                     updateRowCounts();
 
                     // 2. Save to Supabase in the background.
-                    //    Does not block the counter update.
                     saveCheckboxState(cb);
                 });
             });
@@ -735,8 +784,7 @@
 
 
         /* =========================================================
-           LOGOUT
-        ========================================================= */
+           LOGOUT    ========================================================= */
 
         async function handleLogout(event) {
 
@@ -770,7 +818,6 @@
 
             const content = textarea.value.trim();
 
-            /* ---- VALIDATION ---- */
             if (!content) {
                 if (statusEl) {
                     statusEl.textContent = "Please write your reflection before submitting.";
@@ -789,7 +836,6 @@
                 return;
             }
 
-            /* ---- UI: submitting ---- */
             button.disabled = true;
             button.textContent = "Submitting...";
 

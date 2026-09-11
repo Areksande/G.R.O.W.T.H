@@ -497,6 +497,209 @@ body {
     color: #b91c1c;
 }
 
+/* =========================================================
+   LINE PROGRESS — Your Growth Journey
+========================================================= */
+
+/* =========================================================
+   LINE PROGRESS — YOUR GROWTH JOURNEY (responsive)
+========================================================= */
+
+.line-progress {
+    margin-left: var(--content-offset, 270px);
+    margin-right: var(--content-gap, 20px);
+    margin-top: var(--content-gap, 20px);
+    margin-bottom: var(--content-gap, 20px);
+    padding: 24px 30px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.line-progress h2 {
+    font-size: 20px;
+    color: var(--text, #1f2937);
+    margin-bottom: 16px;
+    text-align: center;
+    line-height: 1.3;
+}
+
+.progress-bar {
+    position: relative;
+    width: 100%;
+    height: 24px;
+    background: #e5e7eb;
+    border-radius: 999px;
+    overflow: hidden;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+.progress-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #007bff, #0056b3);
+    border-radius: 999px;
+    transition: width 0.6s ease;
+}
+
+.progress-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #111827;
+    z-index: 2;
+    letter-spacing: 0.03em;
+    pointer-events: none;
+    transition: color 0.4s ease;
+    white-space: nowrap;
+}
+
+.progress-bar[data-high="true"] .progress-label {
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+
+/* =========================================================
+   RESPONSIVE — TABLET (≤1024px)
+========================================================= */
+
+@media (max-width: 1024px) {
+
+    .line-progress {
+        padding: 20px 24px;
+    }
+
+    .line-progress h2 {
+        font-size: 18px;
+    }
+
+    .progress-bar {
+        height: 22px;
+    }
+
+    .progress-label {
+        font-size: 12px;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE — MOBILE (≤768px)
+========================================================= */
+
+@media (max-width: 768px) {
+
+    .line-progress {
+        margin-left: var(--content-gap-mobile, 16px);
+        margin-right: var(--content-gap-mobile, 16px);
+        margin-top: var(--content-gap-mobile, 16px);
+        margin-bottom: var(--content-gap-mobile, 16px);
+        padding: 18px 16px;
+        border-radius: 10px;
+    }
+
+    .line-progress h2 {
+        font-size: 16px;
+        margin-bottom: 12px;
+    }
+
+    .progress-bar {
+        height: 20px;
+    }
+
+    .progress-label {
+        font-size: 11px;
+        letter-spacing: 0.02em;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE — SMALL PHONE (≤480px)
+========================================================= */
+
+@media (max-width: 480px) {
+
+    .line-progress {
+        padding: 16px 14px;
+        border-radius: 8px;
+    }
+
+    .line-progress h2 {
+        font-size: 15px;
+        margin-bottom: 10px;
+    }
+
+    .progress-bar {
+        height: 18px;
+        border-radius: 999px;
+    }
+
+    .progress-label {
+        font-size: 10.5px;
+        letter-spacing: 0;
+    }
+}
+
+
+/* =========================================================
+   VERY SMALL PHONE (≤360px)
+========================================================= */
+
+@media (max-width: 360px) {
+
+    .line-progress {
+        padding: 14px 12px;
+    }
+
+    .line-progress h2 {
+        font-size: 14px;
+    }
+
+    .progress-bar {
+        height: 16px;
+    }
+
+    /* Hide the long "(N/186)" part of the label
+       and just show the percentage on tiny screens */
+    .progress-label {
+        font-size: 10px;
+    }
+}
+
+
+/* =========================================================
+   PRINT — HIDE THE PROGRESS BAR WHEN PRINTING
+========================================================= */
+
+@media print {
+    .line-progress {
+        display: none;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* =========================================================
    FOOTER
