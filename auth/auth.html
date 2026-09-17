@@ -5,15 +5,9 @@
 
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link
-        rel="stylesheet"
-        href="auth.css"
-    >
+    <link rel="stylesheet" href="auth.css">
 
     <title>G.R.O.W.T.H - Create Account</title>
 
@@ -52,44 +46,33 @@
                  LOGIN FORM
             ====================================== -->
 
-            <form
-                id="loginForm"
-                class="hidden"
-            >
+            <form id="loginForm" class="hidden">
 
                 <h2>Welcome Back</h2>
 
 
                 <!-- USERNAME -->
 
-                <label for="login-username">
-                    Username:
-                </label>
-
-                <input
-                    type="text"
-                    id="login-username"
-                    name="username"
-                    placeholder="Enter your username"
-                    autocomplete="username"
-                    required
-                >
+                <div class="field">
+                    <label for="login-username">
+                        Username:
+                    </label>
+                    <input type="text" id="login-username" name="username"
+                        placeholder="Enter your username"
+                        autocomplete="username" required>
+                </div>
 
 
                 <!-- PASSWORD -->
 
-                <label for="login-password">
-                    Password:
-                </label>
-
-                <input
-                    type="password"
-                    id="login-password"
-                    name="password"
-                    placeholder="Enter your password"
-                    autocomplete="current-password"
-                    required
-                >
+                <div class="field">
+                    <label for="login-password">
+                        Password:
+                    </label>
+                    <input type="password" id="login-password" name="password"
+                        placeholder="Enter your password"
+                        autocomplete="current-password" required>
+                </div>
 
 
                 <!-- REGISTER LINK -->
@@ -98,10 +81,7 @@
 
                     Don't have an account?
 
-                    <a
-                        href="#"
-                        id="showRegister"
-                    >
+                    <a href="#" id="showRegister">
                         REGISTER
                     </a>
 
@@ -129,75 +109,89 @@
 
                 <!-- USERNAME -->
 
-                <label for="register-username">
-                    Username:
-                </label>
-
-                <input
-                    type="text"
-                    id="register-username"
-                    name="username"
-                    placeholder="Create a username"
-                    autocomplete="username"
-                    minlength="3"
-                    required
-                >
+                <div class="field">
+                    <label for="register-username">
+                        Username:
+                        <hint>Hal. Alex_Cabarles</hint>
+                    </label>
+                    <input type="text" id="register-username" name="username"
+                        placeholder="Create a username"
+                        autocomplete="username" minlength="3" required>
+                </div>
 
 
                 <!-- DEPARTMENT -->
 
-                <label for="register-department">
-                    Department:
-                </label>
+                <div class="field">
+                    <label for="register-department">
+                        Department:
+                    </label>
+                    <select id="register-department" name="department" required>
 
-                <select
-                    id="register-department"
-                    name="department"
-                    required
-                >
+                        <option value="" disabled selected>
+                            Select Department
+                        </option>
 
-                    <option
-                        value=""
-                        disabled
-                        selected
-                    >
-                        Select Department
-                    </option>
+                        <option value="Adult Men">
+                            Adult Men
+                        </option>
 
-                    <option value="Adult Men">
-                        Adult Men
-                    </option>
+                        <option value="Adult Ladies">
+                            Adult Ladies
+                        </option>
 
-                    <option value="Adult Ladies">
-                        Adult Ladies
-                    </option>
+                        <option value="Young Men">
+                            Young Men
+                        </option>
 
-                    <option value="Young Men">
-                        Young Men
-                    </option>
+                        <option value="Young Ladies">
+                            Young Ladies
+                        </option>
 
-                    <option value="Young Ladies">
-                        Young Ladies
-                    </option>
+                    </select>
+                </div>
 
-                </select>
+
+                <!-- BIRTHDAY -->
+
+                <div class="field">
+                    <label for="register-bday">
+                        Birthday:
+                    </label>
+                    <input type="date" id="register-bday" name="birthday" required>
+                </div>
+
+
+                <!-- DATE OF SALVATION -->
+
+                <div class="field">
+                    <label for="register-save">
+                        Date of Salvation:
+                    </label>
+                    <input type="date" id="register-save" name="date_of_salvation" required>
+                </div>
+
+
+                <!-- DATE OF BAPTISM -->
+
+                <div class="field">
+                    <label for="register-baptism">
+                        Date of Baptism:
+                    </label>
+                    <input type="date" id="register-baptism" name="date_of_baptism" required>
+                </div>
 
 
                 <!-- PASSWORD -->
 
-                <label for="register-password">
-                    Password:
-                </label>
-
-                <input
-                    type="password"
-                    id="register-password"
-                    name="password"
-                    placeholder="Create a password"
-                    autocomplete="new-password"
-                    minlength="8"
-                    required
-                >
+                <div class="field">
+                    <label for="register-password">
+                        Password:
+                    </label>
+                    <input type="password" id="register-password" name="password"
+                        placeholder="Create a password"
+                        autocomplete="new-password" minlength="8" required>
+                </div>
 
 
                 <!-- LOGIN LINK -->
@@ -206,10 +200,7 @@
 
                     Already have an account?
 
-                    <a
-                        href="#"
-                        id="showLogin"
-                    >
+                    <a href="#" id="showLogin">
                         LOGIN
                     </a>
 
@@ -233,9 +224,7 @@
          SUPABASE JAVASCRIPT
     ========================================== -->
 
-    <script
-        src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
-    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 
     <!-- =========================================

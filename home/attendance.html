@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="attendance.css">
+    <title>Attendance</title>
+</head>
+<body>
+
+    <!-- =========================================
+         HAMBURGER (mobile)
+    ========================================== -->
+    <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">☰</button>
+
+
+    <!-- =========================================
+         SIDEBAR
+    ========================================== -->
+    <div class="sidebar" id="sidebar">
+        <div class="logo">
+            <h2>G.R.O.W.T.H</h2>
+            <p id="greeting-paragraph">
+                <span id="greeting-time">Hello</span>,
+                <span id="greeting-name">...</span>!
+            </p>
+        </div>
+
+        <nav>
+            <ul>
+                <li><a href="main.html">Home</a></li>
+                <li><a href="documentation.html">G.R.O.W.T.H</a></li>
+                <li><a href="attendance.html">Attendance</a></li>
+                <li><a href="profile.html">Profile</a></li>
+            </ul>
+        </nav>
+
+        <button id="logoutBtn">
+            <a href="../auth/auth.html">Logout</a>
+        </button>
+    </div>
+
+
+    <!-- =========================================
+         MAIN CONTENT
+    ========================================== -->
+    <div class="attendance">
+            <div class="attendance-header">
+                <div>
+                    <h3>Attendance</h3>
+                    <p>Mark your attendance for this month.</p>
+                </div>
+
+                <div class="month-navigation">
+                    <button id="prevMonth">&#10094;</button>
+                    <h4 id="currentMonth">September 2026</h4>
+                    <button id="nextMonth">&#10095;</button>
+                </div>
+            </div>
+
+            <div class="attendance-summary">
+                <div>
+                    <span id="attendanceCount">0</span>
+                    <small>Days Attended</small>
+                </div>
+
+                <div>
+                    <span id="attendancePercentage">0%</span>
+                    <small>Attendance Rate</small>
+                </div>
+            </div>
+
+            <div class="calendar">
+                <div class="calendar-weekdays">
+                    <div>Sun</div>
+                    <div>Mon</div>
+                    <div>Tue</div>
+                    <div>Wed</div>
+                    <div>Thu</div>
+                    <div>Fri</div>
+                    <div>Sat</div>
+                </div>
+
+                <div class="calendar-days" id="calendarDays"></div>
+            </div>
+
+            <div class="attendance-legend">
+                <div>
+                    <span class="legend-dot attended"></span>
+                    Attended
+                </div>
+
+                <div>
+                    <span class="legend-dot today"></span>
+                    Today
+                </div>
+
+                <div>
+                    <span class="legend-dot"></span>
+                    Not Marked
+                </div>
+            </div>
+        </div>    
+    </section>
+
+    <section class="giving-card">
+        <div class="giving-envelope">
+            <h3>Support Our Ministry</h3>
+            <p>Your contributions help us grow and reach more people.</p>
+            <button id="donateBtn">Donate Now</button>
+        </div>
+    </section>
+
+    </main>
+
+
+    <footer>
+        <p>&copy; 2026 Multimedia Ministry. All rights reserved.</p>
+    </footer>
+
+
+    <!-- =========================================
+         SUPABASE LIBRARY
+    ========================================== -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+    /* =========================================================
+       SUPABASE CONFIG
+    ========================================================= */
+
+    const SUPABASE_URL = "https://skoiyiaijqhwqnbziqng.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_wk9YJslv6Ycf4Lffavnmkw_bZFkBK8E";
+
+    const supabaseClient = supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+    );
+
+
+    /* =========================================================
+       TIME-BASED GREETING
+    ========================================================= */
+
+    function getGreetingWord() {
+        const hour = new Date().getHours();
+        if (hour < 12) return "Mapagpalang Umaga";
+        if (hour < 18) return "Mapagpalang Hapon";
+        return "Mapagpalang Gabi";
+    }
+
+    async function loadGreeting() {
+        const nameSpan = document.getElementById("greeting-name");
+        const timeSpan = document.getElementById("greeting-time");
+        if (!nameSpan) return;
+
+        if (timeSpan) timeSpan.textContent = getGreetingWord();
+
+        try {
+            const { data: { user } } = await supabaseClient.auth.getUser();
+            if (!user) { nameSpan.textContent = "Guest"; return; }
+
+            const { data: profile } = await supabaseClient
+                .from("profiles")
+                .select("username")
+                .eq("id", user.id)
+                .maybeSingle();
+
+            const displayName = (profile?.username || "User").split(/[._-]/)[0];
+            nameSpan.textContent = displayName;
+        } catch (err) {
+            console.error("Greeting error:", err);
+            nameSpan.textContent = "User";
+        }
+    }
+
+
+    /* =========================================================
+       HAMBURGER MENU
+    ========================================================= */
+
+    function setupHamburger() {
+        const hamburger = document.getElementById("hamburgerBtn");
+        const sidebar = document.getElementById("sidebar");
+        if (!hamburger || !sidebar) return;
+
+        hamburger.addEventListener("click", function (event) {
+            event.stopPropagation();
+            sidebar.classList.toggle("open");
+        });
+
+        document.addEventListener("click", function (event) {
+            if (window.innerWidth > 768) return;
+            if (!sidebar.contains(event.target) && !hamburger.contains(event.target)) {
+                sidebar.classList.remove("open");
+            }
+        });
+
+        sidebar.querySelectorAll("a").forEach(link => {
+            link.addEventListener("click", () => {
+                if (window.innerWidth <= 768) sidebar.classList.remove("open");
+            });
+        });
+    }
+
+    
+        const calendarDays = document.getElementById("calendarDays");
+        const currentMonthElement = document.getElementById("currentMonth");
+        const attendanceCountElement = document.getElementById("attendanceCount");
+        const attendancePercentageElement = document.getElementById("attendancePercentage");
+
+        const prevMonthButton = document.getElementById("prevMonth");
+        const nextMonthButton = document.getElementById("nextMonth");
+
+        let currentDate = new Date();
+
+        let attendanceData =
+            JSON.parse(localStorage.getItem("growthAttendance")) || {};
+
+        function renderCalendar() {
+
+            calendarDays.innerHTML = "";
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+
+            const monthName = currentDate.toLocaleString("default", {
+                month: "long"
+            });
+
+            currentMonthElement.textContent = `${monthName} ${year}`;
+
+            // First day of month
+            const firstDay = new Date(year, month, 1).getDay();
+
+            // Number of days
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            // Empty spaces before first day
+            for (let i = 0; i < firstDay; i++) {
+
+                const emptyDay = document.createElement("div");
+                emptyDay.classList.add("calendar-day", "empty");
+                calendarDays.appendChild(emptyDay);
+            }
+
+            // Create days
+            for (let day = 1; day <= daysInMonth; day++) {
+
+                const dayElement = document.createElement("div");
+
+                dayElement.classList.add("calendar-day");
+
+                const dateKey =
+                    `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+
+                dayElement.innerHTML = `
+            <span class="day-number">${day}</span>
+        `;
+
+                // Check attendance
+                if (attendanceData[dateKey]) {
+                    dayElement.classList.add("attended");
+                }
+
+                // Check today
+                const today = new Date();
+
+                if (
+                    day === today.getDate() &&
+                    month === today.getMonth() &&
+                    year === today.getFullYear()
+                ) {
+                    dayElement.classList.add("today");
+                }
+
+                // Click attendance
+                dayElement.addEventListener("click", () => {
+
+                    if (attendanceData[dateKey]) {
+
+                        delete attendanceData[dateKey];
+
+                    } else {
+
+                        attendanceData[dateKey] = true;
+
+                    }
+
+                    localStorage.setItem(
+                        "growthAttendance",
+                        JSON.stringify(attendanceData)
+                    );
+
+                    renderCalendar();
+                    updateSummary();
+                });
+
+                calendarDays.appendChild(dayElement);
+            }
+
+            updateSummary();
+        }
+
+        function updateSummary() {
+
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+
+            const daysInMonth =
+                new Date(year, month + 1, 0).getDate();
+
+            let attended = 0;
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateKey =
+                    `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+                if (attendanceData[dateKey]) {
+                    attended++;
+                }
+            }
+
+            const percentage =
+                Math.round((attended / daysInMonth) * 100);
+            attendanceCountElement.textContent = attended;
+            attendancePercentageElement.textContent =
+                `${percentage}%`;
+        }
+
+        prevMonthButton.addEventListener("click", () => {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            renderCalendar();
+        });
+
+        nextMonthButton.addEventListener("click", () => {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            renderCalendar();
+        });
+
+        renderCalendar();
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+    const currentPage =
+        window.location.pathname.split("/").pop().toLowerCase();
+
+    const navLinks = document.querySelectorAll(".sidebar nav a");
+
+    navLinks.forEach(link => {
+
+        const linkPage =
+            link.getAttribute("href")
+                .split("/")
+                .pop()
+                .toLowerCase();
+
+        if (linkPage === currentPage) {
+            link.classList.add("active");
+        } else {
+            link.classList.remove("active");
+        }
+
+    });
+
+});
+
+
+    /* =========================================================
+       LOGOUT
+    ========================================================= */
+
+    async function handleLogout(event) {
+        event.preventDefault();
+        const { error } = await supabaseClient.auth.signOut();
+        if (error) { alert("Logout failed."); return; }
+        window.location.href = "../auth/auth.html";
+    }
+
+
+    /* =========================================================
+       RUN ON PAGE LOAD
+    ========================================================= */
+
+    document.addEventListener("DOMContentLoaded", function () {
+        loadGreeting();
+        setupHamburger();
+
+        const logoutBtn = document.getElementById("logoutBtn");
+        if (logoutBtn) logoutBtn.addEventListener("click", handleLogout);
+    });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="profile.css">
+    <title>Profile</title>
+</head>
+<body>
+
+    <!-- HAMBURGER (mobile) -->
+    <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">☰</button>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+        <div class="logo">
+            <h2>G.R.O.W.T.H</h2>
+            <p id="greeting-paragraph">
+                <span id="greeting-time">Hello</span>,
+                <span id="greeting-name">...</span>!
+            </p>
+        </div>
+
+        <nav>
+            <ul>
+                <li><a href="main.html">Home</a></li>
+                <li><a href="documentation.html">G.R.O.W.T.H</a></li>
+                <li><a href="attendance.html">Attendance</a></li>
+                <li><a href="profile.html">Profile</a></li>
+            </ul>
+        </nav>
+
+        <button id="logoutBtn">
+            <a href="../auth/auth.html">Logout</a>
+        </button>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <main>
+        <section class="profile-section">
+            <h1>Profile</h1>
+            <p>Welcome to your profile page. Here you can view and manage your account details.</p>
+
+            <div class="profile-details">
+                <div class="profile-row">
+                    <span class="profile-label">Username</span>
+                    <span class="profile-value" id="user-name">—</span>
+                </div>
+                <div class="profile-row">
+                    <span class="profile-label">Birthday</span>
+                    <span class="profile-value" id="user-birthday">—</span>
+                </div>
+                <div class="profile-row">
+                    <span class="profile-label">Date of Salvation</span>
+                    <span class="profile-value" id="user-salvation">—</span>
+                </div>
+                <div class="profile-row">
+                    <span class="profile-label">Date of Baptism</span>
+                    <span class="profile-value" id="user-baptism">—</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Multimedia Ministry. All rights reserved.</p>
+    </footer>
+
+    <!-- SUPABASE LIBRARY -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+    /* =========================================================
+       SUPABASE CONFIG
+    ========================================================= */
+
+    const SUPABASE_URL = "https://skoiyiaijqhwqnbziqng.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_wk9YJslv6Ycf4Lffavnmkw_bZFkBK8E";
+
+    const supabaseClient = supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+    );
+
+
+    /* =========================================================
+       TIME-BASED GREETING
+    ========================================================= */
+
+    function getGreetingWord() {
+        const hour = new Date().getHours();
+        if (hour < 12) return "Mapagpalang Umaga";
+        if (hour < 18) return "Mapagpalang Hapon";
+        return "Mapagpalang Gabi";
+    }
+
+    async function loadGreeting() {
+        const nameSpan = document.getElementById("greeting-name");
+        const timeSpan = document.getElementById("greeting-time");
+        const userNameSpan = document.getElementById("user-name");
+        if (!nameSpan) return;
+
+        if (timeSpan) timeSpan.textContent = getGreetingWord();
+
+        try {
+            const { data: { user } } = await supabaseClient.auth.getUser();
+            if (!user) {
+                nameSpan.textContent = "Guest";
+                if (userNameSpan) userNameSpan.textContent = "Guest";
+                return;
+            }
+
+            const { data: profile } = await supabaseClient
+                .from("profiles")
+                .select("username")
+                .eq("id", user.id)
+                .maybeSingle();
+
+            const rawName = profile?.username || "User";
+            const displayName = rawName.split(/[._-]/)[0];
+
+            nameSpan.textContent = displayName;
+            if (userNameSpan) userNameSpan.textContent = rawName;
+        } catch (err) {
+            console.error("Greeting error:", err);
+            nameSpan.textContent = "User";
+            if (userNameSpan) userNameSpan.textContent = "User";
+        }
+    }
+
+
+    /* =========================================================
+       LOAD PROFILE DATES
+    ========================================================= */
+
+    async function loadDate() {
+        const birthdaySpan  = document.getElementById("user-birthday");
+        const salvationSpan = document.getElementById("user-salvation");
+        const baptismSpan   = document.getElementById("user-baptism");
+
+        if (!birthdaySpan && !salvationSpan && !baptismSpan) return;
+
+        const formatDate = (value) => {
+            if (!value) return "—";
+            const d = new Date(value);
+            if (isNaN(d)) return value;
+            return d.toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric"
+            });
+        };
+
+        try {
+            const { data: { user } } = await supabaseClient.auth.getUser();
+
+            if (!user) {
+                if (birthdaySpan)  birthdaySpan.textContent  = "—";
+                if (salvationSpan) salvationSpan.textContent = "—";
+                if (baptismSpan)   baptismSpan.textContent   = "—";
+                return;
+            }
+
+            const { data: profile, error } = await supabaseClient
+                .from("profiles")
+                .select("birthday, date_of_salvation, date_of_baptism")
+                .eq("id", user.id)
+                .maybeSingle();
+
+            if (error) {
+                console.error("Profile fetch error:", error);
+            }
+
+            if (birthdaySpan)  birthdaySpan.textContent  = formatDate(profile?.birthday);
+            if (salvationSpan) salvationSpan.textContent = formatDate(profile?.date_of_salvation);
+            if (baptismSpan)   baptismSpan.textContent   = formatDate(profile?.date_of_baptism);
+
+        } catch (err) {
+            console.error("Date loading error:", err);
+            if (birthdaySpan)  birthdaySpan.textContent  = "—";
+            if (salvationSpan) salvationSpan.textContent = "—";
+            if (baptismSpan)   baptismSpan.textContent   = "—";
+        }
+    }
+
+
+    /* =========================================================
+       HAMBURGER MENU
+    ========================================================= */
+
+    function setupHamburger() {
+        const hamburger = document.getElementById("hamburgerBtn");
+        const sidebar = document.getElementById("sidebar");
+        if (!hamburger || !sidebar) return;
+
+        hamburger.addEventListener("click", function (event) {
+            event.stopPropagation();
+            sidebar.classList.toggle("open");
+        });
+
+        document.addEventListener("click", function (event) {
+            if (window.innerWidth > 768) return;
+            if (!sidebar.contains(event.target) && !hamburger.contains(event.target)) {
+                sidebar.classList.remove("open");
+            }
+        });
+
+        sidebar.querySelectorAll("a").forEach(link => {
+            link.addEventListener("click", () => {
+                if (window.innerWidth <= 768) sidebar.classList.remove("open");
+            });
+        });
+    }
+
+
+    /* =========================================================
+       ACTIVE NAV LINK
+    ========================================================= */
+
+    function setActiveNavLink() {
+        const cleanName = (p) =>
+            (p || "")
+                .split("/")
+                .pop()
+                .split(/[?#]/)[0]
+                .replace(/\.html?$/i, "")
+                .toLowerCase();
+
+        const currentPage = cleanName(window.location.pathname);
+        const navLinks = document.querySelectorAll(".sidebar nav a");
+
+        navLinks.forEach(link => {
+            const linkPage = cleanName(link.getAttribute("href"));
+            link.classList.toggle("active", linkPage === currentPage);
+        });
+    }
+
+
+    /* =========================================================
+       LOGOUT
+    ========================================================= */
+
+    async function handleLogout(event) {
+        event.preventDefault();
+        const { error } = await supabaseClient.auth.signOut();
+        if (error) { alert("Logout failed."); return; }
+        window.location.href = "../auth/auth.html";
+    }
+
+
+    /* =========================================================
+       RUN ON PAGE LOAD
+    ========================================================= */
+
+    document.addEventListener("DOMContentLoaded", function () {
+        loadGreeting();
+        loadDate();          // ← was missing
+        setupHamburger();
+        setActiveNavLink();
+
+        const logoutBtn = document.getElementById("logoutBtn");
+        if (logoutBtn) logoutBtn.addEventListener("click", handleLogout);
+    });
+    </script>
+
+</body>
+</html>

@@ -29,9 +29,9 @@
         <nav>
             <ul>
                 <li><a href="main.html">Home</a></li>
-                <li><a href="documentation.html" class="active">G.R.O.W.T.H</a></li>
-                <li><a href="services.html">Checklist</a></li>
-                <li><a href="contact.html">Profile</a></li>
+                <li><a href="documentation.html">G.R.O.W.T.H</a></li>
+                <li><a href="attendance.html">Attendance</a></li>
+                <li><a href="profile.html">Profile</a></li>
             </ul>
         </nav>
 
@@ -421,6 +421,30 @@
         });
     }
 
+    document.addEventListener("DOMContentLoaded", function () {
+
+    const currentPage =
+        window.location.pathname.split("/").pop().toLowerCase();
+
+    const navLinks = document.querySelectorAll(".sidebar nav a");
+
+    navLinks.forEach(link => {
+
+        const linkPage =
+            link.getAttribute("href")
+                .split("/")
+                .pop()
+                .toLowerCase();
+
+        if (linkPage === currentPage) {
+            link.classList.add("active");
+        } else {
+            link.classList.remove("active");
+        }
+
+    });
+
+});
 
     /* =========================================================
        LOGOUT
