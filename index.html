@@ -6,37 +6,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Growth Assessment Checklist</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="index.css">
 </head>
 
 <body>
 
+    <!-- =========================
+         NAVIGATION
+    ========================== -->
     <nav>
+        <div class="nav-brand">G.R.O.W.T.H.</div>
         <ul>
-            <li><a href="#section1"><i class="bi bi-house"></i> Home</a></li>
-            <li><a href="#section3"><i class="bi bi-patch-question"></i> FAQs</a></li>
-            <li><a href="auth/auth.html"><i class="bi bi-person-plus"></i> Create Account</a></li>
+            <li><a href="#section1">Home</a></li>
+            <li><a href="#section3">FAQs</a></li>
+            <li><a href="auth/auth.html" class="nav-cta">Create Account</a></li>
         </ul>
     </nav>
 
+    <!-- =========================
+         HERO SECTION
+    ========================== -->
     <section id="section1">
         <div class="hero1">
-            <h1>G.R.O.W.T.H. <br>Spiritual Growth & Discipleship Checklist</h1>
-            <p>"But grow in grace, and in the knowledge of our Lord and Saviour Jesus Christ. To him be glory both now
-                and for ever. Amen." </p>
-            <p>2 Peter 3:18 KJV</p>
-            <button>Learn More</button>
+            <span class="hero-tag">Spiritual Growth &amp; Discipleship</span>
+            <h1>Grow in grace,<br>grow in knowledge.</h1>
+            <p class="hero-verse">"But grow in grace, and in the knowledge of our Lord and Saviour Jesus Christ. To him be glory both now and for ever. Amen."</p>
+            <p class="hero-ref">2 Peter 3:18 KJV</p>
+            <button id="learnMoreBtn">Explore the journey <i class="bi bi-arrow-down"></i></button>
         </div>
 
-        <div class="goals">
-            <h2>Ang Aming Layunin</h2>
+        <div class="goals reveal">
+            <span class="section-label">Ang Aming Layunin</span>
+            <h2>Hindi ito tungkol sa pagtatapos — kundi sa pagbabago.</h2>
             <p1>Ang pinakamataas na layunin ay hindi ang matapos lamang ang checklist, kundi ang magkaroon ng isang disipulo na ang buhay ay nagpapakita ng katapatan kay Cristo at nagiging may kakayahang tumulong sa iba na lumago.</p1>
         </div>
     </section>
 
-        <main class="growth-container">
+    <!-- =========================
+         GROWTH JOURNEY
+    ========================== -->
+    <main class="growth-container">
 
-        <div class="title">
+        <div class="title reveal">
+            <span class="section-label">Ang Landas</span>
             <h1>Ang Landas ng Paglago</h1>
             <p>Isang hakbang patungo sa pagiging mas matatag at maaasahan</p>
         </div>
@@ -44,99 +57,139 @@
         <div class="growth-path">
 
             <!-- STEP 1 -->
-            <div class="step">
-
+            <div class="step" data-step="1">
                 <div class="circle">
                     <span class="number">1</span>
-                    01
                 </div>
-
                 <div class="step-content">
                     <h2>Pagdalo</h2>
-                    <p>
-                        Nagsisimula sa pagiging present
-                        at aktibong nakikilahok.
-                    </p>
+                    <p>Nagsisimula sa pagiging present at aktibong nakikilahok.</p>
                 </div>
-
             </div>
-
 
             <!-- STEP 2 -->
-            <div class="step">
-
+            <div class="step" data-step="2">
                 <div class="circle">
                     <span class="number">2</span>
-                    02
                 </div>
-
                 <div class="step-content">
                     <h2>Pagiging Palagian</h2>
-                    <p>
-                        Ang patuloy na pagdalo ay nagiging
-                        bahagi ng ating buhay.
-                    </p>
+                    <p>Ang patuloy na pagdalo ay nagiging bahagi ng ating buhay.</p>
                 </div>
-
             </div>
-
 
             <!-- STEP 3 -->
-            <div class="step">
-
+            <div class="step" data-step="3">
                 <div class="circle">
                     <span class="number">3</span>
-                    03
                 </div>
-
                 <div class="step-content">
                     <h2>Katapatan</h2>
-                    <p>
-                        Natututo tayong maging tapat
-                        sa ating mga tungkulin.
-                    </p>
+                    <p>Natututo tayong maging tapat sa ating mga tungkulin.</p>
                 </div>
-
             </div>
-
 
             <!-- STEP 4 -->
-            <div class="step">
-
+            <div class="step" data-step="4">
                 <div class="circle">
                     <span class="number">4</span>
-                    04
                 </div>
-
                 <div class="step-content">
                     <h2>Pagiging Maaasahan</h2>
-                    <p>
-                        Nagiging taong mapagkakatiwalaan
-                        sa bawat gawain.
-                    </p>
+                    <p>Nagiging taong mapagkakatiwalaan sa bawat gawain.</p>
                 </div>
             </div>
 
-
             <!-- STEP 5 -->
-            <div class="step">
-
+            <div class="step" data-step="5">
                 <div class="circle">
                     <span class="number">5</span>
-                    05
                 </div>
                 <div class="step-content">
                     <h2>Pagpaparami</h2>
-                    <p>
-                        Ang paglago ay nagbubunga ng
-                        bagong mga taong handang lumago.
-                    </p>
+                    <p>Ang paglago ay nagbubunga ng bagong mga taong handang lumago.</p>
                 </div>
             </div>
+
         </div>
 
-        
+        <div class="final-message">
+            <span>Patuloy na lumago.</span>
+        </div>
+
     </main>
+
+    <!-- =========================
+         SCRIPT
+    ========================== -->
+    <script>
+        /* STEP CLICK INTERACTION */
+        const steps = document.querySelectorAll('.step');
+
+        steps.forEach((step) => {
+            step.addEventListener('click', () => {
+                steps.forEach(s => s.classList.remove('active'));
+                step.classList.add('active');
+
+                step.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+
+                setTimeout(() => {
+                    step.classList.remove('active');
+                }, 3500);
+            });
+        });
+
+        /* SCROLL REVEAL */
+        const revealElements = document.querySelectorAll('.reveal');
+
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.15,
+            rootMargin: '0px 0px -40px 0px'
+        });
+
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        /* LEARN MORE BUTTON */
+        document.getElementById('learnMoreBtn').addEventListener('click', () => {
+            document.querySelector('.growth-container').scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        });
+
+        /* NAV SMOOTH SCROLL WITH OFFSET */
+        document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                const target = document.querySelector(targetId);
+                if (target) {
+                    e.preventDefault();
+                    const navHeight = document.querySelector('nav').offsetHeight;
+                    const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - navHeight - 10;
+                    window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+                }
+            });
+        });
+
+        /* TOUCH SUPPORT */
+        steps.forEach((step) => {
+            step.addEventListener('touchstart', () => {
+                steps.forEach(s => s.classList.remove('active'));
+                step.classList.add('active');
+            }, { passive: true });
+        });
+    </script>
 
 </body>
 

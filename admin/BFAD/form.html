@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="form.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <title>Firstfruit Form</title>
+</head>
+<body>
+
+    <nav>
+        <a href="#" class="logo">BFAD</a>
+        <ul>
+            <li><a href="home.html">Home</a></li>
+            <li><a href="form.html" class="nav-active">Form</a></li>
+        </ul>
+    </nav>
+
+    <main class="form-section">
+        <!-- LEFT: FORM -->
+        <div class="form-card">
+            <span class="section-label">Offering</span>
+            <h1>Firstfruit <span>Offering</span></h1>
+            <p class="subtitle">Please select your name and enter your firstfruit amount below.</p>
+
+            <form id="firstfruitForm" autocomplete="off">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+
+                    <!-- Custom searchable dropdown -->
+                    <div class="custom-select" id="nameSelect">
+                        <button
+                            type="button"
+                            class="custom-select-trigger"
+                            id="nameTrigger"
+                            aria-haspopup="listbox"
+                            aria-expanded="false"
+                        >
+                            <span class="custom-select-value" id="nameValue" data-placeholder="Select your name">Select your name</span>
+                            <span class="custom-select-arrow" aria-hidden="true">🔽</span>
+                        </button>
+
+                        <div class="custom-select-menu" id="nameMenu" role="listbox">
+                            <div class="custom-select-search">
+                                <input
+                                    type="text"
+                                    id="nameSearch"
+                                    placeholder="Search name…"
+                                    autocomplete="off"
+                                >
+                            </div>
+                            <ul class="custom-select-options" id="nameOptions">
+                                <!-- Options injected here -->
+                            </ul>
+                            <div class="custom-select-empty" id="nameEmpty" style="display:none;">
+                                No matching users found.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hidden input that actually carries the value for form submit -->
+                    <input type="hidden" id="name" name="name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="amount">Firstfruit Amount</label>
+                    <div class="input-prefix">
+                        <span>₱</span>
+                        <input
+                            type="number"
+                            id="amount"
+                            name="amount"
+                            placeholder="0.00"
+                            min="0"
+                            step="0.01"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="submitBtn">
+                    <span class="btn-text">Submit Offering</span>
+                    <span class="btn-spinner" aria-hidden="true"></span>
+                </button>
+            </form>
+
+            <div id="formMessage" class="form-message" role="status" aria-live="polite"></div>
+        </div>
+
+        <!-- RIGHT: SUBMISSIONS PANEL -->
+        <aside class="submissions-card">
+            <div class="submissions-header">
+                <h2>Submitted Offerings</h2>
+                <span id="countBadge" class="count-badge">0</span>
+            </div>
+            <p class="submissions-subtitle">A live record of all submitted firstfruits.</p>
+
+            <div id="loadingState" class="loading-state">
+                <div class="loading-dots">
+                    <span class="loading-dot"></span>
+                    <span class="loading-dot"></span>
+                    <span class="loading-dot"></span>
+                </div>
+                <small>Loading offerings…</small>
+            </div>
+
+            <ul id="submissionsList" class="submissions-list">
+                <!-- Submitted items will appear here -->
+            </ul>
+
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <p>No offerings submitted yet.</p>
+                <small>Fill out the form to see entries here.</small>
+            </div>
+        </aside>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 BFAD. All rights reserved.</p>
+    </footer>
+
+    <!-- SUPABASE LIBRARY -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+    /* =========================================================
+       SUPABASE CONFIG
+    ========================================================= */
+
+    const SUPABASE_URL =
+        "https://skoiyiaijqhwqnbziqng.supabase.co";
+
+    const SUPABASE_ANON_KEY =
+        "sb_publishable_wk9YJslv6Ycf4Lffavnmkw_bZFkBK8E";
+
+    const supabaseClient = supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+    );
+
+    const TABLE = "firstfruits";
+    const PROFILES_TABLE = "profiles";
+
+
+    /* =========================================================
+       ELEMENT REFS
+    ========================================================= */
+
+    const form         = document.getElementById("firstfruitForm");
+    const message      = document.getElementById("formMessage");
+    const list         = document.getElementById("submissionsList");
+    const emptyState   = document.getElementById("emptyState");
+    const loadingState = document.getElementById("loadingState");
+    const countBadge   = document.getElementById("countBadge");
+    const submitBtn    = document.getElementById("submitBtn");
+
+    // Custom select refs
+    const nameSelect   = document.getElementById("nameSelect");
+    const nameTrigger  = document.getElementById("nameTrigger");
+    const nameValue    = document.getElementById("nameValue");
+    const nameMenu     = document.getElementById("nameMenu");
+    const nameSearch   = document.getElementById("nameSearch");
+    const nameOptions  = document.getElementById("nameOptions");
+    const nameEmpty    = document.getElementById("nameEmpty");
+    const nameHidden   = document.getElementById("name"); // hidden input
+
+    let count = 0;
+    let allUsers = [];       // cached list of usernames
+    let selectedUser = "";   // currently selected username
+
+
+    /* =========================================================
+       HELPERS
+    ========================================================= */
+
+    const formatPeso = (n) =>
+        "₱" + Number(n).toLocaleString("en-PH", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+
+    const formatDate = (iso) => {
+        const d = new Date(iso);
+        if (isNaN(d)) return "";
+        return d.toLocaleString("en-PH", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+    };
+
+    const escapeHTML = (str) =>
+        String(str).replace(/[&<>"']/g, (c) => ({
+            "&": "&amp;", "<": "&lt;", ">": "&gt;",
+            '"': "&quot;", "'": "&#39;"
+        }[c]));
+
+    function showMessage(text, type = "success") {
+        message.textContent = text;
+        message.classList.remove("success", "error");
+        message.classList.add(type);
+    }
+
+    function clearMessage() {
+        message.textContent = "";
+        message.classList.remove("success", "error");
+    }
+
+    function setLoading(loading) {
+        if (!submitBtn) return;
+        submitBtn.disabled = loading;
+        submitBtn.classList.toggle("loading", loading);
+    }
+
+    function updateCount(n) {
+        count = n;
+        countBadge.textContent = n;
+        countBadge.classList.toggle("has-items", n > 0);
+    }
+
+    function toggleEmptyState() {
+        const hasItems = list.children.length > 0;
+        emptyState.style.display = hasItems ? "none" : "block";
+    }
+
+
+    /* =========================================================
+       CUSTOM SEARCHABLE DROPDOWN
+    ========================================================= */
+
+    function openMenu() {
+        nameSelect.classList.add("open");
+        nameTrigger.setAttribute("aria-expanded", "true");
+        nameSearch.value = "";
+        filterOptions("");
+        // Focus the search input
+        setTimeout(() => nameSearch.focus(), 50);
+    }
+
+    function closeMenu() {
+        nameSelect.classList.remove("open");
+        nameTrigger.setAttribute("aria-expanded", "false");
+        nameSearch.value = "";
+    }
+
+    function toggleMenu() {
+        if (nameSelect.classList.contains("open")) closeMenu();
+        else openMenu();
+    }
+
+    function renderOptions(users) {
+        nameOptions.innerHTML = "";
+
+        if (!users.length) {
+            nameEmpty.style.display = "block";
+            return;
+        }
+        nameEmpty.style.display = "none";
+
+        users.forEach((user) => {
+            const li = document.createElement("li");
+            li.className = "custom-select-option";
+            li.setAttribute("role", "option");
+            li.dataset.value = user;
+
+            const initial = user.charAt(0).toUpperCase();
+            li.innerHTML = `
+                <span class="option-avatar">${escapeHTML(initial)}</span>
+                <span class="option-label">${escapeHTML(user)}</span>
+            `;
+
+            li.addEventListener("click", () => {
+                selectUser(user);
+            });
+
+            nameOptions.appendChild(li);
+        });
+    }
+
+    function filterOptions(query) {
+        const q = query.trim().toLowerCase();
+        const filtered = q
+            ? allUsers.filter(u => u.toLowerCase().includes(q))
+            : allUsers;
+        renderOptions(filtered);
+    }
+
+    function selectUser(user) {
+        selectedUser = user;
+        nameValue.textContent = user;
+        nameValue.classList.remove("placeholder");
+        nameHidden.value = user;
+        closeMenu();
+
+        // Visual feedback
+        nameSelect.classList.add("has-value");
+        nameSelect.classList.remove("error");
+    }
+
+    function resetSelect() {
+        selectedUser = "";
+        nameHidden.value = "";
+        nameValue.textContent = "Select your name";
+        nameValue.classList.add("placeholder");
+        nameSelect.classList.remove("has-value");
+    }
+
+
+    /* =========================================================
+       LOAD REGISTERED MEMBERS FROM PROFILES TABLE
+       (admins are excluded — only role = 'member' shown)
+    ========================================================= */
+
+    async function loadUsers() {
+        try {
+            const { data, error } = await supabaseClient
+                .from(PROFILES_TABLE)
+                .select("username, role")
+                .not("username", "is", null)
+                .eq("role", "member")                   // ← only members
+                .order("username", { ascending: true });
+
+            if (error) throw error;
+
+            allUsers = [...new Set(
+                (data || [])
+                    .map(row => (row.username || "").trim())
+                    .filter(Boolean)
+            )];
+
+            renderOptions(allUsers);
+
+            console.log("Loaded members:", allUsers.length);
+
+        } catch (err) {
+            console.error("Failed to load users:", err);
+            nameEmpty.textContent = "Could not load users.";
+            nameEmpty.style.display = "block";
+        }
+    }
+
+
+    /* =========================================================
+       RENDER ONE SUBMISSION
+    ========================================================= */
+
+    function renderSubmission(row, { prepend = true } = {}) {
+        const li = document.createElement("li");
+        li.className = "submission-item";
+        li.dataset.id = row.id;
+
+        const initial = (row.name || "?").charAt(0).toUpperCase();
+        const time = formatDate(row.created_at);
+
+        li.innerHTML = `
+            <div class="submission-avatar">${escapeHTML(initial)}</div>
+            <div class="submission-info">
+                <span class="submission-name">${escapeHTML(row.name)}</span>
+                <span class="submission-date">${escapeHTML(time)}</span>
+            </div>
+            <span class="submission-amount">${formatPeso(row.amount)}</span>
+        `;
+
+        if (prepend) list.prepend(li);
+        else list.appendChild(li);
+
+        return li;
+    }
+
+
+    /* =========================================================
+       LOAD EXISTING SUBMISSIONS
+    ========================================================= */
+
+    async function loadSubmissions() {
+        loadingState.style.display = "flex";
+        emptyState.style.display = "none";
+        list.innerHTML = "";
+
+        try {
+            const { data, error } = await supabaseClient
+                .from(TABLE)
+                .select("id, name, amount, created_at")
+                .order("created_at", { ascending: false })
+                .limit(100);
+
+            if (error) throw error;
+
+            (data || []).forEach((row) =>
+                renderSubmission(row, { prepend: false })
+            );
+
+            updateCount(data?.length || 0);
+            toggleEmptyState();
+
+        } catch (err) {
+            console.error("Load error:", err);
+            showMessage(
+                "Could not load offerings. Please refresh the page.",
+                "error"
+            );
+            emptyState.style.display = "block";
+        } finally {
+            loadingState.style.display = "none";
+        }
+    }
+
+
+    /* =========================================================
+       SUBMIT HANDLER
+    ========================================================= */
+
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        clearMessage();
+
+        const amountInput = document.getElementById("amount");
+
+        const name   = nameHidden.value.trim();
+        const amount = parseFloat(amountInput.value);
+
+        /* Validation */
+        if (!name) {
+            showMessage("Please select your name from the list.", "error");
+            nameSelect.classList.add("error");
+            nameTrigger.focus();
+            return;
+        }
+
+        if (!Number.isFinite(amount) || amount <= 0) {
+            showMessage("Please enter a valid amount greater than 0.", "error");
+            amountInput.focus();
+            return;
+        }
+
+        setLoading(true);
+
+        try {
+            const { data, error } = await supabaseClient
+                .from(TABLE)
+                .insert([{ name, amount }])
+                .select()
+                .single();
+
+            if (error) throw error;
+
+            renderSubmission(data, { prepend: true });
+            updateCount(count + 1);
+            toggleEmptyState();
+
+            showMessage(
+                `Thank you, ${name}! Your firstfruit of ${formatPeso(amount)} has been recorded.`,
+                "success"
+            );
+
+            /* Reset form + select */
+            form.reset();
+            resetSelect();
+
+        } catch (err) {
+            console.error("Submit error:", err);
+            showMessage(
+                err.message || "Something went wrong. Please try again.",
+                "error"
+            );
+        } finally {
+            setLoading(false);
+            setTimeout(clearMessage, 5000);
+        }
+    });
+
+
+    /* =========================================================
+       REALTIME SUBSCRIPTION
+    ========================================================= */
+
+    function subscribeRealtime() {
+        supabaseClient
+            .channel("firstfruits-realtime")
+            .on(
+                "postgres_changes",
+                { event: "INSERT", schema: "public", table: TABLE },
+                (payload) => {
+                    const row = payload.new;
+                    if (!row) return;
+
+                    if (list.querySelector(`[data-id="${row.id}"]`)) return;
+
+                    renderSubmission(row, { prepend: true });
+                    updateCount(count + 1);
+                    toggleEmptyState();
+                }
+            )
+            .subscribe((status) => {
+                console.log("Realtime status:", status);
+            });
+    }
+
+
+    /* =========================================================
+       SELECT EVENT LISTENERS
+    ========================================================= */
+
+    nameTrigger.addEventListener("click", (e) => {
+        e.stopPropagation();
+        toggleMenu();
+    });
+
+    nameSearch.addEventListener("input", (e) => {
+        filterOptions(e.target.value);
+    });
+
+    // Prevent closing when clicking inside the menu
+    nameMenu.addEventListener("click", (e) => {
+        e.stopPropagation();
+    });
+
+    // Close on outside click
+    document.addEventListener("click", () => {
+        if (nameSelect.classList.contains("open")) closeMenu();
+    });
+
+    // Close on Escape
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && nameSelect.classList.contains("open")) {
+            closeMenu();
+            nameTrigger.focus();
+        }
+    });
+
+
+    /* =========================================================
+       INIT
+    ========================================================= */
+
+    document.addEventListener("DOMContentLoaded", async () => {
+        /* Load registered members for dropdown (admins excluded) */
+        await loadUsers();
+
+        /* Prefill selected user if logged in AND they're a member */
+        try {
+            const { data: { user } } = await supabaseClient.auth.getUser();
+
+            if (user) {
+                const { data: profile } = await supabaseClient
+                    .from(PROFILES_TABLE)
+                    .select("username, role")
+                    .eq("id", user.id)
+                    .maybeSingle();
+
+                /* Only prefill if this logged-in user is a member */
+                const isMember =
+                    String(profile?.role || "").trim().toLowerCase() === "member";
+
+                if (isMember && profile?.username && allUsers.includes(profile.username)) {
+                    selectUser(profile.username);
+                }
+            }
+        } catch (err) {
+            console.warn("Profile prefill skipped:", err);
+        }
+
+        await loadSubmissions();
+        subscribeRealtime();
+    });
+    </script>
+
+</body>
+</html>

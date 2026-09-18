@@ -1,914 +1,877 @@
 /* =========================
-   RESET
+   RESET & GLOBAL
 ========================= */
-
 * {
     box-sizing: border-box;
-}
-
-body {
     margin: 0;
     padding: 0;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: #fafafa;
+    color: #0a0a0a;
+    overflow-x: hidden;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
 
 /* =========================
    NAVIGATION
 ========================= */
-
 nav {
-    background-color: #04828b;
-    color: #fff;
-    padding: 1rem;
-    text-align: center;
-    font-family: 'Poppins', sans-serif;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 3rem;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.nav-brand {
+    font-family: 'Playfair Display', serif;
     font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+    color: #ffffff;
 }
 
 nav ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-
+    list-style: none;
     display: flex;
-    justify-content: center;
     align-items: center;
-    gap: 1.5rem;
-}
-
-nav ul li {
-    display: inline;
+    gap: 2.5rem;
 }
 
 nav ul li a {
-    color: #fff;
+    color: #ffffff;
     text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    position: relative;
+    padding-bottom: 3px;
     transition: opacity 0.3s ease;
 }
 
-nav ul li a:hover {
-    text-decoration: underline;
-    opacity: 0.8;
+nav ul li a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 1px;
+    background: #ffffff;
+    transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+nav ul li a:hover::after {
+    width: 100%;
+}
+
+nav ul li a:hover {
+    opacity: 0.7;
+}
+
+.nav-cta {
+    border: 1px solid #ffffff;
+    padding: 0.5rem 1.2rem !important;
+    border-radius: 2px;
+    transition: background 0.3s ease, color 0.3s ease !important;
+}
+
+.nav-cta::after {
+    display: none;
+}
+
+.nav-cta:hover {
+    background: #0a0a0a;
+    color: #fafafa !important;
+    opacity: 1;
+}
 
 /* =========================
    HERO
 ========================= */
-
 .hero1 {
-    background-color: #571010;
-    padding: 2rem;
+    padding: 7rem 2rem 6rem;
     text-align: center;
-    color: white;
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
 }
 
-h1 {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-    font-family: 'Poppins', sans-serif;
-    font-weight: 700;
+.hero-tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #737373;
+    margin-bottom: 2rem;
+    position: relative;
 }
 
-p {
-    font-size: 1.2rem;
-    line-height: 1.5;
-    margin-bottom: 1rem;
-    font-family: 'Poppins', sans-serif;
+.hero-tag::before,
+.hero-tag::after {
+    content: "";
+    display: inline-block;
+    width: 30px;
+    height: 1px;
+    background: #b3b3b3;
+    vertical-align: middle;
+    margin: 0 12px;
+}
+
+.hero1 h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.4rem, 6vw, 4.2rem);
     font-weight: 400;
+    line-height: 1.15;
+    letter-spacing: -0.5px;
+    color: #0a0a0a;
+    margin-bottom: 2rem;
+}
+
+.hero-verse {
+    font-size: 1rem;
+    font-weight: 300;
     font-style: italic;
+    color: #4a4a4a;
+    max-width: 620px;
+    margin: 0 auto 1rem;
+    line-height: 1.8;
 }
 
-h2 {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-    font-family: 'Poppins', sans-serif;
-    color: #04728d;
-    font-weight: 700;
-}
-
-p1 {
-    font-size: 1.2rem;
-    line-height: 1.5;
-    margin-bottom: 1rem;
-    color: #04728d;
-    font-family: 'Poppins', sans-serif;
+.hero-ref {
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #a3a3a3;
     font-weight: 400;
-    font-style: italic;
+    margin-bottom: 2.5rem;
+}
+
+.hero1 button {
+    background: #0a0a0a;
+    color: #fafafa;
+    border: 1px solid #0a0a0a;
+    padding: 0.9rem 2.2rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 400;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.4s ease, color 0.4s ease, letter-spacing 0.4s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+}
+
+.hero1 button:hover {
+    background: transparent;
+    color: #0a0a0a;
+    letter-spacing: 2.5px;
+}
+
+.hero1 button i {
+    transition: transform 0.3s ease;
+}
+
+.hero1 button:hover i {
+    transform: translateY(3px);
 }
 
 /* =========================
    GOALS
 ========================= */
-
 .goals {
-    padding: 2rem;
+    padding: 4rem 2rem 5rem;
     text-align: center;
+    max-width: 780px;
+    margin: 0 auto;
+    border-top: 1px solid #e5e5e5;
 }
 
+.section-label {
+    display: inline-block;
+    font-size: 0.7rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #a3a3a3;
+    margin-bottom: 1.5rem;
+}
+
+.goals h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+    font-weight: 400;
+    line-height: 1.35;
+    color: #0a0a0a;
+    margin-bottom: 1.8rem;
+    letter-spacing: -0.3px;
+}
+
+.goals p1 {
+    font-size: 0.95rem;
+    line-height: 1.9;
+    color: #4a4a4a;
+    font-weight: 300;
+    display: block;
+    max-width: 640px;
+    margin: 0 auto;
+}
 
 /* =========================
    GROWTH CONTAINER
 ========================= */
-
 .growth-container {
-    width: 100%;
     max-width: 1200px;
     margin: 0 auto;
+    padding: 5rem 3rem 6rem;
     text-align: center;
 }
 
 .title {
-    margin-bottom: 60px;
+    margin-bottom: 5rem;
 }
 
 .title h1 {
-    font-size: clamp(2rem, 4vw, 3.2rem);
-    margin-bottom: 10px;
-    color: #04728d;
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 400;
+    color: #0a0a0a;
+    margin-bottom: 1rem;
+    letter-spacing: -0.3px;
 }
 
 .title p {
-    color: #607d85;
-    font-size: 1rem;
+    font-size: 0.95rem;
+    color: #737373;
+    font-weight: 300;
+    font-style: italic;
 }
 
-
 /* =========================
-   GROWTH JOURNEY
+   GROWTH PATH
 ========================= */
-
 .growth-path {
     position: relative;
-
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
-
-    gap: 20px;
-    padding: 20px 0;
+    gap: 12px;
+    padding: 30px 0 15px;
+    margin-top: 20px;
 }
 
-
-/* Ground / growth line */
-
+/* Static line */
 .growth-path::before {
     content: "";
-
     position: absolute;
-
-    left: 5%;
-    right: 5%;
+    left: 4%;
+    right: 4%;
     bottom: 108px;
-
-    height: 5px;
-
-    background: #d8e9ed;
-
-    border-radius: 20px;
-
+    height: 1px;
+    background: #d4d4d4;
     z-index: 0;
 }
 
-
-/* Animated growth line */
-
+/* Animated line */
 .growth-path::after {
     content: "";
-
     position: absolute;
-
-    left: 5%;
+    left: 4%;
     bottom: 108px;
-
     width: 0;
-    height: 5px;
-
-    background: linear-gradient(
-        90deg,
-        #8bcf69,
-        #55a94f,
-        #04828b
-    );
-
-    border-radius: 20px;
-
+    height: 1px;
+    background: #0a0a0a;
     z-index: 0;
-
-    animation: progress 4s ease forwards;
+    animation: progress 4.2s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
 }
 
 @keyframes progress {
-    to {
-        width: 90%;
-    }
+    0% { width: 0; }
+    100% { width: 92%; }
 }
-
 
 /* =========================
    STEPS
 ========================= */
-
 .step {
     position: relative;
-    z-index: 2;
-
+    z-index: 5;
     flex: 1;
-
     display: flex;
     flex-direction: column;
     align-items: center;
-
     opacity: 0;
-
     transform: translateY(40px);
-
-    animation: appear 0.8s ease forwards;
+    animation: appear 0.9s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
 }
 
-.step:nth-child(1) {
-    animation-delay: 0.3s;
-}
-
-.step:nth-child(2) {
-    animation-delay: 0.8s;
-}
-
-.step:nth-child(3) {
-    animation-delay: 1.3s;
-}
-
-.step:nth-child(4) {
-    animation-delay: 1.8s;
-}
-
-.step:nth-child(5) {
-    animation-delay: 2.3s;
-}
+.step:nth-child(1) { animation-delay: 0.3s; }
+.step:nth-child(2) { animation-delay: 0.8s; }
+.step:nth-child(3) { animation-delay: 1.3s; }
+.step:nth-child(4) { animation-delay: 1.8s; }
+.step:nth-child(5) { animation-delay: 2.3s; }
 
 @keyframes appear {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    0% { opacity: 0; transform: translateY(45px); }
+    100% { opacity: 1; transform: translateY(0); }
 }
 
+.step:hover {
+    transform: translateY(-10px);
+}
 
 /* =========================
-   GROWING PLANT
+   PLANT (CSS DRAWN — monochrome)
 ========================= */
-
 .circle {
     position: relative;
-
-    border-radius: 0;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     background: transparent;
-
-    box-shadow: none;
-
-    color: transparent;
-
-    transition:
-        transform 0.5s ease,
-        filter 0.5s ease;
-
-    /* Important */
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
     overflow: visible;
 }
 
-
-/* Plant stem */
-
+/* Stem */
 .circle::before {
     content: "";
-
     position: absolute;
-
     left: 50%;
     bottom: 15px;
-
-    width: 6px;
+    width: 1.5px;
     height: 55%;
-
     transform: translateX(-50%);
-
-    background: linear-gradient(
-        to right,
-        #367b32,
-        #65ad4e,
-        #367b32
-    );
-
-    border-radius: 100%;
-
+    background: #0a0a0a;
     transform-origin: bottom;
-
     z-index: 2;
+    transition: height 0.5s ease, width 0.3s ease;
 }
 
-
-/* Leaves */
-
+/* Leaves (drawn with borders) */
 .circle::after {
     content: "";
-
     position: absolute;
-
     left: 50%;
     top: 25%;
-
-    width: 45px;
-    height: 25px;
-
+    width: 30px;
+    height: 16px;
     transform: translateX(-50%);
-
-    background: #62ad4f;
-
+    background: transparent;
+    border: 1.5px solid #0a0a0a;
     border-radius: 100% 0 100% 0;
-
-    box-shadow:
-        -25px 18px 0 -3px #78bd5e,
-        25px 35px 0 -5px #4c9d45;
-
+    box-shadow: -22px 18px 0 -1px transparent, -22px 18px 0 0 #0a0a0a;
     z-index: 3;
+    transition: all 0.5s ease;
 }
-
-
-/* Hover plant */
 
 .step:hover .circle {
     transform: translateY(-12px) scale(1.08);
-
-    filter:
-        drop-shadow(0 15px 15px rgba(4, 114, 141, 0.20));
 }
 
+/* Active state — subtle pulse */
+.step.active .circle {
+    animation: plantPulse 1.4s ease-in-out infinite alternate;
+}
+
+@keyframes plantPulse {
+    0% { opacity: 0.6; }
+    100% { opacity: 1; }
+}
 
 /* =========================
    PLANT SIZE — STAGE 1
-   SEEDLING
 ========================= */
-
 .step:nth-child(1) .circle {
     width: 80px;
     height: 100px;
 }
-
-
-/* Small stem */
-
 .step:nth-child(1) .circle::before {
     height: 35px;
-    width: 4px;
+    width: 1.5px;
 }
-
-
-/* Small leaves */
-
 .step:nth-child(1) .circle::after {
-    width: 28px;
-    height: 16px;
-
+    width: 18px;
+    height: 10px;
     top: 48%;
-
-    box-shadow:
-        -16px 10px 0 -3px #78bd5e,
-        16px 20px 0 -5px #4c9d45;
+    border: 1.2px solid #0a0a0a;
+    box-shadow: -14px 8px 0 -1px transparent, -14px 8px 0 0 #0a0a0a;
 }
-
 
 /* =========================
    PLANT SIZE — STAGE 2
-   SMALL PLANT
 ========================= */
-
 .step:nth-child(2) .circle {
     width: 95px;
     height: 125px;
 }
-
 .step:nth-child(2) .circle::before {
     height: 60px;
-    width: 5px;
+    width: 1.5px;
 }
-
 .step:nth-child(2) .circle::after {
-    width: 38px;
-    height: 21px;
-
+    width: 24px;
+    height: 13px;
     top: 38%;
-
-    box-shadow:
-        -22px 15px 0 -3px #78bd5e,
-        22px 27px 0 -5px #4c9d45;
+    box-shadow: -20px 13px 0 -1px transparent, -20px 13px 0 0 #0a0a0a;
 }
-
 
 /* =========================
    PLANT SIZE — STAGE 3
-   GROWING PLANT
 ========================= */
-
 .step:nth-child(3) .circle {
     width: 110px;
     height: 150px;
 }
-
 .step:nth-child(3) .circle::before {
     height: 85px;
-    width: 6px;
+    width: 1.8px;
 }
-
 .step:nth-child(3) .circle::after {
-    width: 48px;
-    height: 27px;
-
+    width: 30px;
+    height: 16px;
     top: 27%;
-
-    box-shadow:
-        -30px 20px 0 -2px #78bd5e,
-        30px 35px 0 -4px #4c9d45;
+    box-shadow: -26px 18px 0 -1px transparent, -26px 18px 0 0 #0a0a0a;
 }
-
 
 /* =========================
    PLANT SIZE — STAGE 4
-   MATURE PLANT
 ========================= */
-
 .step:nth-child(4) .circle {
     width: 135px;
     height: 175px;
 }
-
 .step:nth-child(4) .circle::before {
     height: 110px;
-    width: 8px;
+    width: 2px;
 }
-
 .step:nth-child(4) .circle::after {
-    width: 58px;
-    height: 32px;
-
+    width: 38px;
+    height: 20px;
     top: 18%;
-
-    box-shadow:
-        -38px 25px 0 -2px #78bd5e,
-        38px 45px 0 -3px #4c9d45,
-        -28px 60px 0 -5px #68ad4f;
+    box-shadow: -32px 22px 0 -1px transparent, -32px 22px 0 0 #0a0a0a;
 }
-
 
 /* =========================
    PLANT SIZE — STAGE 5
-   FRUIT-BEARING TREE
 ========================= */
-
 .step:nth-child(5) .circle {
     width: 170px;
     height: 210px;
 }
-
-
-/* Large tree trunk */
-
 .step:nth-child(5) .circle::before {
     height: 125px;
-
-    width: 14px;
-
-    background: linear-gradient(
-        to right,
-        #70452c,
-        #9b6842,
-        #70452c
-    );
-
-    border-radius: 8px;
+    width: 2.5px;
+    background: #0a0a0a;
+    border-radius: 2px;
 }
-
-
-/* Large tree canopy */
-
 .step:nth-child(5) .circle::after {
-    width: 100px;
-    height: 70px;
-
+    width: 70px;
+    height: 50px;
     top: 5%;
-
-    background: #4f9f45;
-
+    background: transparent;
+    border: 1.5px solid #0a0a0a;
     border-radius: 50%;
-
     box-shadow:
-        -45px 15px 0 5px #65ad4e,
-        45px 15px 0 5px #65ad4e,
-        -25px -15px 0 3px #78bd5e,
-        25px -15px 0 3px #78bd5e;
+        -38px 15px 0 0 #0a0a0a,
+        38px 15px 0 0 #0a0a0a,
+        -22px -12px 0 -2px transparent,
+        -22px -12px 0 0 #0a0a0a;
 }
 
-
-/* =========================
-   FRUIT EFFECT
-========================= */
-
+/* Stage 5 fruit dots */
 .step:nth-child(5) .circle {
     background:
-        radial-gradient(
-            circle at 35% 20%,
-            #f2c94c 0 7px,
-            transparent 8px
-        ),
-        radial-gradient(
-            circle at 65% 30%,
-            #f2c94c 0 7px,
-            transparent 8px
-        ),
-        radial-gradient(
-            circle at 45% 45%,
-            #f2c94c 0 6px,
-            transparent 7px
-        ),
+        radial-gradient(circle at 35% 20%, #0a0a0a 0 2.5px, transparent 3px),
+        radial-gradient(circle at 65% 30%, #0a0a0a 0 2.5px, transparent 3px),
+        radial-gradient(circle at 45% 45%, #0a0a0a 0 2px, transparent 2.5px),
         transparent;
 }
-
 
 /* =========================
    STEP NUMBER
 ========================= */
-
 .number {
     position: absolute;
-
-    top: -5px;
-    right: 5px;
-
-    width: 30px;
-    height: 30px;
-
+    top: -8px;
+    right: 0;
+    font-family: 'Playfair Display', serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #0a0a0a;
+    background: #fafafa;
+    width: 24px;
+    height: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
-
-    background: white;
-
-    color: #04728d;
-
+    border: 1px solid #0a0a0a;
     border-radius: 50%;
-
-    font-size: 0.8rem;
-    font-weight: bold;
-
-    box-shadow:
-        0 5px 15px rgba(0, 0, 0, 0.15);
-
     z-index: 10;
+    transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
 }
 
+.step:hover .number {
+    background: #0a0a0a;
+    color: #fafafa;
+    transform: scale(1.15);
+}
 
 /* =========================
-   SOIL
+   SOIL (subtle line)
 ========================= */
-
 .step .circle {
     margin-bottom: 5px;
 }
 
-
-/* Add soil beneath every plant */
-
 .step-content::before {
     content: "";
-
     display: block;
-
-    width: 70px;
-    height: 12px;
-
-    margin: -8px auto 15px;
-
-    background: #70452c;
-
-    border-radius: 50%;
-
-    box-shadow:
-        0 3px 0 #573621;
-
-    opacity: 0.9;
+    width: 40px;
+    height: 1px;
+    margin: 0 auto 18px;
+    background: #d4d4d4;
+    transition: width 0.4s ease, background 0.4s ease;
 }
 
+.step:hover .step-content::before {
+    width: 60px;
+    background: #0a0a0a;
+}
 
 /* =========================
    TEXT
 ========================= */
-
 .step-content {
-    margin-top: 20px;
-
-    max-width: 190px;
-
-    position: relative;
-    z-index: 5;
+    margin-top: 18px;
+    max-width: 180px;
+    transition: transform 0.3s ease;
 }
 
 .step-content h2 {
-    color: #04728d;
-
-    font-size: 1.05rem;
-
-    line-height: 1.3;
-
+    font-family: 'Inter', sans-serif;
+    color: #0a0a0a;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
     margin-bottom: 6px;
+    transition: letter-spacing 0.3s ease;
+}
 
-    font-family: 'Poppins', sans-serif;
-
-    font-weight: 700;
+.step:hover .step-content h2 {
+    letter-spacing: 1.2px;
 }
 
 .step-content p {
-    color: #71878d;
-
-    font-size: 0.82rem;
-
-    line-height: 1.5;
-
-    font-family: 'Poppins', sans-serif;
-
-    font-style: normal;
+    color: #737373;
+    font-size: 0.78rem;
+    line-height: 1.65;
+    font-weight: 300;
+    transition: color 0.3s ease;
 }
 
+.step:hover .step-content p {
+    color: #4a4a4a;
+}
 
 /* =========================
    FINAL MESSAGE
 ========================= */
-
 .final-message {
-    margin-top: 65px;
-
-    padding: 20px 30px;
-
+    margin-top: 5rem;
     display: inline-block;
-
-    background: white;
-
-    border-radius: 50px;
-
-    box-shadow:
-        0 10px 30px rgba(0, 0, 0, 0.08);
-
-    color: #04728d;
-
-    font-weight: bold;
-
-    font-family: 'Poppins', sans-serif;
-
+    padding: 1.2rem 2.5rem;
+    border: 1px solid #0a0a0a;
+    border-radius: 0;
+    color: #0a0a0a;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    font-weight: 400;
+    letter-spacing: 0.5px;
     opacity: 0;
+    animation: fadeIn 1.2s ease forwards;
+    animation-delay: 3.2s;
+    transition: background 0.4s ease, color 0.4s ease, letter-spacing 0.4s ease;
+    cursor: default;
+}
 
-    animation: fadeIn 1s ease forwards;
-
-    animation-delay: 3s;
+.final-message:hover {
+    background: #0a0a0a;
+    color: #fafafa;
+    letter-spacing: 1.5px;
 }
 
 @keyframes fadeIn {
-    to {
-        opacity: 1;
-    }
+    0% { opacity: 0; transform: translateY(15px); }
+    100% { opacity: 1; transform: translateY(0); }
 }
 
+/* =========================
+   SCROLL REVEAL
+========================= */
+.reveal {
+    opacity: 0;
+    transform: translateY(25px);
+    transition: opacity 1s ease, transform 1s ease;
+}
+
+.reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
 
 /* =========================
-   MOBILE
+   MOBILE — TABLET
 ========================= */
-
 @media (max-width: 768px) {
 
-    .growth-path {
-        flex-direction: column;
-
-        align-items: flex-start;
-
-        gap: 35px;
-
-        padding-left: 25px;
+    nav {
+        padding: 1rem 1.5rem;
     }
 
-
-    /* Vertical background line */
-
-    .growth-path::before {
-        left: 85px;
-
-        top: 40px;
-        bottom: 40px;
-
-        width: 5px;
-        height: auto;
-
-        right: auto;
+    .nav-brand {
+        font-size: 0.95rem;
+        letter-spacing: 1.5px;
     }
 
-
-    /* Vertical animated line */
-
-    .growth-path::after {
-        left: 85px;
-
-        top: 40px;
-
-        width: 5px;
-        height: 0;
-
-        right: auto;
-
-        animation:
-            progressMobile 4s ease forwards;
+    nav ul {
+        gap: 1.2rem;
     }
 
-    @keyframes progressMobile {
-        to {
-            height: calc(100% - 80px);
-        }
-    }
-
-
-    /* Step */
-
-    .step {
-        width: 100%;
-
-        flex-direction: row;
-
-        align-items: center;
-
-        gap: 25px;
-
-        text-align: left;
-    }
-
-
-    /* Plant */
-
-    .step .circle {
-        flex-shrink: 0;
-
-        margin: 0;
-    }
-
-
-    /* Mobile plant sizes */
-
-    .step:nth-child(1) .circle {
-        width: 65px;
-        height: 80px;
-    }
-
-    .step:nth-child(2) .circle {
-        width: 75px;
-        height: 95px;
-    }
-
-    .step:nth-child(3) .circle {
-        width: 85px;
-        height: 110px;
-    }
-
-    .step:nth-child(4) .circle {
-        width: 100px;
-        height: 130px;
-    }
-
-    .step:nth-child(5) .circle {
-        width: 120px;
-        height: 150px;
-    }
-
-
-    /* Mobile text */
-
-    .step-content {
-        margin-top: 0;
-
-        max-width: none;
-
-        flex: 1;
-    }
-
-
-    .step-content::before {
-        margin: 0 0 8px;
-
-        width: 55px;
-    }
-
-
-    .step-content h2 {
-        font-size: 1rem;
-    }
-
-    .step-content p {
-        font-size: 0.8rem;
-    }
-
-
-    /* Step number */
-
-    .number {
-        top: -5px;
-
-        left: 45px;
-        right: auto;
-
-        width: 27px;
-        height: 27px;
-
+    nav ul li a {
         font-size: 0.75rem;
     }
 
-
-    /* Navigation */
-
-    nav ul {
-        flex-wrap: wrap;
-
-        gap: 0.8rem;
-    }
-
-
-    /* Hero */
-
-    h1 {
-        font-size: 2rem;
+    .nav-cta {
+        padding: 0.4rem 0.9rem !important;
     }
 
     .hero1 {
-        padding: 1.5rem;
+        padding: 4rem 1.5rem 4rem;
     }
-}
 
+    .hero-tag::before,
+    .hero-tag::after {
+        width: 20px;
+        margin: 0 8px;
+    }
 
-/* =========================
-   EXTRA SMALL DEVICES
-========================= */
+    .hero1 h1 {
+        font-size: 2.2rem;
+    }
 
-@media (max-width: 480px) {
+    .hero-verse {
+        font-size: 0.9rem;
+    }
+
+    .goals {
+        padding: 3rem 1.5rem 3.5rem;
+    }
+
+    .goals h2 {
+        font-size: 1.5rem;
+    }
+
+    .goals p1 {
+        font-size: 0.88rem;
+    }
 
     .growth-container {
-        padding: 0 10px;
+        padding: 3rem 1.5rem 4rem;
+    }
+
+    .title {
+        margin-bottom: 3.5rem;
     }
 
     .growth-path {
-        padding-left: 5px;
-        gap: 25px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 45px;
+        padding-left: 30px;
+    }
+
+    .growth-path::before {
+        left: 90px;
+        top: 40px;
+        bottom: 40px;
+        width: 1px;
+        height: auto;
+        right: auto;
+    }
+
+    .growth-path::after {
+        left: 90px;
+        top: 40px;
+        width: 1px;
+        height: 0;
+        right: auto;
+        animation: progressMobile 4.2s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+    }
+
+    @keyframes progressMobile {
+        0% { height: 0; }
+        100% { height: calc(100% - 80px); }
+    }
+
+    .step {
+        width: 100%;
+        flex-direction: row;
+        align-items: center;
+        gap: 30px;
+        text-align: left;
+    }
+
+    .step .circle {
+        flex-shrink: 0;
+        margin: 0;
+    }
+
+    /* Mobile plant sizes */
+    .step:nth-child(1) .circle { width: 60px; height: 75px; }
+    .step:nth-child(2) .circle { width: 70px; height: 90px; }
+    .step:nth-child(3) .circle { width: 80px; height: 105px; }
+    .step:nth-child(4) .circle { width: 95px; height: 125px; }
+    .step:nth-child(5) .circle { width: 115px; height: 145px; }
+
+    .step-content {
+        margin-top: 0;
+        max-width: none;
+        flex: 1;
+    }
+
+    .step-content::before {
+        margin: 0 0 12px;
+        width: 30px;
+    }
+
+    .step:hover .step-content::before {
+        width: 45px;
+    }
+
+    .step-content h2 {
+        font-size: 0.95rem;
+    }
+
+    .step-content p {
+        font-size: 0.78rem;
+    }
+
+    .number {
+        top: -6px;
+        right: -6px;
+        width: 22px;
+        height: 22px;
+        font-size: 0.68rem;
+    }
+
+    .final-message {
+        font-size: 0.95rem;
+        padding: 1rem 2rem;
+        margin-top: 3.5rem;
+    }
+}
+
+/* =========================
+   MOBILE — EXTRA SMALL
+========================= */
+@media (max-width: 480px) {
+
+    nav {
+        padding: 0.9rem 1rem;
+    }
+
+    .nav-brand {
+        font-size: 0.85rem;
+        letter-spacing: 1px;
+    }
+
+    nav ul {
+        gap: 0.8rem;
+    }
+
+    nav ul li a {
+        font-size: 0.7rem;
+    }
+
+    .hero1 {
+        padding: 3rem 1.2rem 3rem;
+    }
+
+    .hero1 h1 {
+        font-size: 1.9rem;
+    }
+
+    .hero-verse {
+        font-size: 0.85rem;
+    }
+
+    .hero-ref {
+        font-size: 0.68rem;
+    }
+
+    .hero1 button {
+        padding: 0.8rem 1.8rem;
+        font-size: 0.72rem;
+    }
+
+    .growth-container {
+        padding: 2.5rem 1rem 3rem;
+    }
+
+    .growth-path {
+        padding-left: 15px;
+        gap: 35px;
     }
 
     .growth-path::before,
     .growth-path::after {
-        left: 58px;
+        left: 60px;
     }
 
     .step {
-        gap: 18px;
+        gap: 22px;
     }
 
-    .step:nth-child(1) .circle {
-        width: 55px;
-        height: 70px;
-    }
-
-    .step:nth-child(2) .circle {
-        width: 65px;
-        height: 85px;
-    }
-
-    .step:nth-child(3) .circle {
-        width: 75px;
-        height: 100px;
-    }
-
-    .step:nth-child(4) .circle {
-        width: 85px;
-        height: 115px;
-    }
-
-    .step:nth-child(5) .circle {
-        width: 105px;
-        height: 135px;
-    }
-
-    .number {
-        left: 35px;
-    }
+    .step:nth-child(1) .circle { width: 50px; height: 65px; }
+    .step:nth-child(2) .circle { width: 58px; height: 78px; }
+    .step:nth-child(3) .circle { width: 68px; height: 92px; }
+    .step:nth-child(4) .circle { width: 78px; height: 108px; }
+    .step:nth-child(5) .circle { width: 95px; height: 128px; }
 
     .step-content h2 {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
     }
 
     .step-content p {
-        font-size: 0.75rem;
+        font-size: 0.72rem;
+    }
+
+    .number {
+        width: 20px;
+        height: 20px;
+        font-size: 0.62rem;
+    }
+
+    .final-message {
+        font-size: 0.85rem;
+        padding: 0.9rem 1.6rem;
     }
 }

@@ -53,6 +53,10 @@
         </p>
     </section>
 
+
+    <!-- =========================================
+         MEMBER PROGRESS
+    ========================================== -->
     <section class="progress-section">
         <h2>Member Progress</h2>
         <p class="section-subtitle">
@@ -61,6 +65,38 @@
 
         <div id="progressContainer">
             <p class="loading-text">Loading progress...</p>
+        </div>
+    </section>
+
+
+    <!-- =========================================
+         ABSENCES SECTION
+    ========================================== -->
+    <section class="absences-section">
+        <div class="absences-header">
+            <div>
+                <h2>Member Absences</h2>
+                <p class="section-subtitle">
+                    Absences reported by Young Men members with their reasons.
+                </p>
+            </div>
+            <span id="absencesCount" class="absences-count-badge">0</span>
+        </div>
+
+        <div id="absencesLoading" class="absences-loading" style="display:none;">
+            <div class="loading-dots">
+                <span class="loading-dot"></span>
+                <span class="loading-dot"></span>
+                <span class="loading-dot"></span>
+            </div>
+            <small>Loading absences…</small>
+        </div>
+
+        <ul id="absencesList" class="absences-list"></ul>
+
+        <div id="absencesEmpty" class="absences-empty" style="display:none;">
+            <p>No absences reported.</p>
+            <small>Members who mark themselves absent will show up here.</small>
         </div>
     </section>
 
@@ -107,7 +143,10 @@
             SUPABASE_ANON_KEY
         );
 
-        const DEPARTMENT_NAME = "Young Men";
+        const DEPARTMENT_NAME  = "Young Men";
+        const ABSENCES_TABLE   = "absences";
+        const ATTENDANCE_TABLE = "attendance";
+        const PROFILES_TABLE   = "profiles";
 
 
         /* =========================================================
@@ -146,7 +185,7 @@
 
                 const { data: profile, error: profileError } =
                     await supabaseClient
-                        .from("profiles")
+                        .from(PROFILES_TABLE)
                         .select("username, role, department")
                         .eq("id", user.id)
                         .maybeSingle();
@@ -176,6 +215,194 @@
 
 
         /* =========================================================
+           LOAD DEPARTMENT ABSENCES
+           → Primary source: `absences` table
+           → Fallback: `attendance` table joined with profiles
+           This guarantees the reasons show even if the `absences`
+           table is empty, missing, or RLS-blocked.
+        ========================================================= */
+
+        async function loadAbsences() {
+            const listEl    = document.getElementById("absencesList");
+            const emptyEl   = document.getElementById("absencesEmpty");
+            const loadingEl = document.getElementById("absencesLoading");
+            const countEl   = document.getElementById("absencesCount");
+
+            if (!listEl) return;
+
+            loadingEl.style.display = "flex";
+            emptyEl.style.display = "none";
+            listEl.innerHTML = "";
+
+            let rows = [];
+
+            /* -----------------------------------------------------
+               1. Try the `absences` table (preferred)
+            ----------------------------------------------------- */
+            try {
+                const { data, error } = await supabaseClient
+                    .from(ABSENCES_TABLE)
+                    .select("id, username, department, absence_date, reason, created_at")
+                    .eq("department", DEPARTMENT_NAME)
+                    .order("absence_date", { ascending: false })
+                    .limit(100);
+
+                if (error) {
+                    console.warn("absences table fetch failed, will fallback:", error.message);
+                } else {
+                    rows = data || [];
+                    console.log("✅ Loaded from `absences`:", rows.length, "rows");
+                }
+
+            } catch (err) {
+                console.warn("absences fetch threw:", err);
+            }
+
+            /* -----------------------------------------------------
+               2. Fallback → pull reasons from `attendance` table
+                  joined with `profiles` for username + department
+            ----------------------------------------------------- */
+            if (!rows.length) {
+                try {
+                    console.log("↪ Falling back to `attendance` table…");
+
+                    /* Get all members of this department */
+                    const { data: members, error: membersErr } = await supabaseClient
+                        .from(PROFILES_TABLE)
+                        .select("id, username")
+                        .eq("department", DEPARTMENT_NAME);
+
+                    if (membersErr) throw membersErr;
+
+                    if (members && members.length) {
+                        const memberIds = members.map(m => m.id);
+                        const usernameById = {};
+                        members.forEach(m => { usernameById[m.id] = m.username; });
+
+                        /* Get absent rows with reasons */
+                        const { data: absentRows, error: absentErr } = await supabaseClient
+                            .from(ATTENDANCE_TABLE)
+                            .select("user_id, attendance_date, status, reason, created_at")
+                            .in("user_id", memberIds)
+                            .eq("status", "absent")
+                            .not("reason", "is", null)
+                            .order("attendance_date", { ascending: false })
+                            .limit(100);
+
+                        if (absentErr) throw absentErr;
+
+                        rows = (absentRows || []).map(r => ({
+                            id:            r.user_id + "_" + r.attendance_date,
+                            username:      usernameById[r.user_id] || "Unknown",
+                            department:    DEPARTMENT_NAME,
+                            absence_date:  r.attendance_date,
+                            reason:        r.reason,
+                            created_at:    r.created_at
+                        }));
+
+                        console.log("✅ Loaded from `attendance` fallback:", rows.length, "rows");
+                    }
+
+                } catch (err) {
+                    console.error("Fallback fetch error:", err);
+                }
+            }
+
+            /* -----------------------------------------------------
+               3. Render
+            ----------------------------------------------------- */
+            try {
+                countEl.textContent = rows.length;
+                countEl.classList.toggle("has-items", rows.length > 0);
+
+                if (!rows.length) {
+                    listEl.style.display = "none";
+                    emptyEl.style.display = "block";
+                    return;
+                }
+
+                listEl.style.display = "flex";
+                emptyEl.style.display = "none";
+
+                rows.forEach((row) => {
+                    const li = document.createElement("li");
+                    li.className = "absence-item";
+
+                    const initial = (row.username || "?").charAt(0).toUpperCase();
+
+                    li.innerHTML = `
+                        <div class="absence-avatar">${escapeHtml(initial)}</div>
+                        <div class="absence-info">
+                            <div class="absence-top">
+                                <span class="absence-name">${escapeHtml(row.username)}</span>
+                                <span class="absence-date">${formatAbsenceDate(row.absence_date)}</span>
+                            </div>
+                            <span class="absence-reason">${escapeHtml(row.reason)}</span>
+                        </div>
+                    `;
+                    listEl.appendChild(li);
+                });
+
+            } finally {
+                loadingEl.style.display = "none";
+            }
+        }
+
+
+        function formatAbsenceDate(dateStr) {
+            if (!dateStr) return "";
+            const [y, m, d] = dateStr.split("-").map(Number);
+            const dt = new Date(y, m - 1, d);
+            return dt.toLocaleDateString("en-PH", {
+                weekday: "short",
+                month: "short",
+                day: "numeric",
+                year: "numeric"
+            });
+        }
+
+
+        /* =========================================================
+           REALTIME — Absences (both tables)
+        ========================================================= */
+
+        function subscribeAbsences() {
+
+            /* Watch `absences` table */
+            supabaseClient
+                .channel("absences-" + DEPARTMENT_NAME)
+                .on(
+                    "postgres_changes",
+                    { event: "*", schema: "public", table: ABSENCES_TABLE },
+                    (payload) => {
+                        const row = payload.new || payload.old;
+                        if (row?.department === DEPARTMENT_NAME) {
+                            console.log("Realtime: absences changed → reload");
+                            loadAbsences();
+                        }
+                    }
+                )
+                .subscribe();
+
+            /* Watch `attendance` table for status='absent' changes */
+            supabaseClient
+                .channel("attendance-" + DEPARTMENT_NAME)
+                .on(
+                    "postgres_changes",
+                    { event: "*", schema: "public", table: ATTENDANCE_TABLE },
+                    (payload) => {
+                        const row = payload.new || payload.old;
+                        if (row?.status === "absent" && row?.reason) {
+                            console.log("Realtime: attendance (absent) changed → reload");
+                            loadAbsences();
+                        }
+                    }
+                )
+                .subscribe();
+        }
+
+
+        /* =========================================================
            LOAD DEPARTMENT REFLECTIONS (WITH SENDER NAME)
         ========================================================= */
 
@@ -186,7 +413,6 @@
 
             try {
 
-                /* 1. Fetch reflections for this department */
                 const { data: reflections, error: reflectionsError } =
                     await supabaseClient
                         .from("reflections")
@@ -207,13 +433,11 @@
                     return;
                 }
 
-                /* 2. Collect unique user IDs */
                 const userIds = [...new Set(reflections.map(r => r.user_id))];
 
-                /* 3. Fetch all usernames in one query */
                 const { data: profiles, error: profilesError } =
                     await supabaseClient
-                        .from("profiles")
+                        .from(PROFILES_TABLE)
                         .select("id, username")
                         .in("id", userIds);
 
@@ -221,17 +445,14 @@
                     console.warn("Could not load usernames:", profilesError);
                 }
 
-                /* 4. Build a lookup map: user_id → username */
                 const usernameMap = {};
                 (profiles || []).forEach(p => {
                     usernameMap[p.id] = p.username;
                 });
 
-                /* 5. Render reflections with sender names */
                 container.innerHTML = reflections.map(r => {
 
                     const rawName = usernameMap[r.user_id] || "Unknown Member";
-                    // Show the full username (keeps underscores, e.g. Alexander_Cabarles)
                     const safeName = escapeHtml(rawName);
 
                     const dateStr = new Date(r.created_at).toLocaleString();
@@ -254,9 +475,10 @@
             }
         }
 
+
         /* =========================================================
-   PROGRESS — MONTH KEY (matches checklist page)
-========================================================= */
+           PROGRESS — MONTH KEY
+        ========================================================= */
 
         function getCurrentMonthKey() {
             const monthNames = [
@@ -269,7 +491,7 @@
 
 
         /* =========================================================
-           LOAD MEMBER PROGRESS (checks per row per member)
+           LOAD MEMBER PROGRESS
         ========================================================= */
 
         async function loadMemberProgress() {
@@ -279,10 +501,9 @@
 
             try {
 
-                /* 1. Get all Adult Men members */
                 const { data: members, error: membersError } =
                     await supabaseClient
-                        .from("profiles")
+                        .from(PROFILES_TABLE)
                         .select("id, username")
                         .eq("department", DEPARTMENT_NAME)
                         .order("username", { ascending: true });
@@ -300,7 +521,6 @@
                     return;
                 }
 
-                /* 2. Fetch all checklist checks for this month from these users */
                 const memberIds = members.map(m => m.id);
                 const monthKey = getCurrentMonthKey();
 
@@ -319,8 +539,7 @@
                     return;
                 }
 
-                /* 3. Tally checks per user per letter */
-                const tally = {}; // { user_id: { G: 0, R: 0, O: 0, W: 0, T: 0, H: 0 } }
+                const tally = {};
 
                 members.forEach(m => {
                     tally[m.id] = { G: 0, R: 0, O: 0, W: 0, T: 0, H: 0 };
@@ -333,7 +552,6 @@
                     }
                 });
 
-                /* 4. Render the progress table */
                 container.innerHTML = `
             <div class="progress-table-wrapper">
                 <table class="progress-table">
@@ -458,7 +676,9 @@
 
             loadAdminGreeting();
             loadDepartmentReflections();
-            loadMemberProgress();      // ← must be here
+            loadMemberProgress();
+            loadAbsences();         // ← with fallback
+            subscribeAbsences();    // ← watches both tables
             setupHamburger();
 
             const logoutBtn = document.getElementById("logoutBtn");

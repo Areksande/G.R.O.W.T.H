@@ -15,11 +15,15 @@
     --content-gap-mobile: 16px;
     --primary: #007bff;
     --primary-dark: #0056b3;
+    --primary-light: #e8f0fe;
     --text: #1f2937;
     --muted: #6b7280;
     --bg: #f5f5f5;
     --card-bg: #ffffff;
     --border: #e5e7eb;
+    --radius: 12px;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.1);
 }
 
 html,
@@ -231,343 +235,168 @@ body {
 
 
 /* =========================================================
+   PROFILE SECTION — ENHANCED
+========================================================= */
+
+.profile-section {
+    margin-left: var(--content-offset);
+    margin-right: var(--content-gap);
+    margin-top: var(--content-gap);
+    margin-bottom: var(--content-gap);
+
+    padding: 40px 36px;
+
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+
+    max-width: 100%;
+
+    animation: fadeInUp 0.5s ease both;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Profile header */
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 36px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--border);
+}
+
+.profile-avatar {
+    width: 80px;
+    height: 80px;
+    min-width: 80px;
+
+    border-radius: 50%;
+
+    background: linear-gradient(135deg, var(--primary), #6f42c1);
+
+    color: #fff;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 34px;
+    font-weight: 600;
+
+    box-shadow: 0 6px 20px rgba(0, 123, 255, 0.35);
+
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profile-avatar:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 28px rgba(0, 123, 255, 0.5);
+}
+
+.profile-header-info h1 {
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--text);
+    letter-spacing: -0.02em;
+}
+
+.profile-header-info p {
+    font-size: 15px;
+    color: var(--muted);
+    line-height: 1.6;
+    max-width: 480px;
+}
+
+/* Profile details grid */
+.profile-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.profile-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    padding: 20px 22px;
+
+    background: #fafbfc;
+
+    border: 1px solid var(--border);
+    border-radius: 10px;
+
+    transition: all 0.25s ease;
+}
+
+.profile-row:hover {
+    background: #fff;
+    border-color: var(--primary);
+    box-shadow: 0 4px 16px rgba(0, 123, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+.profile-icon {
+    font-size: 24px;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: var(--primary-light);
+    border-radius: 10px;
+
+    transition: background 0.25s ease;
+}
+
+.profile-row:hover .profile-icon {
+    background: #d4e4ff;
+}
+
+.profile-row-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.profile-label {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+}
+
+.profile-value {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text);
+    word-break: break-word;
+}
+
+
+/* =========================================================
    G.R.O.W.T.H COUNTER CARDS
 ========================================================= */
 
 
-/* =========================================================
-   CALENDAR ATTENDANCE
-========================================================= */
 
-.attendance {
-    margin-left: var(--content-offset);
-    margin-right: var(--content-gap);
-
-    margin-top: var(--content-gap);
-    margin-bottom: var(--content-gap);
-
-    padding: 25px;
-
-    background: #ffffff;
-
-    border-radius: 18px;
-
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-
-    width: auto;
-}
-
-
-/* =========================================================
-   ATTENDANCE HEADER
-========================================================= */
-
-.attendance-header {
-    display: flex;
-
-    justify-content: space-between;
-
-    align-items: center;
-
-    gap: 20px;
-
-    margin-bottom: 20px;
-}
-
-.attendance-header h3 {
-    margin: 0;
-
-    font-size: 24px;
-}
-
-.attendance-header p {
-    margin: 5px 0 0;
-
-    color: #777;
-
-    text-align: left;
-}
-
-
-/* =========================================================
-   MONTH NAVIGATION
-========================================================= */
-
-.month-navigation {
-    display: flex;
-
-    align-items: center;
-
-    gap: 15px;
-}
-
-.month-navigation h4 {
-    margin: 0;
-
-    min-width: 150px;
-
-    text-align: center;
-
-    font-size: 17px;
-}
-
-.month-navigation button {
-    width: 38px;
-
-    height: 38px;
-
-    border: none;
-
-    border-radius: 50%;
-
-    background: #f1f1f1;
-
-    cursor: pointer;
-
-    font-size: 18px;
-
-    transition:
-        background 0.2s,
-        transform 0.1s;
-}
-
-.month-navigation button:hover {
-    background: #ddd;
-}
-
-.month-navigation button:active {
-    transform: scale(0.95);
-}
-
-
-/* =========================================================
-   ATTENDANCE SUMMARY
-========================================================= */
-
-.attendance-summary {
-    display: flex;
-
-    gap: 15px;
-
-    margin-bottom: 25px;
-}
-
-.attendance-summary div {
-    flex: 1;
-
-    background: #f7f7f7;
-
-    padding: 15px;
-
-    border-radius: 12px;
-
-    text-align: center;
-}
-
-.attendance-summary span {
-    display: block;
-
-    font-size: 25px;
-
-    font-weight: bold;
-}
-
-.attendance-summary small {
-    color: #777;
-}
-
-
-/* =========================================================
-   CALENDAR
-========================================================= */
-
-.calendar {
-    width: 100%;
-}
-
-.calendar-weekdays,
-.calendar-days {
-    display: grid;
-
-    grid-template-columns: repeat(7, 1fr);
-
-    gap: 8px;
-}
-
-.calendar-weekdays {
-    margin-bottom: 8px;
-}
-
-.calendar-weekdays div {
-    text-align: center;
-
-    font-weight: bold;
-
-    color: #777;
-
-    padding: 10px 0;
-}
-
-
-/* =========================================================
-   CALENDAR DAY
-========================================================= */
-
-.calendar-day {
-    min-height: 80px;
-
-    border: 1px solid #e8e8e8;
-
-    border-radius: 10px;
-
-    padding: 8px;
-
-    cursor: pointer;
-
-    position: relative;
-
-    background: #fff;
-
-    transition:
-        background 0.2s,
-        transform 0.2s,
-        border-color 0.2s;
-}
-
-.calendar-day:hover {
-    background: #f5f5f5;
-
-    transform: translateY(-2px);
-}
-
-.calendar-day.empty {
-    background: transparent;
-
-    border: none;
-
-    cursor: default;
-
-    pointer-events: none;
-}
-
-
-/* =========================================================
-   DATE NUMBER
-========================================================= */
-
-.day-number {
-    font-size: 14px;
-
-    font-weight: bold;
-}
-
-
-/* =========================================================
-   ATTENDED
-========================================================= */
-
-.calendar-day.attended {
-    background: #e8f7ed;
-
-    border: 2px solid #28a745;
-}
-
-.calendar-day.attended::after {
-    content: "✓";
-
-    position: absolute;
-
-    bottom: 8px;
-
-    right: 10px;
-
-    color: #28a745;
-
-    font-size: 22px;
-
-    font-weight: bold;
-}
-
-
-/* =========================================================
-   TODAY
-========================================================= */
-
-.calendar-day.today {
-    border: 2px solid var(--primary);
-}
-
-.calendar-day.today .day-number {
-    color: var(--primary);
-}
-
-
-/* =========================================================
-   ATTENDANCE LEGEND
-========================================================= */
-
-.attendance-legend {
-    display: flex;
-
-    gap: 20px;
-
-    margin-top: 20px;
-
-    flex-wrap: wrap;
-
-    color: #666;
-
-    font-size: 14px;
-}
-
-.attendance-legend div {
-    display: flex;
-
-    align-items: center;
-
-    gap: 7px;
-}
-
-.legend-dot {
-    width: 12px;
-
-    height: 12px;
-
-    border-radius: 50%;
-
-    border: 1px solid #ccc;
-
-    display: inline-block;
-
-    background: white;
-}
-
-.legend-dot.attended {
-    background: #28a745;
-
-    border-color: #28a745;
-}
-
-.legend-dot.today {
-    background: var(--primary);
-
-    border-color: var(--primary);
-}
-
-.profile-section {
-    padding: 24px;
-    margin-left: 270px;
-}
-
-.profile-section h1 {
-    font-size: 28px;
-    margin-bottom: 12px;
-}
-
-.profile-section p {
-    font-size: 16px;
-    color: #666;
-}
 
 /* =========================================================
    FOOTER
@@ -641,6 +470,22 @@ footer {
     .attendance {
         padding: 22px;
     }
+
+    /* Profile tablet adjustments */
+    .profile-section {
+        padding: 32px 28px;
+    }
+
+    .profile-header-info h1 {
+        font-size: 26px;
+    }
+
+    .profile-avatar {
+        width: 70px;
+        height: 70px;
+        min-width: 70px;
+        font-size: 30px;
+    }
 }
 
 
@@ -686,7 +531,8 @@ footer {
     .checklist-section,
     .reflection,
     .attendance,
-    .line-progress {
+    .line-progress,
+    .profile-section {
         margin-left: var(--content-gap-mobile);
 
         margin-right: var(--content-gap-mobile);
@@ -711,6 +557,59 @@ footer {
     .dashboard p,
     .content p {
         font-size: 14px;
+    }
+
+
+    /* -----------------------------------------------------
+       PROFILE MOBILE
+    ----------------------------------------------------- */
+
+    .profile-section {
+        padding: 24px 20px;
+        border-radius: 14px;
+    }
+
+    .profile-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        margin-bottom: 28px;
+        padding-bottom: 22px;
+    }
+
+    .profile-avatar {
+        width: 64px;
+        height: 64px;
+        min-width: 64px;
+        font-size: 26px;
+    }
+
+    .profile-header-info h1 {
+        font-size: 24px;
+    }
+
+    .profile-header-info p {
+        font-size: 14px;
+    }
+
+    .profile-details {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .profile-row {
+        padding: 16px 18px;
+    }
+
+    .profile-icon {
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+        font-size: 20px;
+    }
+
+    .profile-value {
+        font-size: 15px;
     }
 
 
@@ -1017,6 +916,51 @@ footer {
 
 
     /* -----------------------------------------------------
+       PROFILE SMALL PHONE
+    ----------------------------------------------------- */
+
+    .profile-section {
+        padding: 20px 16px;
+    }
+
+    .profile-avatar {
+        width: 56px;
+        height: 56px;
+        min-width: 56px;
+        font-size: 22px;
+    }
+
+    .profile-header-info h1 {
+        font-size: 21px;
+    }
+
+    .profile-header-info p {
+        font-size: 13px;
+    }
+
+    .profile-row {
+        padding: 14px 14px;
+        gap: 12px;
+    }
+
+    .profile-icon {
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+        font-size: 18px;
+        border-radius: 8px;
+    }
+
+    .profile-label {
+        font-size: 11px;
+    }
+
+    .profile-value {
+        font-size: 14px;
+    }
+
+
+    /* -----------------------------------------------------
        ATTENDANCE
     ----------------------------------------------------- */
 
@@ -1172,6 +1116,14 @@ footer {
     .day-number {
         font-size: 10px;
     }
+
+    .profile-section {
+        padding: 16px 12px;
+    }
+
+    .profile-header-info h1 {
+        font-size: 19px;
+    }
 }
 
 
@@ -1195,7 +1147,8 @@ footer {
     .content-card,
     .checklist-section,
     .reflection,
-    .attendance {
+    .attendance,
+    .profile-section {
         margin-left: 0;
 
         margin-right: 0;

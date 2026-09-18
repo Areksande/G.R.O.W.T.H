@@ -23,6 +23,21 @@
     --bg: #f5f5f5;
     --card-bg: #ffffff;
     --border: #e5e7eb;
+
+    /* Monochrome tokens for new components */
+    --ink: #0a0a0a;
+    --paper: #fafafa;
+    --gray-50: #f9f9f9;
+    --gray-100: #f0f0f0;
+    --gray-200: #e5e5e5;
+    --gray-300: #d4d4d4;
+    --gray-400: #a3a3a3;
+    --gray-500: #737373;
+    --gray-600: #4a4a4a;
+    --ease: cubic-bezier(0.4, 0, 0.2, 1);
+
+    --success: #28a745;
+    --danger: #dc2626;
 }
 
 html,
@@ -207,6 +222,26 @@ body {
 
 
 /* =========================================================
+   SIDEBAR OVERLAY (mobile)
+========================================================= */
+
+.sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 10, 10, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.35s ease, visibility 0.35s ease;
+    z-index: 99;
+}
+
+.sidebar-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+
+/* =========================================================
    MAIN CONTENT
 ========================================================= */
 
@@ -231,11 +266,6 @@ body {
     color: #555;
     text-align: center;
 }
-
-
-/* =========================================================
-   G.R.O.W.T.H COUNTER CARDS
-========================================================= */
 
 
 /* =========================================================
@@ -466,29 +496,52 @@ body {
 
 
 /* =========================================================
-   ATTENDED
+   DAY STATUS (✓ or ✕)
+========================================================= */
+
+.day-status {
+    position: absolute;
+
+    bottom: 8px;
+    right: 10px;
+
+    font-size: 20px;
+
+    font-weight: 700;
+
+    line-height: 1;
+
+    pointer-events: none;
+}
+
+.calendar-day.attended .day-status {
+    color: var(--success);
+}
+
+.calendar-day.absent .day-status {
+    color: var(--danger);
+}
+
+
+/* =========================================================
+   PRESENT (attended)
 ========================================================= */
 
 .calendar-day.attended {
     background: #e8f7ed;
 
-    border: 2px solid #28a745;
+    border: 2px solid var(--success);
 }
 
-.calendar-day.attended::after {
-    content: "✓";
 
-    position: absolute;
+/* =========================================================
+   ABSENT
+========================================================= */
 
-    bottom: 8px;
+.calendar-day.absent {
+    background: #fdf3f3;
 
-    right: 10px;
-
-    color: #28a745;
-
-    font-size: 22px;
-
-    font-weight: bold;
+    border: 2px solid var(--danger);
 }
 
 
@@ -502,6 +555,12 @@ body {
 
 .calendar-day.today .day-number {
     color: var(--primary);
+}
+
+/* If today is also attended/absent, keep its status border */
+.calendar-day.attended.today,
+.calendar-day.absent.today {
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.18);
 }
 
 
@@ -546,9 +605,15 @@ body {
 }
 
 .legend-dot.attended {
-    background: #28a745;
+    background: var(--success);
 
-    border-color: #28a745;
+    border-color: var(--success);
+}
+
+.legend-dot.absent {
+    background: var(--danger);
+
+    border-color: var(--danger);
 }
 
 .legend-dot.today {
@@ -557,6 +622,470 @@ body {
     border-color: var(--primary);
 }
 
+
+/* =========================================================
+   ATTENDANCE MODAL
+========================================================= */
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 10, 10, 0.55);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    z-index: 2000;
+    animation: modalFade 0.25s ease;
+}
+
+@keyframes modalFade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.modal-box {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    background: #fff;
+    border: 1px solid var(--gray-200);
+    padding: 2rem 1.8rem 1.8rem;
+    animation: modalPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+@keyframes modalPop {
+    from { opacity: 0; transform: translateY(20px) scale(0.96); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.modal-close {
+    position: absolute;
+    top: 0.8rem;
+    right: 1rem;
+    background: transparent;
+    border: none;
+    font-size: 1.6rem;
+    line-height: 1;
+    color: var(--gray-400);
+    cursor: pointer;
+    padding: 0.2rem 0.5rem;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.modal-close:hover {
+    color: var(--ink);
+    transform: rotate(90deg);
+}
+
+.modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: var(--ink);
+    letter-spacing: -0.3px;
+    margin-bottom: 0.3rem;
+}
+
+.modal-subtitle {
+    font-size: 0.82rem;
+    color: var(--gray-500);
+    font-weight: 300;
+    margin-bottom: 1.5rem;
+}
+
+.modal-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    margin-bottom: 1rem;
+}
+
+.modal-option {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.1rem;
+    background: #fff;
+    border: 1.5px solid var(--gray-200);
+    cursor: pointer;
+    text-align: left;
+    font-family: inherit;
+    transition: border-color 0.25s ease, background 0.25s ease,
+                transform 0.25s ease;
+}
+
+.modal-option:hover {
+    border-color: var(--ink);
+    transform: translateY(-2px);
+}
+
+.modal-option.selected {
+    border-color: var(--ink);
+    background: var(--gray-50);
+}
+
+.option-icon {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border: 1.5px solid var(--gray-300);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--gray-400);
+    transition: background 0.25s, color 0.25s, border-color 0.25s;
+}
+
+.modal-option.present:hover .option-icon,
+.modal-option.present.selected .option-icon {
+    background: var(--success);
+    border-color: var(--success);
+    color: #fff;
+}
+
+.modal-option.absent:hover .option-icon,
+.modal-option.absent.selected .option-icon {
+    background: var(--danger);
+    border-color: var(--danger);
+    color: #fff;
+}
+
+.option-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.option-text strong {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--ink);
+}
+
+.option-text small {
+    font-size: 0.75rem;
+    color: var(--gray-500);
+    font-weight: 300;
+}
+
+/* Reason block */
+.modal-reason {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--gray-200);
+    animation: reasonSlide 0.3s ease;
+}
+
+@keyframes reasonSlide {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.modal-reason label {
+    display: block;
+    font-size: 0.68rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gray-500);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.modal-reason textarea {
+    width: 100%;
+    padding: 0.75rem 0.9rem;
+    border: 1px solid var(--gray-300);
+    background: #fff;
+    font-family: inherit;
+    font-size: 0.88rem;
+    color: var(--ink);
+    resize: vertical;
+    min-height: 80px;
+    transition: border-color 0.25s ease;
+}
+
+.modal-reason textarea:focus {
+    outline: none;
+    border-color: var(--ink);
+}
+
+.modal-reason textarea.error {
+    border-color: var(--danger);
+    animation: shake 0.35s ease;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-5px); }
+    40% { transform: translateX(5px); }
+    60% { transform: translateX(-3px); }
+    80% { transform: translateX(3px); }
+}
+
+.reason-actions {
+    display: flex;
+    gap: 0.6rem;
+    margin-top: 0.9rem;
+}
+
+.btn-cancel,
+.btn-confirm {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    font-family: inherit;
+    font-size: 0.72rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: 1px solid var(--ink);
+    transition: background 0.3s ease, color 0.3s ease,
+                letter-spacing 0.3s ease;
+}
+
+.btn-cancel {
+    background: transparent;
+    color: var(--ink);
+}
+
+.btn-cancel:hover {
+    background: var(--gray-100);
+}
+
+.btn-confirm {
+    background: var(--ink);
+    color: #fff;
+}
+
+.btn-confirm:hover {
+    letter-spacing: 2.5px;
+    background: #000;
+}
+
+/* Remove marking */
+.modal-remove {
+    width: 100%;
+    margin-top: 0.8rem;
+    padding: 0.7rem;
+    background: transparent;
+    border: 1px solid var(--gray-300);
+    color: var(--gray-500);
+    font-family: inherit;
+    font-size: 0.72rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color 0.25s ease, color 0.25s ease;
+}
+
+.modal-remove:hover {
+    border-color: var(--danger);
+    color: var(--danger);
+}
+
+
+/* =========================================================
+   PERSONAL FIRSTFRUIT SUMMARY CARD
+   (only visible when logged in)
+========================================================= */
+
+.firstfruit-card {
+    margin-left: var(--content-offset);
+    margin-right: var(--content-gap);
+    margin-top: var(--content-gap);
+    margin-bottom: var(--content-gap);
+
+    padding: 30px;
+
+    background: #ffffff;
+    border: 1px solid var(--gray-200);
+
+    animation: fadeUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Header */
+.firstfruit-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.8rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.section-label {
+    display: inline-block;
+    font-size: 0.68rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gray-400);
+    margin-bottom: 0.6rem;
+}
+
+.firstfruit-header h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 400;
+    color: var(--ink);
+    letter-spacing: -0.3px;
+    margin-bottom: 0.3rem;
+}
+
+.firstfruit-header p {
+    font-size: 0.82rem;
+    color: var(--gray-500);
+    font-weight: 300;
+    text-align: left;
+    margin: 0;
+}
+
+.firstfruit-count-badge {
+    flex-shrink: 0;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: var(--paper);
+    background: var(--ink);
+    padding: 0.35rem 0.9rem;
+    border-radius: 999px;
+    min-width: 32px;
+    text-align: center;
+}
+
+/* Stats row */
+.firstfruit-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.firstfruit-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 1rem 0;
+    border-left: 1px solid var(--gray-200);
+    padding-left: 1.2rem;
+}
+
+.firstfruit-stat:first-child {
+    border-left: none;
+    padding-left: 0;
+}
+
+.stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.3px;
+    line-height: 1.1;
+}
+
+.firstfruit-stat small {
+    font-size: 0.68rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gray-400);
+    font-weight: 500;
+}
+
+/* Recent list */
+.firstfruit-recent h4 {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gray-500);
+    font-weight: 500;
+    margin-bottom: 1rem;
+}
+
+.firstfruit-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+}
+
+.firstfruit-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.85rem 0.4rem 0.85rem 0;
+    border-bottom: 1px solid var(--gray-200);
+    position: relative;
+    transition: padding-left 0.3s var(--ease);
+}
+
+.firstfruit-item::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2px;
+    height: 0;
+    background: var(--ink);
+    transition: height 0.3s var(--ease);
+}
+
+.firstfruit-item:hover {
+    padding-left: 0.9rem;
+}
+
+.firstfruit-item:hover::before {
+    height: 60%;
+}
+
+.firstfruit-item:last-child {
+    border-bottom: none;
+}
+
+.firstfruit-item-date {
+    font-size: 0.82rem;
+    color: var(--gray-500);
+    font-weight: 300;
+}
+
+.firstfruit-item-amount {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--ink);
+}
+
+/* Empty state */
+.firstfruit-empty {
+    text-align: center;
+    padding: 2rem 1rem;
+    border: 1px dashed var(--gray-300);
+    color: var(--gray-400);
+}
+
+.firstfruit-empty p {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 0.9rem;
+    color: var(--gray-500);
+    text-align: center;
+    margin: 0;
+}
 
 
 /* =========================================================
@@ -607,7 +1136,6 @@ footer {
         font-size: 22px;
     }
 
-    /* Six cards → three per row */
     .content-card {
         grid-template-columns: repeat(3, 1fr);
     }
@@ -676,7 +1204,8 @@ footer {
     .checklist-section,
     .reflection,
     .attendance,
-    .line-progress {
+    .line-progress,
+    .firstfruit-card {
         margin-left: var(--content-gap-mobile);
 
         margin-right: var(--content-gap-mobile);
@@ -835,11 +1364,9 @@ footer {
         font-size: 12px;
     }
 
-    .calendar-day.attended::after {
-        font-size: 17px;
-
+    .day-status {
+        font-size: 16px;
         bottom: 4px;
-
         right: 6px;
     }
 
@@ -847,6 +1374,37 @@ footer {
         gap: 12px;
 
         font-size: 12px;
+    }
+
+
+    /* -----------------------------------------------------
+       MODAL — mobile
+    ----------------------------------------------------- */
+
+    .modal-box {
+        padding: 1.6rem 1.4rem 1.4rem;
+    }
+
+    .modal-title {
+        font-size: 1.2rem;
+    }
+
+    .modal-option {
+        padding: 0.9rem 1rem;
+    }
+
+    .option-icon {
+        width: 28px;
+        height: 28px;
+        font-size: 0.85rem;
+    }
+
+    .option-text strong {
+        font-size: 0.86rem;
+    }
+
+    .option-text small {
+        font-size: 0.7rem;
     }
 
 
@@ -916,6 +1474,47 @@ footer {
         font-size: 11px;
 
         letter-spacing: 0.02em;
+    }
+
+
+    /* -----------------------------------------------------
+       FIRSTFRUIT CARD — mobile
+    ----------------------------------------------------- */
+
+    .firstfruit-card {
+        padding: 20px 18px;
+    }
+
+    .firstfruit-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.8rem;
+    }
+
+    .firstfruit-header h3 {
+        font-size: 1.3rem;
+    }
+
+    .firstfruit-stats {
+        grid-template-columns: 1fr;
+        gap: 0;
+        margin-bottom: 1.5rem;
+    }
+
+    .firstfruit-stat {
+        border-left: none;
+        border-top: 1px solid var(--gray-200);
+        padding: 0.9rem 0;
+        padding-left: 0;
+    }
+
+    .firstfruit-stat:first-child {
+        border-top: none;
+        padding-top: 0;
+    }
+
+    .stat-value {
+        font-size: 1.3rem;
     }
 
 
@@ -1073,11 +1672,9 @@ footer {
         font-size: 11px;
     }
 
-    .calendar-day.attended::after {
-        font-size: 15px;
-
+    .day-status {
+        font-size: 13px;
         bottom: 2px;
-
         right: 4px;
     }
 
@@ -1087,6 +1684,94 @@ footer {
         font-size: 11px;
     }
 
+
+    /* -----------------------------------------------------
+       MODAL — small phone
+    ----------------------------------------------------- */
+
+    .modal-box {
+        padding: 1.4rem 1.2rem 1.2rem;
+        max-width: 100%;
+    }
+
+    .modal-title {
+        font-size: 1.1rem;
+    }
+
+    .modal-subtitle {
+        font-size: 0.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .modal-option {
+        padding: 0.8rem 0.85rem;
+        gap: 0.8rem;
+    }
+
+    .option-icon {
+        width: 26px;
+        height: 26px;
+        font-size: 0.78rem;
+    }
+
+    .option-text strong {
+        font-size: 0.82rem;
+    }
+
+    .option-text small {
+        font-size: 0.68rem;
+    }
+
+    .modal-reason textarea {
+        font-size: 0.82rem;
+        padding: 0.7rem 0.8rem;
+    }
+
+    .btn-cancel,
+    .btn-confirm {
+        padding: 0.7rem 0.8rem;
+        font-size: 0.68rem;
+        letter-spacing: 1.2px;
+    }
+
+
+    /* -----------------------------------------------------
+       FIRSTFRUIT CARD — small phone
+    ----------------------------------------------------- */
+
+    .firstfruit-card {
+        padding: 18px 14px;
+    }
+
+    .firstfruit-header h3 {
+        font-size: 1.15rem;
+    }
+
+    .firstfruit-header p {
+        font-size: 0.75rem;
+    }
+
+    .firstfruit-count-badge {
+        font-size: 0.65rem;
+        padding: 0.3rem 0.75rem;
+    }
+
+    .stat-value {
+        font-size: 1.15rem;
+    }
+
+    .firstfruit-stat small {
+        font-size: 0.6rem;
+        letter-spacing: 1.5px;
+    }
+
+    .firstfruit-item-date {
+        font-size: 0.75rem;
+    }
+
+    .firstfruit-item-amount {
+        font-size: 0.85rem;
+    }
 
 
     footer {
@@ -1176,7 +1861,8 @@ footer {
     }
 
     .sidebar,
-    .hamburger {
+    .hamburger,
+    .modal-overlay {
         display: none;
     }
 
@@ -1185,7 +1871,8 @@ footer {
     .content-card,
     .checklist-section,
     .reflection,
-    .attendance {
+    .attendance,
+    .firstfruit-card {
         margin-left: 0;
 
         margin-right: 0;

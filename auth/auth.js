@@ -455,12 +455,19 @@ if (loginForm) {
 
 
             /* =================================================
-               ADMIN REDIRECTION
+               ROLE + DEPARTMENT NORMALIZATION
             ================================================= */
 
-            const role = String(profile.role || "").trim().toLowerCase();
+            const role       = String(profile.role || "").trim().toLowerCase();
             const department = String(profile.department || "").trim().toLowerCase();
 
+            console.log("Normalized role:", role);
+            console.log("Normalized department:", department);
+
+
+            /* =================================================
+               ADMIN REDIRECTION
+            ================================================= */
 
             /* ADULT MEN ADMIN */
             if (role === "admin" && department === "adult men") {
@@ -486,6 +493,12 @@ if (loginForm) {
                 return;
             }
 
+            /* BFAD ADMIN */
+            if (role === "admin" && department === "bfad") {
+                window.location.href = "../admin/BFAD/home.html";
+                return;
+            }
+
 
             /* =================================================
                NORMAL MEMBER
@@ -501,4 +514,3 @@ if (loginForm) {
     });
 
 }
-

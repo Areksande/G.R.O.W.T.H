@@ -38,25 +38,43 @@
     <!-- MAIN CONTENT -->
     <main>
         <section class="profile-section">
-            <h1>Profile</h1>
-            <p>Welcome to your profile page. Here you can view and manage your account details.</p>
+            <!-- Profile header with avatar -->
+            <div class="profile-header">
+                <div class="profile-avatar" id="profile-avatar">U</div>
+                <div class="profile-header-info">
+                    <h1 id="profile-display-name">Profile</h1>
+                    <p>Welcome to your profile page. Here you can view and manage your account details.</p>
+                </div>
+            </div>
 
             <div class="profile-details">
                 <div class="profile-row">
-                    <span class="profile-label">Username</span>
-                    <span class="profile-value" id="user-name">—</span>
+                    <div class="profile-icon">👤</div>
+                    <div class="profile-row-content">
+                        <span class="profile-label">Username</span>
+                        <span class="profile-value" id="user-name">—</span>
+                    </div>
                 </div>
                 <div class="profile-row">
-                    <span class="profile-label">Birthday</span>
-                    <span class="profile-value" id="user-birthday">—</span>
+                    <div class="profile-icon">🎂</div>
+                    <div class="profile-row-content">
+                        <span class="profile-label">Birthday</span>
+                        <span class="profile-value" id="user-birthday">—</span>
+                    </div>
                 </div>
                 <div class="profile-row">
-                    <span class="profile-label">Date of Salvation</span>
-                    <span class="profile-value" id="user-salvation">—</span>
+                    <div class="profile-icon">✝️</div>
+                    <div class="profile-row-content">
+                        <span class="profile-label">Date of Salvation</span>
+                        <span class="profile-value" id="user-salvation">—</span>
+                    </div>
                 </div>
                 <div class="profile-row">
-                    <span class="profile-label">Date of Baptism</span>
-                    <span class="profile-value" id="user-baptism">—</span>
+                    <div class="profile-icon">💧</div>
+                    <div class="profile-row-content">
+                        <span class="profile-label">Date of Baptism</span>
+                        <span class="profile-value" id="user-baptism">—</span>
+                    </div>
                 </div>
             </div>
         </section>
@@ -98,6 +116,8 @@
         const nameSpan = document.getElementById("greeting-name");
         const timeSpan = document.getElementById("greeting-time");
         const userNameSpan = document.getElementById("user-name");
+        const displayNameEl = document.getElementById("profile-display-name");
+        const avatarEl = document.getElementById("profile-avatar");
         if (!nameSpan) return;
 
         if (timeSpan) timeSpan.textContent = getGreetingWord();
@@ -107,6 +127,8 @@
             if (!user) {
                 nameSpan.textContent = "Guest";
                 if (userNameSpan) userNameSpan.textContent = "Guest";
+                if (displayNameEl) displayNameEl.textContent = "Guest";
+                if (avatarEl) avatarEl.textContent = "G";
                 return;
             }
 
@@ -121,10 +143,14 @@
 
             nameSpan.textContent = displayName;
             if (userNameSpan) userNameSpan.textContent = rawName;
+            if (displayNameEl) displayNameEl.textContent = displayName;
+            if (avatarEl) avatarEl.textContent = displayName.charAt(0).toUpperCase();
         } catch (err) {
             console.error("Greeting error:", err);
             nameSpan.textContent = "User";
             if (userNameSpan) userNameSpan.textContent = "User";
+            if (displayNameEl) displayNameEl.textContent = "User";
+            if (avatarEl) avatarEl.textContent = "U";
         }
     }
 
@@ -254,7 +280,7 @@
 
     document.addEventListener("DOMContentLoaded", function () {
         loadGreeting();
-        loadDate();          // ← was missing
+        loadDate();
         setupHamburger();
         setActiveNavLink();
 

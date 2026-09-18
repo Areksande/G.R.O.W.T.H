@@ -8,6 +8,9 @@
         );
 
         const DEPARTMENT_NAME = "Young Ladies";
+        const  ABSENCES_TABLE = "absences";
+        const ATTENDANCE_TABLE = "attendance";
+        const PROFILE_TABLE = "profiles";
 
 
         /* =========================================================
@@ -72,6 +75,185 @@
                 console.error("Greeting error:", err);
                 if (nameSpan) nameSpan.textContent = "Admin";
             }
+        }
+
+        async function loadAbsences() {
+            const listEl    = document.getElementById("absencesList");
+            const emptyEl   = document.getElementById("absencesEmpty");
+            const loadingEl = document.getElementById("absencesLoading");
+            const countEl   = document.getElementById("absencesCount");
+
+            if (!listEl) return;
+
+            loadingEl.style.display = "flex";
+            emptyEl.style.display = "none";
+            listEl.innerHTML = "";
+
+            let rows = [];
+
+            /* -----------------------------------------------------
+               1. Try the `absences` table (preferred)
+            ----------------------------------------------------- */
+            try {
+                const { data, error } = await supabaseClient
+                    .from(ABSENCES_TABLE)
+                    .select("id, username, department, absence_date, reason, created_at")
+                    .eq("department", DEPARTMENT_NAME)
+                    .order("absence_date", { ascending: false })
+                    .limit(100);
+
+                if (error) {
+                    console.warn("absences table fetch failed, will fallback:", error.message);
+                } else {
+                    rows = data || [];
+                    console.log("✅ Loaded from `absences`:", rows.length, "rows");
+                }
+
+            } catch (err) {
+                console.warn("absences fetch threw:", err);
+            }
+
+            /* -----------------------------------------------------
+               2. Fallback → pull reasons from `attendance` table
+                  joined with `profiles` for username + department
+            ----------------------------------------------------- */
+            if (!rows.length) {
+                try {
+                    console.log("↪ Falling back to `attendance` table…");
+
+                    /* Get all members of this department */
+                    const { data: members, error: membersErr } = await supabaseClient
+                        .from(PROFILES_TABLE)
+                        .select("id, username")
+                        .eq("department", DEPARTMENT_NAME);
+
+                    if (membersErr) throw membersErr;
+
+                    if (members && members.length) {
+                        const memberIds = members.map(m => m.id);
+                        const usernameById = {};
+                        members.forEach(m => { usernameById[m.id] = m.username; });
+
+                        /* Get absent rows with reasons */
+                        const { data: absentRows, error: absentErr } = await supabaseClient
+                            .from(ATTENDANCE_TABLE)
+                            .select("user_id, attendance_date, status, reason, created_at")
+                            .in("user_id", memberIds)
+                            .eq("status", "absent")
+                            .not("reason", "is", null)
+                            .order("attendance_date", { ascending: false })
+                            .limit(100);
+
+                        if (absentErr) throw absentErr;
+
+                        rows = (absentRows || []).map(r => ({
+                            id:            r.user_id + "_" + r.attendance_date,
+                            username:      usernameById[r.user_id] || "Unknown",
+                            department:    DEPARTMENT_NAME,
+                            absence_date:  r.attendance_date,
+                            reason:        r.reason,
+                            created_at:    r.created_at
+                        }));
+
+                        console.log("✅ Loaded from `attendance` fallback:", rows.length, "rows");
+                    }
+
+                } catch (err) {
+                    console.error("Fallback fetch error:", err);
+                }
+            }
+
+            /* -----------------------------------------------------
+               3. Render
+            ----------------------------------------------------- */
+            try {
+                countEl.textContent = rows.length;
+                countEl.classList.toggle("has-items", rows.length > 0);
+
+                if (!rows.length) {
+                    listEl.style.display = "none";
+                    emptyEl.style.display = "block";
+                    return;
+                }
+
+                listEl.style.display = "flex";
+                emptyEl.style.display = "none";
+
+                rows.forEach((row) => {
+                    const li = document.createElement("li");
+                    li.className = "absence-item";
+
+                    const initial = (row.username || "?").charAt(0).toUpperCase();
+
+                    li.innerHTML = `
+                        <div class="absence-avatar">${escapeHtml(initial)}</div>
+                        <div class="absence-info">
+                            <div class="absence-top">
+                                <span class="absence-name">${escapeHtml(row.username)}</span>
+                                <span class="absence-date">${formatAbsenceDate(row.absence_date)}</span>
+                            </div>
+                            <span class="absence-reason">${escapeHtml(row.reason)}</span>
+                        </div>
+                    `;
+                    listEl.appendChild(li);
+                });
+
+            } finally {
+                loadingEl.style.display = "none";
+            }
+        }
+
+
+        function formatAbsenceDate(dateStr) {
+            if (!dateStr) return "";
+            const [y, m, d] = dateStr.split("-").map(Number);
+            const dt = new Date(y, m - 1, d);
+            return dt.toLocaleDateString("en-PH", {
+                weekday: "short",
+                month: "short",
+                day: "numeric",
+                year: "numeric"
+            });
+        }
+
+
+        /* =========================================================
+           REALTIME — Absences (both tables)
+        ========================================================= */
+
+        function subscribeAbsences() {
+
+            /* Watch `absences` table */
+            supabaseClient
+                .channel("absences-" + DEPARTMENT_NAME)
+                .on(
+                    "postgres_changes",
+                    { event: "*", schema: "public", table: ABSENCES_TABLE },
+                    (payload) => {
+                        const row = payload.new || payload.old;
+                        if (row?.department === DEPARTMENT_NAME) {
+                            console.log("Realtime: absences changed → reload");
+                            loadAbsences();
+                        }
+                    }
+                )
+                .subscribe();
+
+            /* Watch `attendance` table for status='absent' changes */
+            supabaseClient
+                .channel("attendance-" + DEPARTMENT_NAME)
+                .on(
+                    "postgres_changes",
+                    { event: "*", schema: "public", table: ATTENDANCE_TABLE },
+                    (payload) => {
+                        const row = payload.new || payload.old;
+                        if (row?.status === "absent" && row?.reason) {
+                            console.log("Realtime: attendance (absent) changed → reload");
+                            loadAbsences();
+                        }
+                    }
+                )
+                .subscribe();
         }
 
 
@@ -359,6 +541,8 @@
             loadAdminGreeting();
             loadDepartmentReflections();
             loadMemberProgress();      // ← must be here
+            subscribeAbsences();
+            loadAbsences();
             setupHamburger();
 
             const logoutBtn = document.getElementById("logoutBtn");
