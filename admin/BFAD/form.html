@@ -94,7 +94,9 @@
                 <h2>Submitted Offerings</h2>
                 <span id="countBadge" class="count-badge">0</span>
             </div>
-            <p class="submissions-subtitle">A live record of all submitted firstfruits.</p>
+            <p class="submissions-subtitle">
+                Click the <strong>₱ amount</strong> on any entry to edit it.
+            </p>
 
             <div id="loadingState" class="loading-state">
                 <div class="loading-dots">
@@ -139,7 +141,7 @@
         SUPABASE_ANON_KEY
     );
 
-    const TABLE = "firstfruits";
+    const TABLE          = "firstfruits";
     const PROFILES_TABLE = "profiles";
 
 
@@ -155,7 +157,6 @@
     const countBadge   = document.getElementById("countBadge");
     const submitBtn    = document.getElementById("submitBtn");
 
-    // Custom select refs
     const nameSelect   = document.getElementById("nameSelect");
     const nameTrigger  = document.getElementById("nameTrigger");
     const nameValue    = document.getElementById("nameValue");
@@ -163,11 +164,11 @@
     const nameSearch   = document.getElementById("nameSearch");
     const nameOptions  = document.getElementById("nameOptions");
     const nameEmpty    = document.getElementById("nameEmpty");
-    const nameHidden   = document.getElementById("name"); // hidden input
+    const nameHidden   = document.getElementById("name");
 
     let count = 0;
-    let allUsers = [];       // cached list of usernames
-    let selectedUser = "";   // currently selected username
+    let allUsers = [];
+    let selectedUser = "";
 
 
     /* =========================================================
@@ -236,7 +237,6 @@
         nameTrigger.setAttribute("aria-expanded", "true");
         nameSearch.value = "";
         filterOptions("");
-        // Focus the search input
         setTimeout(() => nameSearch.focus(), 50);
     }
 
@@ -272,10 +272,7 @@
                 <span class="option-label">${escapeHTML(user)}</span>
             `;
 
-            li.addEventListener("click", () => {
-                selectUser(user);
-            });
-
+            li.addEventListener("click", () => selectUser(user));
             nameOptions.appendChild(li);
         });
     }
@@ -294,8 +291,6 @@
         nameValue.classList.remove("placeholder");
         nameHidden.value = user;
         closeMenu();
-
-        // Visual feedback
         nameSelect.classList.add("has-value");
         nameSelect.classList.remove("error");
     }
@@ -310,8 +305,7 @@
 
 
     /* =========================================================
-       LOAD REGISTERED MEMBERS FROM PROFILES TABLE
-       (admins are excluded — only role = 'member' shown)
+       LOAD REGISTERED MEMBERS
     ========================================================= */
 
     async function loadUsers() {
@@ -320,7 +314,7 @@
                 .from(PROFILES_TABLE)
                 .select("username, role")
                 .not("username", "is", null)
-                .eq("role", "member")                   // ← only members
+                .eq("role", "member")
                 .order("username", { ascending: true });
 
             if (error) throw error;
@@ -332,11 +326,10 @@
             )];
 
             renderOptions(allUsers);
-
-            console.log("Loaded members:", allUsers.length);
+            console.log("✅ Loaded members:", allUsers.length);
 
         } catch (err) {
-            console.error("Failed to load users:", err);
+            console.error("❌ Failed to load users:", err);
             nameEmpty.textContent = "Could not load users.";
             nameEmpty.style.display = "block";
         }
@@ -344,7 +337,7 @@
 
 
     /* =========================================================
-       RENDER ONE SUBMISSION
+       RENDER ONE SUBMISSION (with editable amount)
     ========================================================= */
 
     function renderSubmission(row, { prepend = true } = {}) {
@@ -361,13 +354,165 @@
                 <span class="submission-name">${escapeHTML(row.name)}</span>
                 <span class="submission-date">${escapeHTML(time)}</span>
             </div>
-            <span class="submission-amount">${formatPeso(row.amount)}</span>
+            <span
+                class="submission-amount editable"
+                data-id="${row.id}"
+                data-amount="${row.amount}"
+                title="Click to edit"
+                role="button"
+                tabindex="0"
+            >${formatPeso(row.amount)}</span>
         `;
 
         if (prepend) list.prepend(li);
         else list.appendChild(li);
 
+        const amountEl = li.querySelector(".submission-amount");
+        amountEl.addEventListener("click", () => enterEditMode(amountEl));
+        amountEl.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                enterEditMode(amountEl);
+            }
+        });
+
         return li;
+    }
+
+
+    /* =========================================================
+       INLINE EDIT — amount
+       Now with RLS-block detection.
+    ========================================================= */
+
+    function enterEditMode(amountEl) {
+        if (amountEl.dataset.editing === "true") return;
+
+        const id         = amountEl.dataset.id;
+        const currentAmt = amountEl.dataset.amount;
+        amountEl.dataset.editing = "true";
+
+        const wrapper = document.createElement("div");
+        wrapper.className = "amount-edit";
+
+        wrapper.innerHTML = `
+            <span class="edit-prefix">₱</span>
+            <input
+                type="number"
+                class="edit-amount-input"
+                value="${Number(currentAmt).toFixed(2)}"
+                min="0.01"
+                step="0.01"
+                aria-label="Edit amount"
+            >
+            <button type="button" class="edit-save" aria-label="Save">✓</button>
+            <button type="button" class="edit-cancel" aria-label="Cancel">✕</button>
+        `;
+
+        amountEl.classList.add("editing");
+        amountEl.innerHTML = "";
+        amountEl.appendChild(wrapper);
+
+        const input     = wrapper.querySelector(".edit-amount-input");
+        const saveBtn   = wrapper.querySelector(".edit-save");
+        const cancelBtn = wrapper.querySelector(".edit-cancel");
+
+        input.focus();
+        input.select();
+
+        const cleanup = (restoreAmount) => {
+            amountEl.dataset.editing = "false";
+            amountEl.classList.remove("editing");
+            amountEl.innerHTML = formatPeso(
+                restoreAmount !== undefined ? restoreAmount : currentAmt
+            );
+        };
+
+        const save = async () => {
+            const newAmount = parseFloat(input.value);
+            if (!Number.isFinite(newAmount) || newAmount <= 0) {
+                input.classList.add("error");
+                input.focus();
+                return;
+            }
+            input.disabled = true;
+            saveBtn.disabled = true;
+            cancelBtn.disabled = true;
+
+            try {
+                /* .select() forces the server to return the affected rows.
+                   If RLS blocks the update, we get zero rows back. */
+                const { data, error } = await supabaseClient
+                    .from(TABLE)
+                    .update({ amount: newAmount })
+                    .eq("id", id)
+                    .select();
+
+                if (error) throw error;
+
+                if (!data || data.length === 0) {
+                    throw new Error(
+                        "Update was blocked by the database. " +
+                        "Make sure the `firstfruits` table has an UPDATE policy."
+                    );
+                }
+
+                /* Update local state from the confirmed server row */
+                const confirmed = data[0];
+                amountEl.dataset.amount = confirmed.amount;
+                cleanup(confirmed.amount);
+                flashSuccess(amountEl);
+
+                showMessage(
+                    `Amount updated to ${formatPeso(confirmed.amount)}.`,
+                    "success"
+                );
+                setTimeout(clearMessage, 3000);
+
+            } catch (err) {
+                console.error("Update error:", err);
+                input.disabled = false;
+                saveBtn.disabled = false;
+                cancelBtn.disabled = false;
+                input.classList.add("error");
+                showMessage(
+                    err.message || "Could not update amount.",
+                    "error"
+                );
+            }
+        };
+
+        const cancel = () => cleanup();
+
+        saveBtn.addEventListener("click", save);
+        cancelBtn.addEventListener("click", cancel);
+
+        input.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") { e.preventDefault(); save(); }
+            if (e.key === "Escape") { e.preventDefault(); cancel(); }
+        });
+
+        /* Blur → auto-save if value changed, cancel if unchanged */
+        input.addEventListener("blur", () => {
+            setTimeout(() => {
+                if (amountEl.dataset.editing !== "true") return;
+                const newAmount = parseFloat(input.value);
+                if (!Number.isFinite(newAmount) || newAmount <= 0) {
+                    cancel();
+                    return;
+                }
+                if (Number(newAmount) === Number(currentAmt)) {
+                    cancel();
+                } else {
+                    save();
+                }
+            }, 150);
+        });
+    }
+
+    function flashSuccess(el) {
+        el.classList.add("flash");
+        setTimeout(() => el.classList.remove("flash"), 800);
     }
 
 
@@ -422,7 +567,6 @@
         const name   = nameHidden.value.trim();
         const amount = parseFloat(amountInput.value);
 
-        /* Validation */
         if (!name) {
             showMessage("Please select your name from the list.", "error");
             nameSelect.classList.add("error");
@@ -456,7 +600,6 @@
                 "success"
             );
 
-            /* Reset form + select */
             form.reset();
             resetSelect();
 
@@ -474,7 +617,7 @@
 
 
     /* =========================================================
-       REALTIME SUBSCRIPTION
+       REALTIME — INSERT + UPDATE
     ========================================================= */
 
     function subscribeRealtime() {
@@ -486,12 +629,32 @@
                 (payload) => {
                     const row = payload.new;
                     if (!row) return;
-
                     if (list.querySelector(`[data-id="${row.id}"]`)) return;
 
                     renderSubmission(row, { prepend: true });
                     updateCount(count + 1);
                     toggleEmptyState();
+                }
+            )
+            .on(
+                "postgres_changes",
+                { event: "UPDATE", schema: "public", table: TABLE },
+                (payload) => {
+                    const row = payload.new;
+                    if (!row) return;
+
+                    const existing = list.querySelector(`[data-id="${row.id}"]`);
+                    if (!existing) return;
+
+                    const amountEl = existing.querySelector(".submission-amount");
+                    /* Skip if this row is currently being edited locally */
+                    if (amountEl?.dataset.editing === "true") return;
+
+                    if (amountEl) {
+                        amountEl.dataset.amount = row.amount;
+                        amountEl.innerHTML = formatPeso(row.amount);
+                        flashSuccess(amountEl);
+                    }
                 }
             )
             .subscribe((status) => {
@@ -513,17 +676,12 @@
         filterOptions(e.target.value);
     });
 
-    // Prevent closing when clicking inside the menu
-    nameMenu.addEventListener("click", (e) => {
-        e.stopPropagation();
-    });
+    nameMenu.addEventListener("click", (e) => e.stopPropagation());
 
-    // Close on outside click
     document.addEventListener("click", () => {
         if (nameSelect.classList.contains("open")) closeMenu();
     });
 
-    // Close on Escape
     document.addEventListener("keydown", (e) => {
         if (e.key === "Escape" && nameSelect.classList.contains("open")) {
             closeMenu();
@@ -537,10 +695,8 @@
     ========================================================= */
 
     document.addEventListener("DOMContentLoaded", async () => {
-        /* Load registered members for dropdown (admins excluded) */
         await loadUsers();
 
-        /* Prefill selected user if logged in AND they're a member */
         try {
             const { data: { user } } = await supabaseClient.auth.getUser();
 
@@ -551,7 +707,6 @@
                     .eq("id", user.id)
                     .maybeSingle();
 
-                /* Only prefill if this logged-in user is a member */
                 const isMember =
                     String(profile?.role || "").trim().toLowerCase() === "member";
 

@@ -557,7 +557,6 @@ body {
     color: var(--primary);
 }
 
-/* If today is also attended/absent, keep its status border */
 .calendar-day.attended.today,
 .calendar-day.absent.today {
     box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.18);
@@ -893,6 +892,240 @@ body {
 
 
 /* =========================================================
+   EDIT COMMITMENT BUTTON (in progress block)
+========================================================= */
+
+.edit-commitment-btn {
+    margin-top: 1rem;
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 0.7rem 1rem;
+    background: transparent;
+    border: 1px dashed var(--gray-300, #d4d4d4);
+    color: var(--ink, #0a0a0a);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color 0.25s ease, background 0.25s ease,
+                letter-spacing 0.3s ease, color 0.25s ease;
+}
+
+.edit-commitment-btn:hover {
+    border-style: solid;
+    border-color: var(--ink, #0a0a0a);
+    background: var(--gray-50, #f9f9f9);
+    letter-spacing: 2px;
+}
+
+.edit-commitment-icon {
+    font-size: 0.9rem;
+    line-height: 1;
+}
+
+/* =========================================================
+   COMMITMENT MODAL — input & presets
+========================================================= */
+
+.commitment-input-group {
+    margin-bottom: 1.1rem;
+}
+
+.commitment-input-group label {
+    display: block;
+    font-size: 0.68rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gray-500, #737373);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.commitment-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    border: 1.5px solid var(--gray-300, #d4d4d4);
+    background: #fff;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.commitment-input-wrapper:focus-within {
+    border-color: var(--ink, #0a0a0a);
+    box-shadow: 0 0 0 3px rgba(10, 10, 10, 0.05);
+}
+
+.commitment-prefix {
+    padding-left: 0.9rem;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--ink, #0a0a0a);
+    pointer-events: none;
+}
+
+.commitment-input-wrapper input {
+    flex: 1;
+    padding: 0.85rem 0.9rem 0.85rem 0.4rem;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--ink, #0a0a0a);
+    width: 100%;
+}
+
+.commitment-input-wrapper input::placeholder {
+    color: var(--gray-400, #a3a3a3);
+    font-weight: 400;
+}
+
+/* Number spinner removal */
+.commitment-input-wrapper input::-webkit-outer-spin-button,
+.commitment-input-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.commitment-input-wrapper input {
+    -moz-appearance: textfield;
+}
+
+/* Preset buttons */
+.commitment-presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 1.3rem;
+}
+
+.commitment-preset {
+    flex: 1 1 calc(33.333% - 0.3rem);
+    min-width: 80px;
+    padding: 0.55rem 0.5rem;
+    background: var(--gray-50, #f9f9f9);
+    border: 1px solid var(--gray-200, #e5e5e5);
+    color: var(--gray-600, #4a4a4a);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease,
+                color 0.2s ease, transform 0.15s ease;
+}
+
+.commitment-preset:hover {
+    border-color: var(--ink, #0a0a0a);
+    background: #fff;
+    color: var(--ink, #0a0a0a);
+    transform: translateY(-1px);
+}
+
+/* Actions row */
+.commitment-actions {
+    display: flex;
+    gap: 0.6rem;
+    margin-top: 0.4rem;
+}
+
+.commitment-actions .btn-cancel,
+.commitment-actions .btn-confirm {
+    flex: 1;
+    padding: 0.8rem 1rem;
+    font-family: inherit;
+    font-size: 0.72rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: 1px solid var(--ink, #0a0a0a);
+    transition: background 0.3s ease, color 0.3s ease,
+                letter-spacing 0.3s ease;
+}
+
+.commitment-actions .btn-cancel {
+    background: transparent;
+    color: var(--ink, #0a0a0a);
+}
+
+.commitment-actions .btn-cancel:hover {
+    background: var(--gray-100, #f0f0f0);
+}
+
+.commitment-actions .btn-confirm {
+    background: var(--ink, #0a0a0a);
+    color: #fff;
+}
+
+.commitment-actions .btn-confirm:hover {
+    letter-spacing: 2.5px;
+    background: #000;
+}
+
+.commitment-actions .btn-cancel:disabled,
+.commitment-actions .btn-confirm:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Status text */
+.commitment-status {
+    margin-top: 0.9rem;
+    font-size: 0.8rem;
+    text-align: center;
+    min-height: 18px;
+    transition: color 0.25s ease;
+}
+
+.commitment-status.success {
+    color: #166534;
+}
+
+.commitment-status.error {
+    color: #b91c1c;
+}
+
+/* Input error shake */
+.commitment-input-wrapper input.error,
+.commitment-input-wrapper.error {
+    border-color: #b91c1c;
+    animation: shake 0.35s ease;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-5px); }
+    40% { transform: translateX(5px); }
+    60% { transform: translateX(-3px); }
+    80% { transform: translateX(3px); }
+}
+
+/* Mobile tweaks */
+@media (max-width: 480px) {
+    .edit-commitment-btn {
+        font-size: 0.68rem;
+        padding: 0.65rem 0.8rem;
+        letter-spacing: 1.2px;
+    }
+
+    .commitment-preset {
+        flex: 1 1 calc(50% - 0.2rem);
+        font-size: 0.7rem;
+    }
+
+    .commitment-prefix,
+    .commitment-input-wrapper input {
+        font-size: 1rem;
+    }
+}
+
+/* =========================================================
    PERSONAL FIRSTFRUIT SUMMARY CARD
    (only visible when logged in)
 ========================================================= */
@@ -1006,7 +1239,163 @@ body {
     font-weight: 500;
 }
 
-/* Recent list */
+
+/* =========================================================
+   FIRSTFRUIT COMMITMENT PROGRESS
+========================================================= */
+
+.firstfruit-progress {
+    margin-bottom: 1.8rem;
+    padding: 1.2rem 1.2rem 1rem;
+    border: 1px solid var(--gray-200);
+    background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
+    border-radius: 4px;
+    transition: border-color 0.4s ease, background 0.4s ease;
+}
+
+.firstfruit-progress.complete {
+    border-color: #166534;
+    background: linear-gradient(180deg, #f5fbf5 0%, #ecf9ef 100%);
+}
+
+.firstfruit-progress-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1rem;
+    margin-bottom: 0.85rem;
+    flex-wrap: wrap;
+}
+
+.firstfruit-progress-head > div {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.progress-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.66rem;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--gray-400);
+    font-weight: 500;
+}
+
+.progress-amount {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    color: var(--ink);
+    letter-spacing: -0.2px;
+    line-height: 1.2;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.progress-amount strong {
+    font-weight: 700;
+}
+
+.progress-sep {
+    color: var(--gray-400);
+    font-size: 0.9rem;
+    font-weight: 400;
+}
+
+#progressGoal {
+    color: var(--gray-500);
+    font-weight: 400;
+    font-size: 1rem;
+}
+
+.progress-percent {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.9rem;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -1px;
+    line-height: 1;
+    transition: color 0.4s ease, transform 0.3s ease;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+.firstfruit-progress.complete .progress-percent {
+    color: #166534;
+    transform: scale(1.05);
+}
+
+.progress-bar-track {
+    width: 100%;
+    height: 8px;
+    background: var(--gray-100);
+    border-radius: 999px;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 0.7rem;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #0a0a0a 0%, #404040 100%);
+    border-radius: 999px;
+    transition: width 1s cubic-bezier(0.2, 0.9, 0.3, 1),
+                background 0.5s ease;
+    position: relative;
+    min-width: 0;
+}
+
+.progress-bar-fill::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.18) 50%,
+        transparent 100%
+    );
+    animation: progressShimmer 2.2s infinite ease-in-out;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.firstfruit-progress:hover .progress-bar-fill::after {
+    opacity: 1;
+}
+
+@keyframes progressShimmer {
+    0%   { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.firstfruit-progress.complete .progress-bar-fill {
+    background: linear-gradient(90deg, #166534 0%, #22c55e 100%);
+}
+
+.progress-note-msg {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    color: var(--gray-500);
+    font-weight: 300;
+    font-style: italic;
+    margin: 0;
+    transition: color 0.4s ease;
+}
+
+.firstfruit-progress.complete .progress-note-msg {
+    color: #166534;
+    font-weight: 400;
+}
+
+
+/* =========================================================
+   FIRSTFRUIT RECENT LIST
+========================================================= */
+
 .firstfruit-recent h4 {
     font-family: 'Inter', sans-serif;
     font-size: 0.72rem;
@@ -1772,6 +2161,31 @@ footer {
 
     .firstfruit-item-amount {
         font-size: 0.85rem;
+    }
+
+
+    /* -----------------------------------------------------
+       FIRSTFRUIT PROGRESS — small phone
+    ----------------------------------------------------- */
+
+    .firstfruit-progress {
+        padding: 1rem 0.9rem 0.85rem;
+    }
+
+    .progress-amount {
+        font-size: 1rem;
+    }
+
+    #progressGoal {
+        font-size: 0.9rem;
+    }
+
+    .progress-percent {
+        font-size: 1.5rem;
+    }
+
+    .progress-note-msg {
+        font-size: 0.7rem;
     }
 
 

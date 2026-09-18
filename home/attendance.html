@@ -121,7 +121,6 @@
 
         <!-- =========================
              PERSONAL FIRSTFRUIT SUMMARY
-             (only visible when logged in)
         ========================== -->
         <section class="firstfruit-card" id="firstfruitCard" style="display:none;">
 
@@ -147,6 +146,41 @@
                     <span class="stat-value" id="firstfruitLatest">—</span>
                     <small>Last Offering</small>
                 </div>
+            </div>
+
+            <!-- =========================================
+                 COMMITMENT PROGRESS
+            ========================================== -->
+            <div class="firstfruit-progress" id="firstfruitProgress">
+
+                <div class="firstfruit-progress-head">
+                    <div>
+                        <span class="progress-label">Commitment Progress</span>
+                        <span class="progress-amount" id="progressAmount">
+                            <strong id="progressGiven">₱0.00</strong>
+                            <span class="progress-sep">/</span>
+                            <span id="progressGoal">₱10,000.00</span>
+                        </span>
+                    </div>
+                    <span class="progress-percent" id="progressPercent">0%</span>
+                </div>
+
+                <div class="progress-bar-track">
+                    <div class="progress-bar-fill" id="progressFill" style="width: 0%;"></div>
+                </div>
+
+                <p class="progress-note-msg" id="progressNote">
+                    Simulan ang iyong pagbibigay — bawat handog ay mahalaga.
+                </p>
+
+                <!-- =========================================
+                     EDIT COMMITMENT (new)
+                ========================================== -->
+                <button type="button" class="edit-commitment-btn" id="editCommitmentBtn">
+                    <span class="edit-commitment-icon">✎</span>
+                    <span>Set my commitment</span>
+                </button>
+
             </div>
 
             <div class="firstfruit-recent">
@@ -180,7 +214,6 @@
             <h2 class="modal-title" id="modalTitle">September 18, 2026</h2>
             <p class="modal-subtitle">Mark your status for this day.</p>
 
-            <!-- Present option -->
             <div class="modal-options">
                 <button class="modal-option present" id="markPresent" data-value="present">
                     <span class="option-icon">✓</span>
@@ -199,7 +232,6 @@
                 </button>
             </div>
 
-            <!-- Absent reason (hidden until "Absent" clicked) -->
             <div class="modal-reason" id="reasonBlock" style="display:none;">
                 <label for="absentReason">Reason for absence</label>
                 <textarea
@@ -214,10 +246,58 @@
                 </div>
             </div>
 
-            <!-- Remove marking (only shows if a status exists) -->
             <button class="modal-remove" id="removeMark" style="display:none;">
                 Remove marking
             </button>
+
+        </div>
+    </div>
+
+    <!-- =========================================
+         COMMITMENT MODAL (new)
+    ========================================== -->
+    <div class="modal-overlay" id="commitmentModal" style="display:none;">
+        <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="commitmentTitle">
+
+            <button class="modal-close" id="commitmentClose" aria-label="Close">
+                &times;
+            </button>
+
+            <span class="section-label">Commitment</span>
+            <h2 class="modal-title" id="commitmentTitle">Set Your Commitment</h2>
+            <p class="modal-subtitle">
+                Ilagay ang halaga na nais mong maabot para sa iyong firstfruit commitment.
+            </p>
+
+            <div class="commitment-input-group">
+                <label for="commitmentInput">Commitment Amount</label>
+                <div class="commitment-input-wrapper">
+                    <span class="commitment-prefix">₱</span>
+                    <input
+                        type="number"
+                        id="commitmentInput"
+                        placeholder="10000.00"
+                        min="1"
+                        step="0.01"
+                        inputmode="decimal"
+                    >
+                </div>
+            </div>
+
+            <div class="commitment-presets">
+                <button type="button" class="commitment-preset" data-value="1000">₱1,000</button>
+                <button type="button" class="commitment-preset" data-value="5000">₱5,000</button>
+                <button type="button" class="commitment-preset" data-value="10000">₱10,000</button>
+                <button type="button" class="commitment-preset" data-value="20000">₱20,000</button>
+                <button type="button" class="commitment-preset" data-value="50000">₱50,000</button>
+            </div>
+
+            <div class="commitment-actions">
+                <button type="button" class="btn-cancel" id="commitmentCancel">Cancel</button>
+                <button type="button" class="btn-confirm" id="commitmentSave">Save Commitment</button>
+            </div>
+
+            <p class="commitment-status" id="commitmentStatus"></p>
 
         </div>
     </div>
@@ -244,6 +324,12 @@
     const PROFILES_TABLE   = "profiles";
     const ABSENCES_TABLE   = "absences";
     const ATTENDANCE_TABLE = "attendance";
+
+    /* Default commitment — used if the user hasn't set one */
+    const DEFAULT_COMMITMENT = 10000;
+
+    /* The current user's commitment goal (loaded from profiles) */
+    let userCommitment = DEFAULT_COMMITMENT;
 
 
     /* =========================================================
@@ -311,8 +397,13 @@
 
 
     /* =========================================================
-       PERSONAL FIRSTFRUIT SUMMARY (logged-in user only)
+       PERSONAL FIRSTFRUIT SUMMARY
     ========================================================= */
+
+    let firstfruitsChannel = null;
+    let currentUsername    = null;
+    let currentUserId      = null;
+
 
     async function loadFirstfruits() {
         const card = document.getElementById("firstfruitCard");
@@ -322,14 +413,21 @@
             const { data: { user } } = await supabaseClient.auth.getUser();
             if (!user) { card.style.display = "none"; return; }
 
+            currentUserId = user.id;
+
             const { data: profile } = await supabaseClient
                 .from(PROFILES_TABLE)
-                .select("username")
+                .select("username, commitment_goal")
                 .eq("id", user.id)
                 .maybeSingle();
 
             const username = profile?.username;
             if (!username) { card.style.display = "none"; return; }
+
+            currentUsername = username;
+
+            /* Load commitment goal (fallback to default) */
+            userCommitment = Number(profile?.commitment_goal) || DEFAULT_COMMITMENT;
 
             const { data, error } = await supabaseClient
                 .from(TABLE)
@@ -339,52 +437,45 @@
 
             if (error) throw error;
 
-            const rows = data || [];
-            const total  = rows.reduce((sum, r) => sum + Number(r.amount), 0);
-            const count  = rows.length;
-            const latest = rows[0]?.created_at;
-
-            document.getElementById("firstfruitTotal").textContent   = formatPeso(total);
-            document.getElementById("firstfruitEntries").textContent = count;
-            document.getElementById("firstfruitCount").textContent   = count;
-
-            document.getElementById("firstfruitLatest").textContent =
-                latest ? formatDate(latest) : "—";
-
-            const listEl  = document.getElementById("firstfruitList");
-            const emptyEl = document.getElementById("firstfruitEmpty");
-            listEl.innerHTML = "";
-
-            if (!rows.length) {
-                listEl.style.display  = "none";
-                emptyEl.style.display = "block";
-            } else {
-                listEl.style.display  = "flex";
-                emptyEl.style.display = "none";
-
-                rows.slice(0, 5).forEach((row) => {
-                    const li = document.createElement("li");
-                    li.className = "firstfruit-item";
-                    li.innerHTML = `
-                        <span class="firstfruit-item-date">${escapeHTML(formatDate(row.created_at))}</span>
-                        <span class="firstfruit-item-amount">${formatPeso(row.amount)}</span>
-                    `;
-                    listEl.appendChild(li);
-                });
-            }
-
+            renderFirstfruitCard(data || []);
             card.style.display = "block";
 
-            supabaseClient
+            /* Realtime channel */
+            if (firstfruitsChannel) {
+                supabaseClient.removeChannel(firstfruitsChannel);
+            }
+
+            firstfruitsChannel = supabaseClient
                 .channel("my-firstfruits-" + user.id)
                 .on(
                     "postgres_changes",
-                    { event: "INSERT", schema: "public", table: TABLE },
-                    (payload) => {
-                        if (payload.new?.name === username) {
-                            loadFirstfruits();
-                        }
-                    }
+                    {
+                        event: "INSERT",
+                        schema: "public",
+                        table: TABLE,
+                        filter: `name=eq.${username}`
+                    },
+                    () => refreshFirstfruits()
+                )
+                .on(
+                    "postgres_changes",
+                    {
+                        event: "UPDATE",
+                        schema: "public",
+                        table: TABLE,
+                        filter: `name=eq.${username}`
+                    },
+                    () => refreshFirstfruits()
+                )
+                .on(
+                    "postgres_changes",
+                    {
+                        event: "DELETE",
+                        schema: "public",
+                        table: TABLE,
+                        filter: `name=eq.${username}`
+                    },
+                    () => refreshFirstfruits()
                 )
                 .subscribe();
 
@@ -393,6 +484,254 @@
             card.style.display = "none";
         }
     }
+
+
+    async function refreshFirstfruits() {
+        if (!currentUsername) return;
+
+        try {
+            const { data, error } = await supabaseClient
+                .from(TABLE)
+                .select("id, name, amount, created_at")
+                .eq("name", currentUsername)
+                .order("created_at", { ascending: false });
+
+            if (error) throw error;
+
+            renderFirstfruitCard(data || []);
+        } catch (err) {
+            console.error("Firstfruit refresh error:", err);
+        }
+    }
+
+
+    function renderFirstfruitCard(rows) {
+        const total  = rows.reduce((sum, r) => sum + Number(r.amount), 0);
+        const count  = rows.length;
+        const latest = rows[0]?.created_at;
+
+        document.getElementById("firstfruitTotal").textContent   = formatPeso(total);
+        document.getElementById("firstfruitEntries").textContent = count;
+        document.getElementById("firstfruitCount").textContent   = count;
+
+        document.getElementById("firstfruitLatest").textContent =
+            latest ? formatDate(latest) : "—";
+
+        updateProgressBar(total);
+
+        const listEl  = document.getElementById("firstfruitList");
+        const emptyEl = document.getElementById("firstfruitEmpty");
+        listEl.innerHTML = "";
+
+        if (!rows.length) {
+            listEl.style.display  = "none";
+            emptyEl.style.display = "block";
+        } else {
+            listEl.style.display  = "flex";
+            emptyEl.style.display = "none";
+
+            rows.slice(0, 5).forEach((row) => {
+                const li = document.createElement("li");
+                li.className = "firstfruit-item";
+                li.dataset.id = row.id;
+                li.innerHTML = `
+                    <span class="firstfruit-item-date">${escapeHTML(formatDate(row.created_at))}</span>
+                    <span class="firstfruit-item-amount">${formatPeso(row.amount)}</span>
+                `;
+                listEl.appendChild(li);
+            });
+        }
+    }
+
+
+    /* =========================================================
+       COMMITMENT PROGRESS BAR
+    ========================================================= */
+
+    function updateProgressBar(totalGiven) {
+
+        const givenEl   = document.getElementById("progressGiven");
+        const goalEl    = document.getElementById("progressGoal");
+        const percentEl = document.getElementById("progressPercent");
+        const fillEl    = document.getElementById("progressFill");
+        const noteEl    = document.getElementById("progressNote");
+        const wrapperEl = document.getElementById("firstfruitProgress");
+
+        if (!givenEl || !goalEl || !percentEl || !fillEl) return;
+
+        const goal = userCommitment || DEFAULT_COMMITMENT;
+
+        const rawPercent  = goal > 0 ? (totalGiven / goal) * 100 : 0;
+        const cappedWidth = Math.min(rawPercent, 100);
+        const displayPct  = Math.round(rawPercent);
+
+        givenEl.textContent   = formatPeso(totalGiven);
+        goalEl.textContent    = formatPeso(goal);
+        percentEl.textContent = displayPct + "%";
+
+        fillEl.style.width = cappedWidth + "%";
+
+        const isComplete = rawPercent >= 100;
+        if (wrapperEl) wrapperEl.classList.toggle("complete", isComplete);
+
+        if (noteEl) {
+            if (totalGiven === 0) {
+                noteEl.textContent = "Simulan ang iyong pagbibigay — bawat handog ay mahalaga.";
+            } else if (rawPercent >= 100) {
+                noteEl.textContent = "🎉 Naabot mo na ang iyong commitment. Maraming salamat!";
+            } else if (rawPercent >= 75) {
+                noteEl.textContent = "Malapit na — kaunting hakbang pa!";
+            } else if (rawPercent >= 50) {
+                noteEl.textContent = "Kalahati na! Patuloy lang.";
+            } else if (rawPercent >= 25) {
+                noteEl.textContent = "Mabuting simula. Ituloy mo lang.";
+            } else {
+                noteEl.textContent = "Bawat handog ay may halaga.";
+            }
+        }
+    }
+
+
+    /* =========================================================
+       COMMITMENT MODAL
+    ========================================================= */
+
+    const commitmentModal   = document.getElementById("commitmentModal");
+    const commitmentClose   = document.getElementById("commitmentClose");
+    const commitmentInput   = document.getElementById("commitmentInput");
+    const commitmentCancel  = document.getElementById("commitmentCancel");
+    const commitmentSave    = document.getElementById("commitmentSave");
+    const commitmentStatus  = document.getElementById("commitmentStatus");
+    const editCommitmentBtn = document.getElementById("editCommitmentBtn");
+    const presetButtons     = document.querySelectorAll(".commitment-preset");
+
+
+    function openCommitmentModal() {
+        commitmentModal.style.display = "flex";
+        document.body.style.overflow = "hidden";
+
+        /* Prefill with current goal */
+        commitmentInput.value = Number(userCommitment).toFixed(2);
+        commitmentStatus.textContent = "";
+        commitmentStatus.classList.remove("success", "error");
+
+        setTimeout(() => {
+            commitmentInput.focus();
+            commitmentInput.select();
+        }, 80);
+    }
+
+
+    function closeCommitmentModal() {
+        commitmentModal.style.display = "none";
+        document.body.style.overflow = "";
+        commitmentStatus.textContent = "";
+        commitmentStatus.classList.remove("success", "error");
+        commitmentInput.classList.remove("error");
+    }
+
+
+    async function saveCommitment() {
+        const value = parseFloat(commitmentInput.value);
+
+        if (!Number.isFinite(value) || value <= 0) {
+            commitmentInput.classList.add("error");
+            commitmentStatus.textContent = "Please enter a valid amount greater than 0.";
+            commitmentStatus.classList.remove("success");
+            commitmentStatus.classList.add("error");
+            commitmentInput.focus();
+            return;
+        }
+        commitmentInput.classList.remove("error");
+
+        commitmentSave.disabled = true;
+        commitmentCancel.disabled = true;
+        commitmentStatus.textContent = "Saving…";
+        commitmentStatus.classList.remove("success", "error");
+
+        try {
+            if (!currentUserId) throw new Error("Not signed in.");
+
+            const { data, error } = await supabaseClient
+                .from(PROFILES_TABLE)
+                .update({ commitment_goal: value })
+                .eq("id", currentUserId)
+                .select("commitment_goal")
+                .single();
+
+            if (error) throw error;
+
+            if (!data) {
+                throw new Error(
+                    "Commitment could not be saved. Make sure the `profiles` table has an UPDATE policy for your own row."
+                );
+            }
+
+            /* Update local state */
+            userCommitment = Number(data.commitment_goal) || value;
+
+            /* Redraw progress bar with new goal */
+            const totalEl = document.getElementById("firstfruitTotal");
+            const total = parseFloat(
+                (totalEl?.textContent || "0").replace(/[₱,]/g, "")
+            ) || 0;
+            updateProgressBar(total);
+
+            commitmentStatus.textContent = `Commitment saved: ${formatPeso(userCommitment)}.`;
+            commitmentStatus.classList.remove("error");
+            commitmentStatus.classList.add("success");
+
+            setTimeout(closeCommitmentModal, 900);
+
+        } catch (err) {
+            console.error("Commitment save error:", err);
+            commitmentStatus.textContent =
+                err.message || "Could not save commitment.";
+            commitmentStatus.classList.remove("success");
+            commitmentStatus.classList.add("error");
+        } finally {
+            commitmentSave.disabled = false;
+            commitmentCancel.disabled = false;
+        }
+    }
+
+
+    /* Event listeners */
+    if (editCommitmentBtn) {
+        editCommitmentBtn.addEventListener("click", openCommitmentModal);
+    }
+    if (commitmentClose) {
+        commitmentClose.addEventListener("click", closeCommitmentModal);
+    }
+    if (commitmentCancel) {
+        commitmentCancel.addEventListener("click", closeCommitmentModal);
+    }
+    if (commitmentSave) {
+        commitmentSave.addEventListener("click", saveCommitment);
+    }
+    if (commitmentModal) {
+        commitmentModal.addEventListener("click", (e) => {
+            if (e.target === commitmentModal) closeCommitmentModal();
+        });
+    }
+    if (commitmentInput) {
+        commitmentInput.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") { e.preventDefault(); saveCommitment(); }
+            if (e.key === "Escape") { e.preventDefault(); closeCommitmentModal(); }
+        });
+    }
+
+    /* Preset buttons */
+    presetButtons.forEach(btn => {
+        btn.addEventListener("click", () => {
+            const val = parseFloat(btn.dataset.value);
+            if (Number.isFinite(val)) {
+                commitmentInput.value = val.toFixed(2);
+                commitmentInput.focus();
+                commitmentInput.select();
+            }
+        });
+    });
 
 
     /* =========================================================
@@ -419,11 +758,8 @@
 
         hamburger.addEventListener("click", function (event) {
             event.stopPropagation();
-            if (sidebar.classList.contains("open")) {
-                closeSidebar();
-            } else {
-                openSidebar();
-            }
+            if (sidebar.classList.contains("open")) closeSidebar();
+            else openSidebar();
         });
 
         if (overlay) overlay.addEventListener("click", closeSidebar);
@@ -448,17 +784,11 @@
 
 
     /* =========================================================
-       ATTENDANCE STATE — backed by Supabase (per-user)
-       Format: { "YYYY-MM-DD": { status: "present" | "absent", reason?: "..." } }
+       ATTENDANCE STATE
     ========================================================= */
 
     let attendanceData = {};
-    let currentUserId  = null;
 
-
-    /* ---------------------------------------------------------
-       Load this user's attendance from Supabase
-    --------------------------------------------------------- */
     async function loadAttendanceFromSupabase() {
         try {
             const { data: { user } } = await supabaseClient.auth.getUser();
@@ -478,7 +808,6 @@
 
             if (error) throw error;
 
-            /* Reset and rebuild */
             attendanceData = {};
 
             (data || []).forEach(row => {
@@ -488,11 +817,6 @@
                 };
             });
 
-            console.log(
-                "Attendance loaded for user:", user.id,
-                "→", Object.keys(attendanceData).length, "entries"
-            );
-
         } catch (err) {
             console.error("Attendance load error:", err);
             attendanceData = {};
@@ -500,9 +824,6 @@
     }
 
 
-    /* ---------------------------------------------------------
-       Save one day's status to Supabase
-    --------------------------------------------------------- */
     async function saveAttendanceToSupabase(dateKey) {
         if (!currentUserId) return;
 
@@ -531,9 +852,6 @@
     }
 
 
-    /* ---------------------------------------------------------
-       Remove one day's status from Supabase
-    --------------------------------------------------------- */
     async function removeAttendanceFromSupabase(dateKey) {
         if (!currentUserId) return;
 
@@ -551,10 +869,6 @@
         }
     }
 
-
-    /* =========================================================
-       SUPABASE SYNC — ABSENCES (for department admin view)
-    ========================================================= */
 
     async function saveAbsenceToSupabase(dateKey, reason) {
         try {
@@ -635,14 +949,12 @@
         const firstDay    = new Date(year, month, 1).getDay();
         const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-        /* Empty cells */
         for (let i = 0; i < firstDay; i++) {
             const emptyDay = document.createElement("div");
             emptyDay.classList.add("calendar-day", "empty");
             calendarDays.appendChild(emptyDay);
         }
 
-        /* Days */
         for (let day = 1; day <= daysInMonth; day++) {
 
             const dayElement = document.createElement("div");
@@ -666,7 +978,6 @@
                 dayElement.classList.add("absent");
             }
 
-            /* Today */
             const today = new Date();
             if (
                 day === today.getDate() &&
@@ -676,7 +987,6 @@
                 dayElement.classList.add("today");
             }
 
-            /* Click → open modal */
             dayElement.addEventListener("click", () => openAttendanceModal(dateKey));
 
             calendarDays.appendChild(dayElement);
@@ -751,12 +1061,10 @@
 
         modalTitle.textContent = formatDisplayDate(dateKey);
 
-        /* Reset inner state */
         reasonBlock.style.display = "none";
         absentReason.value = "";
         removeMark.style.display = "none";
 
-        /* Prefill existing */
         const entry = attendanceData[dateKey];
         if (entry) {
             removeMark.style.display = "block";
@@ -786,12 +1094,10 @@
 
     modalClose.addEventListener("click", closeAttendanceModal);
 
-    /* Click outside closes */
     modal.addEventListener("click", (e) => {
         if (e.target === modal) closeAttendanceModal();
     });
 
-    /* Escape closes */
     document.addEventListener("keydown", (e) => {
         if (e.key === "Escape" && modal.style.display === "flex") {
             closeAttendanceModal();
@@ -799,9 +1105,6 @@
     });
 
 
-    /* ---------------------------------------------------------
-       Present → save to Supabase attendance, remove any absence
-    --------------------------------------------------------- */
     markPresent.addEventListener("click", async () => {
         if (!activeDateKey) return;
 
@@ -812,7 +1115,6 @@
 
         renderCalendar();
 
-        /* Sync to Supabase */
         await saveAttendanceToSupabase(activeDateKey);
         await removeAbsenceFromSupabase(activeDateKey);
 
@@ -820,9 +1122,6 @@
     });
 
 
-    /* ---------------------------------------------------------
-       Absent → reveal reason textarea
-    --------------------------------------------------------- */
     markAbsent.addEventListener("click", () => {
         if (!activeDateKey) return;
 
@@ -840,9 +1139,6 @@
     });
 
 
-    /* ---------------------------------------------------------
-       Cancel reason
-    --------------------------------------------------------- */
     cancelReason.addEventListener("click", () => {
         reasonBlock.style.display = "none";
         absentReason.value = "";
@@ -854,9 +1150,6 @@
     });
 
 
-    /* ---------------------------------------------------------
-       Confirm absent → save to Supabase (attendance + absences)
-    --------------------------------------------------------- */
     confirmAbsent.addEventListener("click", async () => {
         if (!activeDateKey) return;
 
@@ -876,7 +1169,6 @@
 
         renderCalendar();
 
-        /* Sync to Supabase — both tables */
         await saveAttendanceToSupabase(activeDateKey);
         await saveAbsenceToSupabase(activeDateKey, reason);
 
@@ -884,9 +1176,6 @@
     });
 
 
-    /* ---------------------------------------------------------
-       Remove marking → clear from Supabase
-    --------------------------------------------------------- */
     removeMark.addEventListener("click", async () => {
         if (!activeDateKey) return;
 
@@ -894,7 +1183,6 @@
 
         renderCalendar();
 
-        /* Sync to Supabase */
         await removeAttendanceFromSupabase(activeDateKey);
         await removeAbsenceFromSupabase(activeDateKey);
 
@@ -953,7 +1241,6 @@
         setActiveNavLink();
         loadFirstfruits();
 
-        /* Load this user's attendance BEFORE rendering the calendar */
         await loadAttendanceFromSupabase();
         renderCalendar();
 
