@@ -17,6 +17,31 @@ const PROFILES_TABLE   = "profiles";
 
 
 /* =========================================================
+   SHARED STATE
+========================================================= */
+
+let currentReflections   = [];     // cache for the reply modal
+let currentReflectionId  = null;   // ID of the reflection open in the reply modal
+
+let currentAbsences      = [];     // cache for the absence modal
+let currentAbsenceId     = null;   // ID of the absence open in the modal
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHtml(str) {
+    return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+
+/* =========================================================
    TIME-BASED GREETING
 ========================================================= */
 
@@ -82,15 +107,270 @@ async function loadAdminGreeting() {
 
 
 /* =========================================================
-   ABSENCES — state
+   REFLECTIONS — LOAD & RENDER
 ========================================================= */
 
-let currentAbsences   = [];       // cached list
-let currentAbsenceId  = null;     // currently open in modal
+async function loadDepartmentReflections() {
+
+    const container = document.getElementById("reflectionsContainer");
+    if (!container) return;
+
+    try {
+
+        const { data: reflections, error: reflectionsError } =
+            await supabaseClient
+                .from("reflections")
+                .select("id, content, created_at, user_id, department, admin_reply, replied_at")
+                .eq("department", DEPARTMENT_NAME)
+                .order("created_at", { ascending: false });
+
+        if (reflectionsError) {
+            console.error("Reflections fetch error:", reflectionsError);
+            container.innerHTML =
+                `<p class="error-text">Failed to load reflections: ${reflectionsError.message}</p>`;
+            return;
+        }
+
+        if (!reflections || reflections.length === 0) {
+            container.innerHTML =
+                `<p class="empty-text">No reflections submitted yet.</p>`;
+            currentReflections = [];
+            return;
+        }
+
+        /* Fetch usernames for all reflection authors */
+        const userIds = [...new Set(reflections.map(r => r.user_id))];
+
+        const { data: profiles, error: profilesError } = await supabaseClient
+            .from(PROFILES_TABLE)
+            .select("id, username")
+            .in("id", userIds);
+
+        if (profilesError) {
+            console.warn("Could not load usernames:", profilesError);
+        }
+
+        const usernameMap = {};
+        (profiles || []).forEach(p => {
+            usernameMap[p.id] = p.username;
+        });
+
+        /* Cache for reply modal lookups */
+        currentReflections = reflections;
+
+        /* Render */
+        container.innerHTML = reflections.map(r => {
+            const rawName = usernameMap[r.user_id] || "Unknown Member";
+            const safeName = escapeHtml(rawName);
+            const dateStr = new Date(r.created_at).toLocaleString();
+
+            const hasReply = r.admin_reply && r.admin_reply.trim().length > 0;
+
+            const replyHTML = hasReply
+                ? `
+                    <div class="reflection-reply-display">
+                        <div class="reflection-reply-header">
+                            <span class="reflection-reply-label">Admin Reply</span>
+                            <span class="reflection-reply-date">
+                                ${r.replied_at ? new Date(r.replied_at).toLocaleString() : ""}
+                            </span>
+                        </div>
+                        <p class="reflection-reply-text">${escapeHtml(r.admin_reply)}</p>
+                    </div>
+                `
+                : "";
+
+            return `
+                <div class="reflection-card" data-id="${r.id}">
+                    <div class="reflection-header">
+                        <span class="reflection-sender">${safeName}</span>
+                        <span class="reflection-date">${dateStr}</span>
+                    </div>
+                    <p class="reflection-content">${escapeHtml(r.content)}</p>
+
+                    ${replyHTML}
+
+                    <button
+                        type="button"
+                        class="reflection-reply-btn"
+                        data-id="${r.id}"
+                    >
+                        ${hasReply ? "Edit Reply" : "Reply"}
+                    </button>
+                </div>
+            `;
+        }).join("");
+
+        /* Attach reply button handlers */
+        container.querySelectorAll(".reflection-reply-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                openReplyModal(btn.dataset.id);
+            });
+        });
+
+    } catch (err) {
+        console.error("Unexpected error:", err);
+        container.innerHTML =
+            `<p class="error-text">Something went wrong loading reflections.</p>`;
+    }
+}
 
 
 /* =========================================================
-   LOAD ABSENCES
+   REPLY MODAL
+========================================================= */
+
+const replyModal        = document.getElementById("replyModal");
+const replyModalClose   = document.getElementById("replyModalClose");
+const replyModalDate    = document.getElementById("replyModalDate");
+const replyOriginalText = document.getElementById("replyOriginalText");
+const replyInput        = document.getElementById("replyInput");
+const replyCancel       = document.getElementById("replyCancel");
+const replySave         = document.getElementById("replySave");
+const replyStatus       = document.getElementById("replyStatus");
+
+
+function openReplyModal(reflectionId) {
+    const reflection = currentReflections.find(
+        r => String(r.id) === String(reflectionId)
+    );
+    if (!reflection) return;
+
+    currentReflectionId = reflectionId;
+
+    /* Header */
+    replyModalDate.textContent =
+        new Date(reflection.created_at).toLocaleString();
+
+    /* Original text preview */
+    replyOriginalText.textContent = reflection.content;
+
+    /* Prefill reply if editing */
+    replyInput.value = reflection.admin_reply || "";
+
+    replyStatus.textContent = "";
+    replyStatus.classList.remove("success", "error");
+
+    replyModal.style.display = "flex";
+    document.body.style.overflow = "hidden";
+
+    setTimeout(() => {
+        replyInput.focus();
+        replyInput.select();
+    }, 80);
+}
+
+
+function closeReplyModal() {
+    replyModal.style.display = "none";
+    document.body.style.overflow = "";
+    currentReflectionId = null;
+    replyStatus.textContent = "";
+    replyStatus.classList.remove("success", "error");
+}
+
+
+async function saveReply() {
+    if (!currentReflectionId) return;
+
+    const replyText = replyInput.value.trim();
+
+    if (!replyText) {
+        replyStatus.textContent = "Please write a reply before saving.";
+        replyStatus.classList.remove("success");
+        replyStatus.classList.add("error");
+        replyInput.focus();
+        return;
+    }
+
+    replySave.disabled = true;
+    replyCancel.disabled = true;
+    replyStatus.textContent = "Saving…";
+    replyStatus.classList.remove("success", "error");
+
+    try {
+        const { data, error } = await supabaseClient
+            .from("reflections")
+            .update({
+                admin_reply: replyText,
+                replied_at:  new Date().toISOString()
+            })
+            .eq("id", currentReflectionId)
+            .select("admin_reply, replied_at")
+            .single();
+
+        if (error) throw error;
+
+        if (!data) {
+            throw new Error(
+                "Reply could not be saved. Check the `reflections` table has an UPDATE policy."
+            );
+        }
+
+        replyStatus.textContent = "✓ Reply sent.";
+        replyStatus.classList.remove("error");
+        replyStatus.classList.add("success");
+
+        /* Update cache */
+        const r = currentReflections.find(
+            x => String(x.id) === String(currentReflectionId)
+        );
+        if (r) {
+            r.admin_reply = data.admin_reply;
+            r.replied_at  = data.replied_at;
+        }
+
+        setTimeout(async () => {
+            closeReplyModal();
+            await loadDepartmentReflections();
+        }, 700);
+
+    } catch (err) {
+        console.error("Save reply error:", err);
+        replyStatus.textContent =
+            err.message || "Could not save reply. Please try again.";
+        replyStatus.classList.remove("success");
+        replyStatus.classList.add("error");
+    } finally {
+        replySave.disabled = false;
+        replyCancel.disabled = false;
+    }
+}
+
+
+/* Reply modal event wiring */
+if (replyModalClose) replyModalClose.addEventListener("click", closeReplyModal);
+if (replyCancel)     replyCancel.addEventListener("click", closeReplyModal);
+if (replySave)       replySave.addEventListener("click", saveReply);
+
+if (replyModal) {
+    replyModal.addEventListener("click", (e) => {
+        if (e.target === replyModal) closeReplyModal();
+    });
+}
+
+if (replyInput) {
+    replyInput.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+            e.preventDefault();
+            closeReplyModal();
+        }
+        if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+            e.preventDefault();
+            saveReply();
+        }
+    });
+}
+
+document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && replyModal?.style.display === "flex") {
+        closeReplyModal();
+    }
+});
+
+
+/* =========================================================
+   ABSENCES — LOAD & RENDER
 ========================================================= */
 
 async function loadAbsences() {
@@ -246,7 +526,7 @@ function formatAbsenceDate(dateStr) {
 
 
 /* =========================================================
-   REALTIME — Absences
+   ABSENCES — REALTIME
 ========================================================= */
 
 function subscribeAbsences() {
@@ -287,20 +567,20 @@ function subscribeAbsences() {
    ABSENCE DETAIL MODAL — Noted toggle
 ========================================================= */
 
-const absenceModal       = document.getElementById("absenceModal");
-const absenceModalClose  = document.getElementById("absenceModalClose");
-const absenceModalTitle  = document.getElementById("absenceModalTitle");
-const absenceModalDate   = document.getElementById("absenceModalDate");
-const absenceModalAvatar = document.getElementById("absenceModalAvatar");
-const absenceModalName   = document.getElementById("absenceModalName");
-const absenceModalDept   = document.getElementById("absenceModalDept");
-const absenceModalReason = document.getElementById("absenceModalReason");
+const absenceModal        = document.getElementById("absenceModal");
+const absenceModalClose   = document.getElementById("absenceModalClose");
+const absenceModalTitle   = document.getElementById("absenceModalTitle");
+const absenceModalDate    = document.getElementById("absenceModalDate");
+const absenceModalAvatar  = document.getElementById("absenceModalAvatar");
+const absenceModalName    = document.getElementById("absenceModalName");
+const absenceModalDept    = document.getElementById("absenceModalDept");
+const absenceModalReason  = document.getElementById("absenceModalReason");
 
-const absenceNotedBtn    = document.getElementById("absenceNotedBtn");
-const absenceNotedIcon   = document.getElementById("absenceNotedIcon");
-const absenceNotedLabel  = document.getElementById("absenceNotedLabel");
-const absenceNotedHint   = document.getElementById("absenceNotedHint");
-const absenceNoteCancel  = document.getElementById("absenceNoteCancel");
+const absenceNotedBtn     = document.getElementById("absenceNotedBtn");
+const absenceNotedIcon    = document.getElementById("absenceNotedIcon");
+const absenceNotedLabel   = document.getElementById("absenceNotedLabel");
+const absenceNotedHint    = document.getElementById("absenceNotedHint");
+const absenceNoteCancel   = document.getElementById("absenceNoteCancel");
 
 
 function openAbsenceModal(id) {
@@ -309,8 +589,8 @@ function openAbsenceModal(id) {
 
     currentAbsenceId = id;
 
-    absenceModalTitle.textContent = row.username || "Absence Detail";
-    absenceModalDate.textContent  = formatAbsenceDate(row.absence_date);
+    absenceModalTitle.textContent  = row.username || "Absence Detail";
+    absenceModalDate.textContent   = formatAbsenceDate(row.absence_date);
 
     absenceModalAvatar.textContent = (row.username || "?").charAt(0).toUpperCase();
     absenceModalName.textContent   = row.username || "—";
@@ -319,9 +599,8 @@ function openAbsenceModal(id) {
 
     /* Set the Noted button state from the row */
     const isNoted = !!(row.admin_note && row.admin_note.trim().length > 0);
-    applyNotedState(isNoted, /* animate = */ false);
+    applyNotedState(isNoted, false);
 
-    /* Reset hint color in case of a previous error */
     if (absenceNotedHint) absenceNotedHint.style.color = "";
 
     absenceModal.style.display = "flex";
@@ -343,7 +622,7 @@ function applyNotedState(isNoted, animate = true) {
     absenceNotedBtn.setAttribute("aria-pressed", isNoted ? "true" : "false");
 
     if (absenceNotedIcon)  absenceNotedIcon.textContent  = isNoted ? "✓" : "○";
-    if (absenceNotedLabel) absenceNotedLabel.textContent = isNoted ? "Noted" : "Noted";
+    if (absenceNotedLabel) absenceNotedLabel.textContent = "Noted";
 
     if (absenceNotedHint) {
         absenceNotedHint.textContent = isNoted
@@ -361,12 +640,13 @@ function applyNotedState(isNoted, animate = true) {
 }
 
 
-/* Toggle handler */
 if (absenceNotedBtn) {
     absenceNotedBtn.addEventListener("click", async () => {
         if (!currentAbsenceId) return;
 
-        const row = currentAbsences.find(r => String(r.id) === String(currentAbsenceId));
+        const row = currentAbsences.find(
+            r => String(r.id) === String(currentAbsenceId)
+        );
         if (!row) return;
 
         /* Only real `absences` rows can be toggled */
@@ -390,9 +670,7 @@ if (absenceNotedBtn) {
         try {
             const { data, error } = await supabaseClient
                 .from(ABSENCES_TABLE)
-                .update({
-                    admin_note: nextNoted ? "Noted" : null
-                })
+                .update({ admin_note: nextNoted ? "Noted" : null })
                 .eq("id", currentAbsenceId)
                 .select("admin_note")
                 .single();
@@ -405,13 +683,9 @@ if (absenceNotedBtn) {
                 );
             }
 
-            /* Update cached row */
             row.admin_note = data.admin_note;
 
-            /* Refresh button visual */
             applyNotedState(nextNoted);
-
-            /* Refresh the list badge */
             refreshAbsenceBadge(currentAbsenceId, nextNoted);
 
         } catch (err) {
@@ -446,97 +720,21 @@ function refreshAbsenceBadge(id, hasNote) {
 }
 
 
-/* Modal event listeners */
-if (absenceModalClose) {
-    absenceModalClose.addEventListener("click", closeAbsenceModal);
-}
-if (absenceNoteCancel) {
-    absenceNoteCancel.addEventListener("click", closeAbsenceModal);
-}
+/* Absence modal event wiring */
+if (absenceModalClose) absenceModalClose.addEventListener("click", closeAbsenceModal);
+if (absenceNoteCancel) absenceNoteCancel.addEventListener("click", closeAbsenceModal);
+
 if (absenceModal) {
     absenceModal.addEventListener("click", (e) => {
         if (e.target === absenceModal) closeAbsenceModal();
     });
 }
+
 document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && absenceModal?.style.display === "flex") {
         closeAbsenceModal();
     }
 });
-
-
-/* =========================================================
-   LOAD DEPARTMENT REFLECTIONS
-========================================================= */
-
-async function loadDepartmentReflections() {
-
-    const container = document.getElementById("reflectionsContainer");
-    if (!container) return;
-
-    try {
-
-        const { data: reflections, error: reflectionsError } =
-            await supabaseClient
-                .from("reflections")
-                .select("id, content, created_at, user_id, department")
-                .eq("department", DEPARTMENT_NAME)
-                .order("created_at", { ascending: false });
-
-        if (reflectionsError) {
-            console.error("Reflections fetch error:", reflectionsError);
-            container.innerHTML =
-                `<p class="error-text">Failed to load reflections: ${reflectionsError.message}</p>`;
-            return;
-        }
-
-        if (!reflections || reflections.length === 0) {
-            container.innerHTML =
-                `<p class="empty-text">No reflections submitted yet.</p>`;
-            return;
-        }
-
-        const userIds = [...new Set(reflections.map(r => r.user_id))];
-
-        const { data: profiles, error: profilesError } =
-            await supabaseClient
-                .from(PROFILES_TABLE)
-                .select("id, username")
-                .in("id", userIds);
-
-        if (profilesError) {
-            console.warn("Could not load usernames:", profilesError);
-        }
-
-        const usernameMap = {};
-        (profiles || []).forEach(p => {
-            usernameMap[p.id] = p.username;
-        });
-
-        container.innerHTML = reflections.map(r => {
-
-            const rawName = usernameMap[r.user_id] || "Unknown Member";
-            const safeName = escapeHtml(rawName);
-
-            const dateStr = new Date(r.created_at).toLocaleString();
-
-            return `
-            <div class="reflection-card">
-                <div class="reflection-header">
-                    <span class="reflection-sender">${safeName}</span>
-                    <span class="reflection-date">${dateStr}</span>
-                </div>
-                <p class="reflection-content">${escapeHtml(r.content)}</p>
-            </div>
-        `;
-        }).join("");
-
-    } catch (err) {
-        console.error("Unexpected error:", err);
-        container.innerHTML =
-            `<p class="error-text">Something went wrong loading reflections.</p>`;
-    }
-}
 
 
 /* =========================================================
@@ -554,7 +752,7 @@ function getCurrentMonthKey() {
 
 
 /* =========================================================
-   LOAD MEMBER PROGRESS
+   MEMBER PROGRESS
 ========================================================= */
 
 async function loadMemberProgress() {
@@ -665,27 +863,13 @@ async function loadMemberProgress() {
 
 
 /* =========================================================
-   ESCAPE HTML
-========================================================= */
-
-function escapeHtml(str) {
-    return String(str)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
-
-
-/* =========================================================
    HAMBURGER MENU
 ========================================================= */
 
 function setupHamburger() {
 
     const hamburger = document.getElementById("hamburgerBtn");
-    const sidebar = document.getElementById("sidebar");
+    const sidebar   = document.getElementById("sidebar");
 
     if (!hamburger || !sidebar) return;
 

@@ -51,7 +51,7 @@
             <ul>
                 <li><a href="main.html">Home</a></li>
                 <li><a href="documentation.html">G.R.O.W.T.H</a></li>
-                <li><a href="attendance.html">Attendance & Firstfruit</a></li>
+                <li><a href="attendance.html">Attendance at Firstfruit</a></li>
                 <li><a href="profile.html">Profile</a></li>
             </ul>
         </nav>
@@ -62,7 +62,7 @@
     </div>
 
 
-    <!-- =======    ==================================
+    <!-- =========================================
          DASHBOARD HEADER
     ========================================== -->
     <div class="dashboard">
@@ -118,7 +118,7 @@
 
 
     <!-- =========================================
-         G.R.O.W.T.H DAILY CHECKLIST
+         G.R.O.W.T.H DAILY CHECKLIST — CALENDAR VIEW
     ========================================== -->
     <section class="checklist-section">
 
@@ -135,262 +135,30 @@
             </p>
         </div>
 
-        <div class="checklist-table-wrapper">
-            <table class="checklist-table">
-                <thead>
-                    <tr>
-                        <th class="letter-col"></th>
-                        <th>1</th>
-                        <th>2</th>
-                        <th>3</th>
-                        <th>4</th>
-                        <th>5</th>
-                        <th>6</th>
-                        <th>7</th>
-                        <th>8</th>
-                        <th>9</th>
-                        <th>10</th>
-                        <th>11</th>
-                        <th>12</th>
-                        <th>13</th>
-                        <th>14</th>
-                        <th>15</th>
-                        <th>16</th>
-                        <th>17</th>
-                        <th>18</th>
-                        <th>19</th>
-                        <th>20</th>
-                        <th>21</th>
-                        <th>22</th>
-                        <th>23</th>
-                        <th>24</th>
-                        <th>25</th>
-                        <th>26</th>
-                        <th>27</th>
-                        <th>28</th>
-                        <th>29</th>
-                        <th>30</th>
-                        <th>31</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- G row -->
-                    <tr>
-                        <td class="letter-cell">G</td>
-                        <td><input type="checkbox" data-row="G" data-day="1"></td>
-                        <td><input type="checkbox" data-row="G" data-day="2"></td>
-                        <td><input type="checkbox" data-row="G" data-day="3"></td>
-                        <td><input type="checkbox" data-row="G" data-day="4"></td>
-                        <td><input type="checkbox" data-row="G" data-day="5"></td>
-                        <td><input type="checkbox" data-row="G" data-day="6"></td>
-                        <td><input type="checkbox" data-row="G" data-day="7"></td>
-                        <td><input type="checkbox" data-row="G" data-day="8"></td>
-                        <td><input type="checkbox" data-row="G" data-day="9"></td>
-                        <td><input type="checkbox" data-row="G" data-day="10"></td>
-                        <td><input type="checkbox" data-row="G" data-day="11"></td>
-                        <td><input type="checkbox" data-row="G" data-day="12"></td>
-                        <td><input type="checkbox" data-row="G" data-day="13"></td>
-                        <td><input type="checkbox" data-row="G" data-day="14"></td>
-                        <td><input type="checkbox" data-row="G" data-day="15"></td>
-                        <td><input type="checkbox" data-row="G" data-day="16"></td>
-                        <td><input type="checkbox" data-row="G" data-day="17"></td>
-                        <td><input type="checkbox" data-row="G" data-day="18"></td>
-                        <td><input type="checkbox" data-row="G" data-day="19"></td>
-                        <td><input type="checkbox" data-row="G" data-day="20"></td>
-                        <td><input type="checkbox" data-row="G" data-day="21"></td>
-                        <td><input type="checkbox" data-row="G" data-day="22"></td>
-                        <td><input type="checkbox" data-row="G" data-day="23"></td>
-                        <td><input type="checkbox" data-row="G" data-day="24"></td>
-                        <td><input type="checkbox" data-row="G" data-day="25"></td>
-                        <td><input type="checkbox" data-row="G" data-day="26"></td>
-                        <td><input type="checkbox" data-row="G" data-day="27"></td>
-                        <td><input type="checkbox" data-row="G" data-day="28"></td>
-                        <td><input type="checkbox" data-row="G" data-day="29"></td>
-                        <td><input type="checkbox" data-row="G" data-day="30"></td>
-                        <td><input type="checkbox" data-row="G" data-day="31"></td>
-                    </tr>
+        <!-- =========================================
+             MONTH NAVIGATION
+        ========================================== -->
+        <div class="growth-calendar-nav">
+            <button type="button" id="gcPrevMonth" aria-label="Previous month">&#10094;</button>
+            <h3 id="gcCurrentMonth">September 2026</h3>
+            <button type="button" id="gcNextMonth" aria-label="Next month">&#10095;</button>
+            <button type="button" id="gcTodayBtn" class="gc-today-btn">Today</button>
+        </div>
 
-                    <!-- R row -->
-                    <tr>
-                        <td class="letter-cell">R</td>
-                        <td><input type="checkbox" data-row="R" data-day="1"></td>
-                        <td><input type="checkbox" data-row="R" data-day="2"></td>
-                        <td><input type="checkbox" data-row="R" data-day="3"></td>
-                        <td><input type="checkbox" data-row="R" data-day="4"></td>
-                        <td><input type="checkbox" data-row="R" data-day="5"></td>
-                        <td><input type="checkbox" data-row="R" data-day="6"></td>
-                        <td><input type="checkbox" data-row="R" data-day="7"></td>
-                        <td><input type="checkbox" data-row="R" data-day="8"></td>
-                        <td><input type="checkbox" data-row="R" data-day="9"></td>
-                        <td><input type="checkbox" data-row="R" data-day="10"></td>
-                        <td><input type="checkbox" data-row="R" data-day="11"></td>
-                        <td><input type="checkbox" data-row="R" data-day="12"></td>
-                        <td><input type="checkbox" data-row="R" data-day="13"></td>
-                        <td><input type="checkbox" data-row="R" data-day="14"></td>
-                        <td><input type="checkbox" data-row="R" data-day="15"></td>
-                        <td><input type="checkbox" data-row="R" data-day="16"></td>
-                        <td><input type="checkbox" data-row="R" data-day="17"></td>
-                        <td><input type="checkbox" data-row="R" data-day="18"></td>
-                        <td><input type="checkbox" data-row="R" data-day="19"></td>
-                        <td><input type="checkbox" data-row="R" data-day="20"></td>
-                        <td><input type="checkbox" data-row="R" data-day="21"></td>
-                        <td><input type="checkbox" data-row="R" data-day="22"></td>
-                        <td><input type="checkbox" data-row="R" data-day="23"></td>
-                        <td><input type="checkbox" data-row="R" data-day="24"></td>
-                        <td><input type="checkbox" data-row="R" data-day="25"></td>
-                        <td><input type="checkbox" data-row="R" data-day="26"></td>
-                        <td><input type="checkbox" data-row="R" data-day="27"></td>
-                        <td><input type="checkbox" data-row="R" data-day="28"></td>
-                        <td><input type="checkbox" data-row="R" data-day="29"></td>
-                        <td><input type="checkbox" data-row="R" data-day="30"></td>
-                        <td><input type="checkbox" data-row="R" data-day="31"></td>
-                    </tr>
-
-                    <!-- O row -->
-                    <tr>
-                        <td class="letter-cell">O</td>
-                        <td><input type="checkbox" data-row="O" data-day="1"></td>
-                        <td><input type="checkbox" data-row="O" data-day="2"></td>
-                        <td><input type="checkbox" data-row="O" data-day="3"></td>
-                        <td><input type="checkbox" data-row="O" data-day="4"></td>
-                        <td><input type="checkbox" data-row="O" data-day="5"></td>
-                        <td><input type="checkbox" data-row="O" data-day="6"></td>
-                        <td><input type="checkbox" data-row="O" data-day="7"></td>
-                        <td><input type="checkbox" data-row="O" data-day="8"></td>
-                        <td><input type="checkbox" data-row="O" data-day="9"></td>
-                        <td><input type="checkbox" data-row="O" data-day="10"></td>
-                        <td><input type="checkbox" data-row="O" data-day="11"></td>
-                        <td><input type="checkbox" data-row="O" data-day="12"></td>
-                        <td><input type="checkbox" data-row="O" data-day="13"></td>
-                        <td><input type="checkbox" data-row="O" data-day="14"></td>
-                        <td><input type="checkbox" data-row="O" data-day="15"></td>
-                        <td><input type="checkbox" data-row="O" data-day="16"></td>
-                        <td><input type="checkbox" data-row="O" data-day="17"></td>
-                        <td><input type="checkbox" data-row="O" data-day="18"></td>
-                        <td><input type="checkbox" data-row="O" data-day="19"></td>
-                        <td><input type="checkbox" data-row="O" data-day="20"></td>
-                        <td><input type="checkbox" data-row="O" data-day="21"></td>
-                        <td><input type="checkbox" data-row="O" data-day="22"></td>
-                        <td><input type="checkbox" data-row="O" data-day="23"></td>
-                        <td><input type="checkbox" data-row="O" data-day="24"></td>
-                        <td><input type="checkbox" data-row="O" data-day="25"></td>
-                        <td><input type="checkbox" data-row="O" data-day="26"></td>
-                        <td><input type="checkbox" data-row="O" data-day="27"></td>
-                        <td><input type="checkbox" data-row="O" data-day="28"></td>
-                        <td><input type="checkbox" data-row="O" data-day="29"></td>
-                        <td><input type="checkbox" data-row="O" data-day="30"></td>
-                        <td><input type="checkbox" data-row="O" data-day="31"></td>
-                    </tr>
-
-                    <!-- W row -->
-                    <tr>
-                        <td class="letter-cell">W</td>
-                        <td><input type="checkbox" data-row="W" data-day="1"></td>
-                        <td><input type="checkbox" data-row="W" data-day="2"></td>
-                        <td><input type="checkbox" data-row="W" data-day="3"></td>
-                        <td><input type="checkbox" data-row="W" data-day="4"></td>
-                        <td><input type="checkbox" data-row="W" data-day="5"></td>
-                        <td><input type="checkbox" data-row="W" data-day="6"></td>
-                        <td><input type="checkbox" data-row="W" data-day="7"></td>
-                        <td><input type="checkbox" data-row="W" data-day="8"></td>
-                        <td><input type="checkbox" data-row="W" data-day="9"></td>
-                        <td><input type="checkbox" data-row="W" data-day="10"></td>
-                        <td><input type="checkbox" data-row="W" data-day="11"></td>
-                        <td><input type="checkbox" data-row="W" data-day="12"></td>
-                        <td><input type="checkbox" data-row="W" data-day="13"></td>
-                        <td><input type="checkbox" data-row="W" data-day="14"></td>
-                        <td><input type="checkbox" data-row="W" data-day="15"></td>
-                        <td><input type="checkbox" data-row="W" data-day="16"></td>
-                        <td><input type="checkbox" data-row="W" data-day="17"></td>
-                        <td><input type="checkbox" data-row="W" data-day="18"></td>
-                        <td><input type="checkbox" data-row="W" data-day="19"></td>
-                        <td><input type="checkbox" data-row="W" data-day="20"></td>
-                        <td><input type="checkbox" data-row="W" data-day="21"></td>
-                        <td><input type="checkbox" data-row="W" data-day="22"></td>
-                        <td><input type="checkbox" data-row="W" data-day="23"></td>
-                        <td><input type="checkbox" data-row="W" data-day="24"></td>
-                        <td><input type="checkbox" data-row="W" data-day="25"></td>
-                        <td><input type="checkbox" data-row="W" data-day="26"></td>
-                        <td><input type="checkbox" data-row="W" data-day="27"></td>
-                        <td><input type="checkbox" data-row="W" data-day="28"></td>
-                        <td><input type="checkbox" data-row="W" data-day="29"></td>
-                        <td><input type="checkbox" data-row="W" data-day="30"></td>
-                        <td><input type="checkbox" data-row="W" data-day="31"></td>
-                    </tr>
-
-                    <!-- T row -->
-                    <tr>
-                        <td class="letter-cell">T</td>
-                        <td><input type="checkbox" data-row="T" data-day="1"></td>
-                        <td><input type="checkbox" data-row="T" data-day="2"></td>
-                        <td><input type="checkbox" data-row="T" data-day="3"></td>
-                        <td><input type="checkbox" data-row="T" data-day="4"></td>
-                        <td><input type="checkbox" data-row="T" data-day="5"></td>
-                        <td><input type="checkbox" data-row="T" data-day="6"></td>
-                        <td><input type="checkbox" data-row="T" data-day="7"></td>
-                        <td><input type="checkbox" data-row="T" data-day="8"></td>
-                        <td><input type="checkbox" data-row="T" data-day="9"></td>
-                        <td><input type="checkbox" data-row="T" data-day="10"></td>
-                        <td><input type="checkbox" data-row="T" data-day="11"></td>
-                        <td><input type="checkbox" data-row="T" data-day="12"></td>
-                        <td><input type="checkbox" data-row="T" data-day="13"></td>
-                        <td><input type="checkbox" data-row="T" data-day="14"></td>
-                        <td><input type="checkbox" data-row="T" data-day="15"></td>
-                        <td><input type="checkbox" data-row="T" data-day="16"></td>
-                        <td><input type="checkbox" data-row="T" data-day="17"></td>
-                        <td><input type="checkbox" data-row="T" data-day="18"></td>
-                        <td><input type="checkbox" data-row="T" data-day="19"></td>
-                        <td><input type="checkbox" data-row="T" data-day="20"></td>
-                        <td><input type="checkbox" data-row="T" data-day="21"></td>
-                        <td><input type="checkbox" data-row="T" data-day="22"></td>
-                        <td><input type="checkbox" data-row="T" data-day="23"></td>
-                        <td><input type="checkbox" data-row="T" data-day="24"></td>
-                        <td><input type="checkbox" data-row="T" data-day="25"></td>
-                        <td><input type="checkbox" data-row="T" data-day="26"></td>
-                        <td><input type="checkbox" data-row="T" data-day="27"></td>
-                        <td><input type="checkbox" data-row="T" data-day="28"></td>
-                        <td><input type="checkbox" data-row="T" data-day="29"></td>
-                        <td><input type="checkbox" data-row="T" data-day="30"></td>
-                        <td><input type="checkbox" data-row="T" data-day="31"></td>
-                    </tr>
-
-                    <!-- H row -->
-                    <tr>
-                        <td class="letter-cell">H</td>
-                        <td><input type="checkbox" data-row="H" data-day="1"></td>
-                        <td><input type="checkbox" data-row="H" data-day="2"></td>
-                        <td><input type="checkbox" data-row="H" data-day="3"></td>
-                        <td><input type="checkbox" data-row="H" data-day="4"></td>
-                        <td><input type="checkbox" data-row="H" data-day="5"></td>
-                        <td><input type="checkbox" data-row="H" data-day="6"></td>
-                        <td><input type="checkbox" data-row="H" data-day="7"></td>
-                        <td><input type="checkbox" data-row="H" data-day="8"></td>
-                        <td><input type="checkbox" data-row="H" data-day="9"></td>
-                        <td><input type="checkbox" data-row="H" data-day="10"></td>
-                        <td><input type="checkbox" data-row="H" data-day="11"></td>
-                        <td><input type="checkbox" data-row="H" data-day="12"></td>
-                        <td><input type="checkbox" data-row="H" data-day="13"></td>
-                        <td><input type="checkbox" data-row="H" data-day="14"></td>
-                        <td><input type="checkbox" data-row="H" data-day="15"></td>
-                        <td><input type="checkbox" data-row="H" data-day="16"></td>
-                        <td><input type="checkbox" data-row="H" data-day="17"></td>
-                        <td><input type="checkbox" data-row="H" data-day="18"></td>
-                        <td><input type="checkbox" data-row="H" data-day="19"></td>
-                        <td><input type="checkbox" data-row="H" data-day="20"></td>
-                        <td><input type="checkbox" data-row="H" data-day="21"></td>
-                        <td><input type="checkbox" data-row="H" data-day="22"></td>
-                        <td><input type="checkbox" data-row="H" data-day="23"></td>
-                        <td><input type="checkbox" data-row="H" data-day="24"></td>
-                        <td><input type="checkbox" data-row="H" data-day="25"></td>
-                        <td><input type="checkbox" data-row="H" data-day="26"></td>
-                        <td><input type="checkbox" data-row="H" data-day="27"></td>
-                        <td><input type="checkbox" data-row="H" data-day="28"></td>
-                        <td><input type="checkbox" data-row="H" data-day="29"></td>
-                        <td><input type="checkbox" data-row="H" data-day="30"></td>
-                        <td><input type="checkbox" data-row="H" data-day="31"></td>
-                    </tr>
-                </tbody>
-            </table>
+        <!-- =========================================
+             CALENDAR GRID
+        ========================================== -->
+        <div class="growth-calendar">
+            <div class="growth-calendar-weekdays">
+                <div>Sun</div>
+                <div>Mon</div>
+                <div>Tue</div>
+                <div>Wed</div>
+                <div>Thu</div>
+                <div>Fri</div>
+                <div>Sat</div>
+            </div>
+            <div class="growth-calendar-days" id="gcCalendarDays"></div>
         </div>
 
         <!-- Legend -->
@@ -403,7 +171,6 @@
             <p><strong>H</strong> - ONOR THE LORD THROUGH GIVING <em>(PARANGALAN ANG PANGINOON SA PAMAMAGITAN NG
                     PAGBIBIGAY)</em></p>
         </div>
-
 
     </section>
 
@@ -429,6 +196,20 @@
         <button id="submitReflection">Submit Reflection</button>
 
         <p id="reflectionStatus" class="reflection-status"></p>
+    </section>
+
+    <!-- =========================================
+     MY REFLECTIONS & REPLIES
+========================================== -->
+    <section class="my-reflections-section" id="myReflectionsSection" style="display:none;">
+        <h2>My Reflections</h2>
+        <p class="section-subtitle">
+            Your submitted reflections and the replies from your department leader.
+        </p>
+
+        <div id="myReflectionsContainer">
+            <p class="loading-text">Loading your reflections...</p>
+        </div>
     </section>
 
 
@@ -459,6 +240,144 @@
             SUPABASE_ANON_KEY
         );
 
+        /* =========================================================
+   MY REFLECTIONS & ADMIN REPLIES
+========================================================= */
+
+        let myReflectionsChannel = null;
+
+
+        async function loadMyReflections() {
+
+            const section = document.getElementById("myReflectionsSection");
+            const container = document.getElementById("myReflectionsContainer");
+
+            if (!section || !container) return;
+
+            try {
+                const { data: { user }, error: userError } =
+                    await supabaseClient.auth.getUser();
+
+                if (userError || !user) {
+                    section.style.display = "none";
+                    return;
+                }
+
+                const { data: reflections, error } = await supabaseClient
+                    .from("reflections")
+                    .select("id, content, created_at, admin_reply, replied_at")
+                    .eq("user_id", user.id)
+                    .order("created_at", { ascending: false });
+
+                if (error) {
+                    console.error("My reflections fetch error:", error);
+                    container.innerHTML =
+                        `<p class="error-text">Failed to load your reflections.</p>`;
+                    return;
+                }
+
+                if (!reflections || reflections.length === 0) {
+                    /* Nothing to show → keep the section hidden */
+                    section.style.display = "none";
+                    container.innerHTML = "";
+                    return;
+                }
+
+                /* Render */
+                container.innerHTML = reflections.map(r => {
+                    const dateStr = new Date(r.created_at).toLocaleString();
+                    const hasReply = r.admin_reply && r.admin_reply.trim().length > 0;
+
+                    const replyHTML = hasReply
+                        ? `
+                    <div class="my-reply-display">
+                        <div class="my-reply-header">
+                            <span class="my-reply-label">Reply from your leader</span>
+                            <span class="my-reply-date">
+                                ${r.replied_at ? new Date(r.replied_at).toLocaleString() : ""}
+                            </span>
+                        </div>
+                        <p class="my-reply-text">${escapeHTML(r.admin_reply)}</p>
+                    </div>
+                `
+                        : `
+                    <p class="my-reply-pending">
+                        <em>Waiting for a reply…</em>
+                    </p>
+                `;
+
+                    return `
+                <div class="my-reflection-card" data-id="${r.id}">
+                    <div class="my-reflection-header">
+                        <span class="my-reflection-date">${dateStr}</span>
+                        <span class="my-reflection-badge ${hasReply ? "replied" : "pending"}">
+                            ${hasReply ? "✓ Replied" : "Pending"}
+                        </span>
+                    </div>
+                    <p class="my-reflection-content">${escapeHTML(r.content)}</p>
+                    ${replyHTML}
+                </div>
+            `;
+                }).join("");
+
+                section.style.display = "block";
+
+            } catch (err) {
+                console.error("Unexpected my-reflections error:", err);
+            }
+        }
+
+
+        /* Escape helper (safe copy if not already defined globally) */
+        function escapeHTML(str) {
+            return String(str).replace(/[&<>"']/g, (c) => ({
+                "&": "&amp;", "<": "&lt;", ">": "&gt;",
+                '"': "&quot;", "'": "&#39;"
+            }[c]));
+        }
+
+
+        /* Realtime — refresh when the admin replies */
+        function subscribeMyReflections() {
+            if (myReflectionsChannel) {
+                supabaseClient.removeChannel(myReflectionsChannel);
+            }
+
+            supabaseClient.auth.getUser().then(({ data: { user } }) => {
+                if (!user) return;
+
+                myReflectionsChannel = supabaseClient
+                    .channel("my-reflections-" + user.id)
+                    .on(
+                        "postgres_changes",
+                        {
+                            event: "UPDATE",
+                            schema: "public",
+                            table: "reflections",
+                            filter: `user_id=eq.${user.id}`
+                        },
+                        (payload) => {
+                            console.log("Realtime: reflection updated → refresh");
+                            loadMyReflections();
+                        }
+                    )
+                    .on(
+                        "postgres_changes",
+                        {
+                            event: "INSERT",
+                            schema: "public",
+                            table: "reflections",
+                            filter: `user_id=eq.${user.id}`
+                        },
+                        () => {
+                            console.log("Realtime: new reflection → refresh");
+                            loadMyReflections();
+                        }
+                    )
+                    .subscribe();
+            });
+        }
+
 
         /* =========================================================
            TIME-BASED GREETING WORD
@@ -469,20 +388,6 @@
             if (hour < 12) return "Mapagpalang Umaga";
             if (hour < 18) return "Mapagpalang Hapon";
             return "Mapagpalang Gabi";
-        }
-
-
-        /* =========================================================
-           MONTH KEY
-        ========================================================= */
-
-        function getCurrentMonthKey() {
-            const monthNames = [
-                "January", "February", "March", "April", "May", "June",
-                "July", "August", "September", "October", "November", "December"
-            ];
-            const now = new Date();
-            return `${monthNames[now.getMonth()]} ${now.getFullYear()}`;
         }
 
 
@@ -533,7 +438,7 @@
 
 
         /* =========================================================
-           SET CURRENT MONTH ON THE CHECKLIST
+           SET CURRENT MONTH ON THE CHECKLIST HEADER
         ========================================================= */
 
         function setChecklistMonth() {
@@ -552,19 +457,41 @@
 
 
         /* =========================================================
-           LOAD SAVED CHECKS FROM SUPABASE
+           G.R.O.W.T.H CALENDAR — state
+        ========================================================= */
+
+        const GROWTH_LETTERS = ["G", "R", "O", "W", "T", "H"];
+
+        let gcCurrentDate = new Date();
+        let gcChecklistData = {};      // { "YYYY-MM-DD": { G: true, R: true, ... } }
+        let gcCurrentUserId = null;
+
+
+        /* ---------- Month key used by Supabase ---------- */
+
+        function gcMonthKey(date) {
+            const monthNames = [
+                "January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"
+            ];
+            return `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
+        }
+
+
+        /* =========================================================
+           LOAD CHECKLIST CHECKS FROM SUPABASE
         ========================================================= */
 
         async function loadChecklistChecks() {
-
             try {
-
                 const { data: { user }, error: userError } =
                     await supabaseClient.auth.getUser();
 
                 if (userError || !user) return;
 
-                const monthKey = getCurrentMonthKey();
+                gcCurrentUserId = user.id;
+
+                const monthKey = gcMonthKey(gcCurrentDate);
 
                 const { data: checks, error } = await supabaseClient
                     .from("checklist_checks")
@@ -577,22 +504,27 @@
                     return;
                 }
 
-                if (!checks || checks.length === 0) {
-                    updateRowCounts();
-                    return;
-                }
+                /* Reset and rebuild */
+                gcChecklistData = {};
 
-                checks.forEach(item => {
+                (checks || []).forEach(item => {
                     if (!item.checked) return;
 
-                    const cb = document.querySelector(
-                        `input[data-row="${item.row_letter}"][data-day="${item.day}"]`
-                    );
+                    const dayKey = String(item.day).padStart(2, "0");
+                    const dateKey =
+                        `${gcCurrentDate.getFullYear()}-` +
+                        `${String(gcCurrentDate.getMonth() + 1).padStart(2, "0")}-` +
+                        dayKey;
 
-                    if (cb) cb.checked = true;
+                    if (!gcChecklistData[dateKey]) {
+                        gcChecklistData[dateKey] = {};
+                    }
+                    gcChecklistData[dateKey][item.row_letter] = true;
                 });
 
+                renderGrowthCalendar();
                 updateRowCounts();
+                updateProgressBar();
 
             } catch (err) {
                 console.error("Unexpected load error:", err);
@@ -601,32 +533,133 @@
 
 
         /* =========================================================
-           AUTO-SAVE ON CHECKBOX CHANGE
+           RENDER THE CALENDAR GRID
         ========================================================= */
 
-        async function saveCheckboxState(checkbox) {
+        function renderGrowthCalendar() {
+            const gridEl = document.getElementById("gcCalendarDays");
+            const monthEl = document.getElementById("gcCurrentMonth");
+            if (!gridEl || !monthEl) return;
+
+            gridEl.innerHTML = "";
+
+            const year = gcCurrentDate.getFullYear();
+            const month = gcCurrentDate.getMonth();
+
+            const monthName = gcCurrentDate.toLocaleString("default", { month: "long" });
+            monthEl.textContent = `${monthName} ${year}`;
+
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            /* Empty cells before day 1 */
+            for (let i = 0; i < firstDay; i++) {
+                const empty = document.createElement("div");
+                empty.className = "gc-day empty";
+                gridEl.appendChild(empty);
+            }
+
+            /* Day cells */
+            for (let day = 1; day <= daysInMonth; day++) {
+                const cell = document.createElement("div");
+                cell.className = "gc-day";
+                cell.dataset.day = day;
+
+                const dayKey = String(day).padStart(2, "0");
+                const dateKey =
+                    `${year}-${String(month + 1).padStart(2, "0")}-${dayKey}`;
+
+                cell.dataset.date = dateKey;
+
+                const now = new Date();
+                const isToday =
+                    day === now.getDate() &&
+                    month === now.getMonth() &&
+                    year === now.getFullYear();
+
+                if (isToday) cell.classList.add("today");
+
+                /* Build the 6 mini letter toggles */
+                const lettersHTML = GROWTH_LETTERS.map(letter => {
+                    const isChecked = gcChecklistData[dateKey]?.[letter] === true;
+                    return `
+                        <button
+                            type="button"
+                            class="gc-letter ${isChecked ? "checked" : ""}"
+                            data-letter="${letter}"
+                            data-day="${day}"
+                            data-date="${dateKey}"
+                            aria-label="${letter} on day ${day}"
+                            aria-pressed="${isChecked}"
+                        >${letter}</button>
+                    `;
+                }).join("");
+
+                cell.innerHTML = `
+                    <span class="gc-day-number">${day}</span>
+                    <div class="gc-letters">${lettersHTML}</div>
+                `;
+
+                /* Attach toggle handlers */
+                cell.querySelectorAll(".gc-letter").forEach(btn => {
+                    btn.addEventListener("click", (e) => {
+                        e.stopPropagation();
+                        toggleGrowthLetter(btn);
+                    });
+                });
+
+                /* Highlight complete days (all 6 checked) */
+                const dayObj = gcChecklistData[dateKey] || {};
+                const allChecked = GROWTH_LETTERS.every(l => dayObj[l]);
+                if (allChecked) cell.classList.add("complete");
+
+                gridEl.appendChild(cell);
+            }
+        }
+
+
+        /* =========================================================
+           TOGGLE A LETTER
+        ========================================================= */
+
+        async function toggleGrowthLetter(btn) {
+            if (!gcCurrentUserId) return;
+
+            const letter = btn.dataset.letter;
+            const day = parseInt(btn.dataset.day, 10);
+            const dateKey = btn.dataset.date;
+
+            const isCurrentlyChecked = btn.classList.contains("checked");
+            const nextChecked = !isCurrentlyChecked;
+
+            /* Optimistic UI */
+            btn.classList.toggle("checked", nextChecked);
+            btn.setAttribute("aria-pressed", nextChecked ? "true" : "false");
+
+            if (!gcChecklistData[dateKey]) gcChecklistData[dateKey] = {};
+            gcChecklistData[dateKey][letter] = nextChecked;
+
+            updateRowCounts();
+            updateProgressBar();
+
+            /* Also re-check "complete" state for the parent cell */
+            const cell = btn.closest(".gc-day");
+            if (cell) {
+                const dayObj = gcChecklistData[dateKey] || {};
+                const allChecked = GROWTH_LETTERS.every(l => dayObj[l]);
+                cell.classList.toggle("complete", allChecked);
+            }
+
+            /* Sync with Supabase */
+            const monthKey = gcMonthKey(gcCurrentDate);
 
             try {
-
-                const { data: { user }, error: userError } =
-                    await supabaseClient.auth.getUser();
-
-                if (userError || !user) {
-                    console.warn("Cannot save — no user.");
-                    return;
-                }
-
-                const rowLetter = checkbox.dataset.row;
-                const day = parseInt(checkbox.dataset.day, 10);
-                const monthKey = getCurrentMonthKey();
-
-                if (checkbox.checked) {
-
+                if (nextChecked) {
                     const { error } = await supabaseClient
                         .from("checklist_checks")
                         .upsert({
-                            user_id: user.id,
-                            row_letter: rowLetter,
+                            user_id: gcCurrentUserId,
+                            row_letter: letter,
                             day: day,
                             month: monthKey,
                             checked: true,
@@ -636,52 +669,53 @@
                         });
 
                     if (error) {
-                        console.error("Save error [" + rowLetter + "/" + day + "]:", error);
-                        checkbox.checked = false;
+                        /* Roll back */
+                        btn.classList.remove("checked");
+                        btn.setAttribute("aria-pressed", "false");
+                        gcChecklistData[dateKey][letter] = false;
                         updateRowCounts();
-                        return;
+                        updateProgressBar();
+                        if (cell) cell.classList.remove("complete");
+                        console.error("Save error:", error);
                     }
-
                 } else {
-
                     const { error } = await supabaseClient
                         .from("checklist_checks")
                         .delete()
-                        .eq("user_id", user.id)
-                        .eq("row_letter", rowLetter)
+                        .eq("user_id", gcCurrentUserId)
+                        .eq("row_letter", letter)
                         .eq("day", day)
                         .eq("month", monthKey);
 
                     if (error) {
-                        console.error("Delete error [" + rowLetter + "/" + day + "]:", error);
-                        checkbox.checked = true;
+                        /* Roll back */
+                        btn.classList.add("checked");
+                        btn.setAttribute("aria-pressed", "true");
+                        gcChecklistData[dateKey][letter] = true;
                         updateRowCounts();
-                        return;
+                        updateProgressBar();
+                        if (cell) cell.classList.add("complete");
+                        console.error("Delete error:", error);
                     }
                 }
-
             } catch (err) {
-                console.error("Unexpected save error:", err);
+                console.error("Unexpected toggle error:", err);
             }
         }
 
 
         /* =========================================================
-           UPDATE ALL SIX ROW COUNTS
-           (Also refreshes the progress bar)
+           UPDATE THE SIX COUNTER CARDS
         ========================================================= */
 
         function updateRowCounts() {
-
             const counts = { G: 0, R: 0, O: 0, W: 0, T: 0, H: 0 };
 
-            document.querySelectorAll('.checklist-table input[type="checkbox"]')
-                .forEach(cb => {
-                    if (cb.checked) {
-                        const row = (cb.dataset.row || "").toUpperCase();
-                        if (counts[row] !== undefined) counts[row]++;
-                    }
+            Object.values(gcChecklistData).forEach(dayObj => {
+                GROWTH_LETTERS.forEach(letter => {
+                    if (dayObj[letter]) counts[letter]++;
                 });
+            });
 
             const map = {
                 G: "g-count",
@@ -696,72 +730,74 @@
                 const el = document.getElementById(map[letter]);
                 if (el) el.textContent = counts[letter];
             });
-
-            // Update the progress bar too
-            updateProgressBar();
         }
 
 
         /* =========================================================
            UPDATE THE GROWTH PROGRESS BAR
-           Max possible checks per month: 6 letters × 31 days = 186
         ========================================================= */
 
-        const MAX_MONTHLY_CHECKS = 6 * 31;  // 186
-
         function updateProgressBar() {
-
             const fill = document.getElementById("progressFill");
             const label = document.getElementById("progressLabel");
             const bar = document.getElementById("progressBar");
 
             if (!fill || !label || !bar) return;
 
+            const year = gcCurrentDate.getFullYear();
+            const month = gcCurrentDate.getMonth();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            const maxChecks = 6 * daysInMonth;
+
             let totalChecked = 0;
-
-            document.querySelectorAll('.checklist-table input[type="checkbox"]')
-                .forEach(cb => {
-                    if (cb.checked) totalChecked++;
+            Object.values(gcChecklistData).forEach(dayObj => {
+                GROWTH_LETTERS.forEach(letter => {
+                    if (dayObj[letter]) totalChecked++;
                 });
+            });
 
-            const percent = Math.round(
-                (totalChecked / MAX_MONTHLY_CHECKS) * 100
-            );
+            const percent = maxChecks > 0
+                ? Math.round((totalChecked / maxChecks) * 100)
+                : 0;
 
-            // Update fill width
             fill.style.width = percent + "%";
-
-            // Update label text
             label.textContent =
-                percent + "%  (" + totalChecked + "/" + MAX_MONTHLY_CHECKS + ")";
+                percent + "%  (" + totalChecked + "/" + maxChecks + ")";
 
-            // Toggle label color for readability (white over dark fill)
             bar.setAttribute("data-high", percent >= 40 ? "true" : "false");
         }
 
 
         /* =========================================================
-           ATTACH LISTENERS TO ALL CHECKBOXES
-           (updates counter instantly, then saves to DB in background)
+           MONTH NAVIGATION
         ========================================================= */
 
-        function setupChecklistListeners() {
+        function setupGrowthCalendarNav() {
+            const prevBtn = document.getElementById("gcPrevMonth");
+            const nextBtn = document.getElementById("gcNextMonth");
+            const todayBtn = document.getElementById("gcTodayBtn");
 
-            const checkboxes = document.querySelectorAll(
-                '.checklist-table input[type="checkbox"]'
-            );
-
-            checkboxes.forEach(cb => {
-
-                cb.addEventListener("change", function () {
-
-                    // 1. Update the counters + progress bar IMMEDIATELY
-                    updateRowCounts();
-
-                    // 2. Save to Supabase in the background.
-                    saveCheckboxState(cb);
+            if (prevBtn) {
+                prevBtn.addEventListener("click", async () => {
+                    gcCurrentDate.setMonth(gcCurrentDate.getMonth() - 1);
+                    await loadChecklistChecks();
                 });
-            });
+            }
+
+            if (nextBtn) {
+                nextBtn.addEventListener("click", async () => {
+                    gcCurrentDate.setMonth(gcCurrentDate.getMonth() + 1);
+                    await loadChecklistChecks();
+                });
+            }
+
+            if (todayBtn) {
+                todayBtn.addEventListener("click", async () => {
+                    gcCurrentDate = new Date();
+                    await loadChecklistChecks();
+                });
+            }
         }
 
 
@@ -770,7 +806,6 @@
         ========================================================= */
 
         function setupHamburger() {
-
             const hamburger = document.getElementById("hamburgerBtn");
             const sidebar = document.getElementById("sidebar");
 
@@ -802,12 +837,11 @@
         }
 
 
-
         /* =========================================================
-           LOGOUT    ========================================================= */
+           LOGOUT
+        ========================================================= */
 
         async function handleLogout(event) {
-
             event.preventDefault();
 
             const { error } = await supabaseClient.auth.signOut();
@@ -823,11 +857,10 @@
 
 
         /* =========================================================
-           SUBMIT REFLECTION (stays on page)
+           SUBMIT REFLECTION
         ========================================================= */
 
         async function handleReflectionSubmit(event) {
-
             event.preventDefault();
 
             const textarea = document.getElementById("reflectionInput");
@@ -865,7 +898,6 @@
             }
 
             try {
-
                 const { data: { user }, error: userError } =
                     await supabaseClient.auth.getUser();
 
@@ -935,7 +967,6 @@
                 }, 4000);
 
             } catch (error) {
-
                 console.error("Unexpected reflection error:", error);
 
                 if (statusEl) {
@@ -946,214 +977,6 @@
                 button.disabled = false;
                 button.textContent = "Submit Reflection";
             }
-        }
-
-        document.addEventListener("DOMContentLoaded", function () {
-
-            const currentPage =
-                window.location.pathname.split("/").pop().toLowerCase();
-
-            const navLinks = document.querySelectorAll(".sidebar nav a");
-
-            navLinks.forEach(link => {
-
-                const linkPage =
-                    link.getAttribute("href")
-                        .split("/")
-                        .pop()
-                        .toLowerCase();
-
-                if (linkPage === currentPage) {
-                    link.classList.add("active");
-                } else {
-                    link.classList.remove("active");
-                }
-
-            });
-
-        });
-
-        /* =========================================================
-   HOURLY GROWTH REMINDER NOTIFICATION
-========================================================= */
-
-        const NOTIFICATION_MESSAGE = "Gamitin mo na ang iyong growth";
-        const NOTIFICATION_INTERVAL = 60 * 60 * 1000;   // 1 hour in ms
-        const LAST_NOTIF_KEY = "growth_last_notif";
-        const NOTIF_PROMPT_KEY = "growth_notif_prompt_dismissed";
-
-        let notificationTimer = null;
-
-
-        /* ---------- Show the permission banner ---------- */
-
-        function setupNotificationBanner() {
-            const banner = document.getElementById("notifBanner");
-            const allowBtn = document.getElementById("notifAllow");
-            const laterBtn = document.getElementById("notifLater");
-
-            if (!banner || !allowBtn || !laterBtn) return;
-
-            /* If the browser doesn't support notifications, hide the banner */
-            if (!("Notification" in window)) {
-                banner.style.display = "none";
-                return;
-            }
-
-            /* If the user already granted or denied, don't show the banner */
-            if (Notification.permission === "granted") {
-                banner.style.display = "none";
-                startHourlyReminders();
-                return;
-            }
-            if (Notification.permission === "denied") {
-                banner.style.display = "none";
-                return;
-            }
-
-            /* If they clicked "Later" before, don't nag them again this session */
-            if (localStorage.getItem(NOTIF_PROMPT_KEY) === "true") {
-                banner.style.display = "none";
-                return;
-            }
-
-            /* Otherwise show it after a short delay */
-            setTimeout(() => {
-                banner.style.display = "flex";
-            }, 1500);
-
-            /* Enable button → request permission */
-            allowBtn.addEventListener("click", async () => {
-                try {
-                    const permission = await Notification.requestPermission();
-
-                    if (permission === "granted") {
-                        banner.style.display = "none";
-                        startHourlyReminders();
-
-                        /* Send a welcome notification so they know it works */
-                        sendReminderNotification("✅ Notifications enabled",
-                            "You'll be reminded every hour to use your G.R.O.W.T.H.");
-
-                    } else {
-                        banner.style.display = "none";
-                        localStorage.setItem(NOTIF_PROMPT_KEY, "true");
-                    }
-                } catch (err) {
-                    console.error("Notification permission error:", err);
-                    banner.style.display = "none";
-                }
-            });
-
-            /* Later button → hide for this session */
-            laterBtn.addEventListener("click", () => {
-                banner.style.display = "none";
-                localStorage.setItem(NOTIF_PROMPT_KEY, "true");
-            });
-        }
-
-
-        /* ---------- Start the hourly reminders ---------- */
-
-        function startHourlyReminders() {
-            /* Clear any previous timer */
-            if (notificationTimer) {
-                clearInterval(notificationTimer);
-            }
-
-            /* Check on load: if it's been more than an hour, fire now */
-            const last = parseInt(localStorage.getItem(LAST_NOTIF_KEY) || "0", 10);
-            const now = Date.now();
-
-            if (!last || (now - last) >= NOTIFICATION_INTERVAL) {
-                fireGrowthReminder();
-            }
-
-            /* Then repeat every hour */
-            notificationTimer = setInterval(fireGrowthReminder, NOTIFICATION_INTERVAL);
-
-            console.log("⏰ Hourly growth reminders started");
-        }
-
-
-        /* ---------- Fire a reminder (browser notification + in-page toast) ---------- */
-
-        function fireGrowthReminder() {
-            /* Only if the user granted permission */
-            if (!("Notification" in window) || Notification.permission !== "granted") {
-                return;
-            }
-
-            /* Skip if the tab is hidden AND the user is idle for a long time?
-               For now, always fire. */
-
-            /* Browser notification */
-            sendReminderNotification("🌱 G.R.O.W.T.H", NOTIFICATION_MESSAGE);
-
-            /* In-page toast as a fallback (visible in the tab) */
-            showInPageToast(NOTIFICATION_MESSAGE);
-
-            /* Record the time */
-            localStorage.setItem(LAST_NOTIF_KEY, Date.now().toString());
-        }
-
-
-        /* ---------- Browser notification helper ---------- */
-
-        function sendReminderNotification(title, body) {
-            try {
-                const notif = new Notification(title, {
-                    body: body,
-                    icon: "/favicon.ico",              // optional — replace with your icon path
-                    badge: "/favicon.ico",             // optional
-                    tag: "growth-reminder",            // replaces previous notification with the same tag
-                    requireInteraction: false,
-                    silent: false
-                });
-
-                /* Optional: click focuses the tab */
-                notif.onclick = () => {
-                    window.focus();
-                    notif.close();
-                };
-
-            } catch (err) {
-                console.error("Notification display error:", err);
-            }
-        }
-
-
-        /* ---------- In-page toast (visible when the tab is open) ---------- */
-
-        function showInPageToast(message) {
-            /* Remove any existing toast */
-            const existing = document.querySelector(".notif-toast");
-            if (existing) existing.remove();
-
-            const toast = document.createElement("div");
-            toast.className = "notif-toast";
-            toast.innerHTML = `
-        <button class="notif-toast-close" aria-label="Close">×</button>
-        <strong>🌱 G.R.O.W.T.H</strong>
-        <small>${message}</small>
-    `;
-
-            document.body.appendChild(toast);
-
-            /* Close button */
-            toast.querySelector(".notif-toast-close").addEventListener("click", () => {
-                toast.remove();
-            });
-
-            /* Auto-dismiss after 8 seconds */
-            setTimeout(() => {
-                if (toast.parentNode) {
-                    toast.style.transition = "opacity 0.3s ease, transform 0.3s ease";
-                    toast.style.opacity = "0";
-                    toast.style.transform = "translateX(40px)";
-                    setTimeout(() => toast.remove(), 300);
-                }
-            }, 8000);
         }
 
 
@@ -1169,6 +992,162 @@
 
 
         /* =========================================================
+           HOURLY GROWTH REMINDER NOTIFICATION
+        ========================================================= */
+
+        const NOTIFICATION_MESSAGE = "Gamitin mo na ang iyong growth";
+        const NOTIFICATION_INTERVAL = 60 * 60 * 1000;   // 1 hour in ms
+        const LAST_NOTIF_KEY = "growth_last_notif";
+        const NOTIF_PROMPT_KEY = "growth_notif_prompt_dismissed";
+
+        let notificationTimer = null;
+
+
+        /* ---------- Permission banner ---------- */
+
+        function setupNotificationBanner() {
+            const banner = document.getElementById("notifBanner");
+            const allowBtn = document.getElementById("notifAllow");
+            const laterBtn = document.getElementById("notifLater");
+
+            if (!banner || !allowBtn || !laterBtn) return;
+
+            if (!("Notification" in window)) {
+                banner.style.display = "none";
+                return;
+            }
+
+            if (Notification.permission === "granted") {
+                banner.style.display = "none";
+                startHourlyReminders();
+                return;
+            }
+            if (Notification.permission === "denied") {
+                banner.style.display = "none";
+                return;
+            }
+
+            if (localStorage.getItem(NOTIF_PROMPT_KEY) === "true") {
+                banner.style.display = "none";
+                return;
+            }
+
+            setTimeout(() => {
+                banner.style.display = "flex";
+            }, 1500);
+
+            allowBtn.addEventListener("click", async () => {
+                try {
+                    const permission = await Notification.requestPermission();
+
+                    if (permission === "granted") {
+                        banner.style.display = "none";
+                        startHourlyReminders();
+
+                        sendReminderNotification(
+                            "✅ Notifications enabled",
+                            "You'll be reminded every hour to use your G.R.O.W.T.H."
+                        );
+                    } else {
+                        banner.style.display = "none";
+                        localStorage.setItem(NOTIF_PROMPT_KEY, "true");
+                    }
+                } catch (err) {
+                    console.error("Notification permission error:", err);
+                    banner.style.display = "none";
+                }
+            });
+
+            laterBtn.addEventListener("click", () => {
+                banner.style.display = "none";
+                localStorage.setItem(NOTIF_PROMPT_KEY, "true");
+            });
+        }
+
+
+        /* ---------- Hourly reminders ---------- */
+
+        function startHourlyReminders() {
+            if (notificationTimer) {
+                clearInterval(notificationTimer);
+            }
+
+            const last = parseInt(localStorage.getItem(LAST_NOTIF_KEY) || "0", 10);
+            const now = Date.now();
+
+            if (!last || (now - last) >= NOTIFICATION_INTERVAL) {
+                fireGrowthReminder();
+            }
+
+            notificationTimer = setInterval(fireGrowthReminder, NOTIFICATION_INTERVAL);
+
+            console.log("⏰ Hourly growth reminders started");
+        }
+
+
+        function fireGrowthReminder() {
+            if (!("Notification" in window) || Notification.permission !== "granted") {
+                return;
+            }
+
+            sendReminderNotification("🌱 G.R.O.W.T.H", NOTIFICATION_MESSAGE);
+            showInPageToast(NOTIFICATION_MESSAGE);
+
+            localStorage.setItem(LAST_NOTIF_KEY, Date.now().toString());
+        }
+
+
+        function sendReminderNotification(title, body) {
+            try {
+                const notif = new Notification(title, {
+                    body: body,
+                    icon: "/favicon.ico",
+                    badge: "/favicon.ico",
+                    tag: "growth-reminder",
+                    requireInteraction: false,
+                    silent: false
+                });
+
+                notif.onclick = () => {
+                    window.focus();
+                    notif.close();
+                };
+            } catch (err) {
+                console.error("Notification display error:", err);
+            }
+        }
+
+
+        function showInPageToast(message) {
+            const existing = document.querySelector(".notif-toast");
+            if (existing) existing.remove();
+
+            const toast = document.createElement("div");
+            toast.className = "notif-toast";
+            toast.innerHTML = `
+                <button class="notif-toast-close" aria-label="Close">×</button>
+                <strong>🌱 G.R.O.W.T.H</strong>
+                <small>${message}</small>
+            `;
+
+            document.body.appendChild(toast);
+
+            toast.querySelector(".notif-toast-close").addEventListener("click", () => {
+                toast.remove();
+            });
+
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.style.transition = "opacity 0.3s ease, transform 0.3s ease";
+                    toast.style.opacity = "0";
+                    toast.style.transform = "translateX(40px)";
+                    setTimeout(() => toast.remove(), 300);
+                }
+            }, 8000);
+        }
+
+
+        /* =========================================================
            RUN ON PAGE LOAD
         ========================================================= */
 
@@ -1177,10 +1156,21 @@
             loadGreeting();
             setChecklistMonth();
             loadChecklistChecks();
-            setupChecklistListeners();
+            setupGrowthCalendarNav();
             setupHamburger();
             setupReflectionForm();
             setupNotificationBanner();
+            loadMyReflections();
+            subscribeMyReflections();
+
+            /* Nav active link */
+            const currentPage =
+                window.location.pathname.split("/").pop().toLowerCase();
+            document.querySelectorAll(".sidebar nav a").forEach(link => {
+                const linkPage =
+                    link.getAttribute("href").split("/").pop().toLowerCase();
+                link.classList.toggle("active", linkPage === currentPage);
+            });
 
             const logoutBtn = document.getElementById("logoutBtn");
             if (logoutBtn) {

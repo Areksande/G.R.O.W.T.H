@@ -15,6 +15,9 @@
 
     <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">☰</button>
 
+    <!-- =========================================
+         SIDEBAR
+    ========================================== -->
     <div class="sidebar" id="sidebar">
         <div class="logo">
             <h2>Young Ladies</h2>
@@ -37,12 +40,18 @@
 
     </div>
 
+    <!-- =========================================
+         HERO
+    ========================================== -->
     <section class="hero1">
         <h2>Young Ladies - Page</h2>
         <p>Welcome to the Young Ladies section. Here you can manage users and view reports specific to this department.
         </p>
     </section>
 
+    <!-- =========================================
+         MEMBER PROGRESS
+    ========================================== -->
     <section class="progress-section">
         <h2>Member Progress</h2>
         <p class="section-subtitle">
@@ -85,11 +94,13 @@
         </div>
     </section>
 
-
+    <!-- =========================================
+         REFLECTIONS SECTION
+    ========================================== -->
     <section class="reflections-section">
         <h2>Department Reflections</h2>
         <p class="section-subtitle">
-            Insights and reflections from the Young Ladies department.
+            Insights and reflections from the Young Ladies department. Click <strong>Reply</strong> on any entry to respond.
         </p>
 
         <div id="reflectionsContainer">
@@ -97,9 +108,54 @@
         </div>
     </section>
 
+    <!-- =========================================
+         FOOTER
+    ========================================== -->
     <footer>
         <p>&copy; 2026 Multimedia Ministry. All rights reserved.</p>
     </footer>
+
+    <!-- =========================================
+         REFLECTION REPLY MODAL
+    ========================================== -->
+    <div class="modal-overlay" id="replyModal" style="display:none;">
+        <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="replyModalTitle">
+
+            <button class="modal-close" id="replyModalClose" aria-label="Close">
+                &times;
+            </button>
+
+            <span class="section-label">Reply</span>
+            <h2 class="modal-title" id="replyModalTitle">Reply to Reflection</h2>
+            <p class="modal-subtitle" id="replyModalDate">—</p>
+
+            <!-- Original reflection -->
+            <div class="reflection-original">
+                <span class="reflection-original-label">Original Reflection</span>
+                <p class="reflection-original-text" id="replyOriginalText">—</p>
+            </div>
+
+            <!-- Reply textarea -->
+            <div class="reply-block">
+                <label for="replyInput" class="absence-detail-label">Your Reply</label>
+                <textarea
+                    id="replyInput"
+                    placeholder="Write your reply here…"
+                    maxlength="600"
+                    rows="4"
+                ></textarea>
+            </div>
+
+            <!-- Actions -->
+            <div class="absence-modal-actions">
+                <button type="button" class="btn-cancel" id="replyCancel">Cancel</button>
+                <button type="button" class="btn-confirm" id="replySave">Send Reply</button>
+            </div>
+
+            <p class="commitment-status" id="replyStatus"></p>
+
+        </div>
+    </div>
 
     <!-- =========================================
          ABSENCE DETAIL MODAL
@@ -152,7 +208,9 @@
         </div>
     </div>
 
-
+    <!-- =========================================
+         SUPABASE LIBRARY
+    ========================================== -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="YL.js"></script>
 

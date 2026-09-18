@@ -166,7 +166,7 @@ body {
     background: linear-gradient(135deg, var(--primary), var(--primary-dark));
     color: #fff;
     border-radius: 12px;
-    box-shadow: 0 4px 14px rgba(79, 70, 229, 0.2);
+    box-shadow: 0 4px 14px rgba(226, 0, 113, 0.2);
 }
 
 .hero1 h2 {
@@ -182,25 +182,8 @@ body {
 
 
 /* =========================================================
-   REFLECTIONS SECTION
+   SHARED SECTION SUBTITLE
 ========================================================= */
-
-.reflections-section {
-    margin-left: var(--content-offset);
-    margin-right: var(--content-gap);
-    margin-top: var(--content-gap);
-    margin-bottom: 30px;
-    padding: 24px 30px;
-    background: var(--card-bg);
-    border-radius: 12px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
-}
-
-.reflections-section h2 {
-    font-size: 20px;
-    color: var(--text);
-    margin-bottom: 6px;
-}
 
 .section-subtitle {
     font-size: 14px;
@@ -208,53 +191,6 @@ body {
     margin-bottom: 20px;
 }
 
-#reflectionsContainer {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-}
-
-.reflection-card {
-    padding: 16px 20px;
-    background: #f9fafb;
-    border-left: 4px solid var(--primary);
-    border-radius: 8px;
-    transition: background 0.2s;
-}
-
-.reflection-card:hover {
-    background: #f1f5f9;
-}
-
-.reflection-content {
-    font-size: 14.5px;
-    line-height: 1.6;
-    color: var(--text);
-    margin-bottom: 8px;
-    white-space: pre-wrap;
-    word-wrap: break-word;;
-}
-
-.reflection-date {
-    font-size: 12.5px;
-    color: var(--muted);
-}
-
-.loading-text,
-.empty-text {
-    color: var(--muted);
-    font-style: italic;
-    padding: 20px;
-    text-align: center;
-}
-
-.error-text {
-    color: #b91c1c;
-    padding: 16px;
-    background: #fef2f2;
-    border-radius: 8px;
-    border-left: 4px solid #b91c1c;
-}
 
 /* =========================================================
    PROGRESS SECTION (Member checklist counts)
@@ -326,7 +262,7 @@ body {
 }
 
 .progress-table tbody tr:hover {
-    background: #eef2ff;
+    background: #fce7f3;
 }
 
 .progress-member {
@@ -347,7 +283,7 @@ body {
 .progress-total {
     font-weight: 700;
     color: var(--text);
-    background: #eef2ff;
+    background: #fce7f3;
 }
 
 .progress-note {
@@ -357,405 +293,11 @@ body {
     text-align: right;
 }
 
-@media (max-width: 768px) {
-
-    .progress-section {
-        margin-left: var(--content-gap-mobile);
-        margin-right: var(--content-gap-mobile);
-        margin-top: var(--content-gap-mobile);
-        padding: 18px 16px;
-    }
-
-    .progress-section h2 {
-        font-size: 18px;
-    }
-
-    .progress-table {
-        font-size: 13px;
-    }
-
-    .progress-table th,
-    .progress-table td {
-        padding: 10px 6px;
-    }
-}
-
-/* =========================================================
-   REFLECTION CARD HEADER (sender + date)
-========================================================= */
-
-.reflection-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 10px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-.reflection-sender {
-    font-weight: 600;
-    font-size: 14.5px;
-    color: #04d172;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-}
-
-/* Optional: prefix with a small avatar dot */
-.reflection-sender::before {
-    content: "";
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #04d172;
-    display: inline-block;
-}
-
-.reflection-date {
-    font-size: 12.5px;
-    color: #6b7280;
-}
-
-/* On mobile, stack the header vertically */
-@media (max-width: 480px) {
-    .reflection-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 4px;
-    }
-}
-
-/* =========================================================
-   ABSENCE ITEM — clickable + note badge
-========================================================= */
-
-.absence-item {
-    cursor: pointer;
-    transition: background 0.2s ease, padding-left 0.3s ease,
-                transform 0.15s ease;
-}
-
-.absence-item:hover {
-    transform: translateX(2px);
-}
-
-.absence-item:focus-visible {
-    outline: 2px solid var(--primary, #a51f9e);
-    outline-offset: 2px;
-}
-
-.absence-note-badge {
-    flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background: #166534;
-    color: #fff;
-    font-size: 0.7rem;
-    font-weight: 700;
-    line-height: 1;
-    margin-left: auto;
-    box-shadow: 0 1px 4px rgba(22, 101, 52, 0.35);
-    animation: badgePop 0.25s ease;
-}
-
-@keyframes badgePop {
-    from { transform: scale(0.6); opacity: 0; }
-    to   { transform: scale(1); opacity: 1; }
-}
-
-
-/* =========================================================
-   ABSENCE DETAIL MODAL
-========================================================= */
-
-.modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(10, 10, 10, 0.55);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1.5rem;
-    z-index: 2000;
-    animation: modalFade 0.25s ease;
-}
-
-@keyframes modalFade {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-}
-
-.modal-box {
-    position: relative;
-    width: 100%;
-    max-width: 420px;
-    background: #fff;
-    border: 1px solid #e5e7eb;
-    padding: 2rem 1.8rem 1.8rem;
-    border-radius: 12px;
-    animation: modalPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-    max-height: 90vh;
-    overflow-y: auto;
-}
-
-@keyframes modalPop {
-    from { opacity: 0; transform: translateY(20px) scale(0.96); }
-    to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-.modal-close {
-    position: absolute;
-    top: 0.8rem;
-    right: 1rem;
-    background: transparent;
-    border: none;
-    font-size: 1.6rem;
-    line-height: 1;
-    color: #9ca3af;
-    cursor: pointer;
-    padding: 0.2rem 0.5rem;
-    transition: color 0.2s ease, transform 0.2s ease;
-}
-
-.modal-close:hover {
-    color: var(--primary, #a51f9e);
-    transform: rotate(90deg);
-}
-
-.section-label {
-    display: inline-block;
-    font-size: 0.68rem;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: #9ca3af;
-    margin-bottom: 0.6rem;
-}
-
-.modal-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.4rem;
-    font-weight: 400;
-    color: var(--text);
-    letter-spacing: -0.3px;
-    margin-bottom: 0.3rem;
-}
-
-.modal-subtitle {
-    font-size: 0.82rem;
-    color: var(--muted);
-    font-weight: 300;
-    margin-bottom: 1.2rem;
-}
-
-.absence-detail-member {
-    display: flex;
-    align-items: center;
-    gap: 0.9rem;
-    padding: 1rem 0;
-    margin-bottom: 1rem;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-.absence-detail-avatar {
-    flex-shrink: 0;
-    width: 44px;
-    height: 44px;
-    border: 1.5px solid var(--text);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Playfair Display', serif;
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--text);
-    background: #fafafa;
-}
-
-.absence-detail-info {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    min-width: 0;
-}
-
-.absence-detail-name {
-    font-family: 'Inter', sans-serif;
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--text);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.absence-detail-dept {
-    font-size: 0.72rem;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--muted);
-    font-weight: 500;
-}
-
-.absence-detail-block {
-    margin-bottom: 1.2rem;
-}
-
-.absence-detail-label {
-    display: block;
-    font-size: 0.68rem;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--muted);
-    font-weight: 500;
-    margin-bottom: 0.5rem;
-}
-
-.absence-detail-reason {
-    padding: 0.9rem 1rem;
-    background: #fdf3f3;
-    border-left: 3px solid #dc2626;
-    color: var(--text);
-    font-size: 0.88rem;
-    font-style: italic;
-    line-height: 1.6;
-    border-radius: 2px;
-    word-wrap: break-word;
-    white-space: pre-wrap;
-}
-
-.absence-detail-block textarea {
-    width: 100%;
-    padding: 0.75rem 0.9rem;
-    border: 1px solid #d1d5db;
-    background: #fff;
-    border-radius: 6px;
-    font-family: inherit;
-    font-size: 0.85rem;
-    color: var(--text);
-    resize: vertical;
-    min-height: 70px;
-    line-height: 1.6;
-    transition: border-color 0.25s ease, box-shadow 0.25s ease;
-}
-
-.absence-detail-block textarea:focus {
-    outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(165, 31, 158, 0.12);
-}
-
-.absence-note-hint {
-    margin-top: 0.4rem;
-    font-size: 0.68rem;
-    color: #9ca3af;
-    font-style: italic;
-}
-
-.absence-modal-actions {
-    display: flex;
-    gap: 0.6rem;
-    margin-top: 0.5rem;
-}
-
-.absence-modal-actions .btn-cancel,
-.absence-modal-actions .btn-confirm {
-    flex: 1;
-    padding: 0.8rem 1rem;
-    font-family: inherit;
-    font-size: 0.72rem;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    cursor: pointer;
-    border: 1px solid var(--primary);
-    border-radius: 6px;
-    transition: background 0.3s ease, color 0.3s ease,
-                letter-spacing 0.3s ease;
-}
-
-.absence-modal-actions .btn-cancel {
-    background: transparent;
-    color: var(--primary);
-}
-
-.absence-modal-actions .btn-cancel:hover {
-    background: rgba(165, 31, 158, 0.08);
-}
-
-.absence-modal-actions .btn-confirm {
-    background: var(--primary);
-    color: #fff;
-}
-
-.absence-modal-actions .btn-confirm:hover {
-    letter-spacing: 2.5px;
-    background: var(--primary-dark);
-}
-
-.absence-modal-actions .btn-cancel:disabled,
-.absence-modal-actions .btn-confirm:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
-.commitment-status {
-    margin-top: 0.9rem;
-    font-size: 0.8rem;
-    text-align: center;
-    min-height: 18px;
-    transition: color 0.25s ease;
-}
-
-.commitment-status.success {
-    color: #166534;
-}
-
-.commitment-status.error {
-    color: #b91c1c;
-}
-
-/* Mobile */
-@media (max-width: 480px) {
-    .modal-box {
-        padding: 1.6rem 1.2rem 1.4rem;
-        max-width: 100%;
-    }
-
-    .absence-detail-avatar {
-        width: 38px;
-        height: 38px;
-        font-size: 0.85rem;
-    }
-
-    .absence-detail-name {
-        font-size: 0.9rem;
-    }
-
-    .absence-detail-reason {
-        font-size: 0.82rem;
-        padding: 0.8rem 0.85rem;
-    }
-
-    .absence-modal-actions .btn-cancel,
-    .absence-modal-actions .btn-confirm {
-        padding: 0.7rem 0.8rem;
-        font-size: 0.68rem;
-        letter-spacing: 1.2px;
-    }
-}
 
 /* =========================================================
    ABSENCES SECTION
 ========================================================= */
+
 .absences-section {
     margin-left: var(--content-offset);
     margin-right: var(--content-gap);
@@ -811,7 +353,6 @@ body {
     border-color: var(--primary);
 }
 
-/* List */
 .absences-list {
     list-style: none;
     display: flex;
@@ -825,8 +366,10 @@ body {
     gap: 0.9rem;
     padding: 0.9rem 0.5rem;
     border-bottom: 1px solid #e5e7eb;
-    transition: padding-left 0.3s ease, background 0.3s ease;
+    transition: padding-left 0.3s ease, background 0.3s ease,
+                transform 0.15s ease;
     position: relative;
+    cursor: pointer;
 }
 
 .absence-item::before {
@@ -844,10 +387,16 @@ body {
 .absence-item:hover {
     padding-left: 0.9rem;
     background: #fdf3f3;
+    transform: translateX(2px);
 }
 
 .absence-item:hover::before {
     height: 70%;
+}
+
+.absence-item:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
 }
 
 .absence-item:last-child {
@@ -918,7 +467,29 @@ body {
     border-left: 2px solid #fca5a5;
 }
 
-/* Loading */
+.absence-note-badge {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #166534;
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-left: auto;
+    box-shadow: 0 1px 4px rgba(22, 101, 52, 0.35);
+    animation: badgePop 0.25s ease;
+}
+
+@keyframes badgePop {
+    from { transform: scale(0.6); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+}
+
 .absences-loading {
     display: none;
     flex-direction: column;
@@ -953,7 +524,6 @@ body {
     40% { opacity: 1; transform: scale(1); }
 }
 
-/* Empty */
 .absences-empty {
     text-align: center;
     padding: 2.5rem 1rem;
@@ -973,97 +543,263 @@ body {
     color: #9ca3af;
 }
 
-/* Mobile */
-@media (max-width: 768px) {
-    .absences-section {
-        margin-left: var(--content-gap-mobile);
-        margin-right: var(--content-gap-mobile);
-        margin-top: var(--content-gap-mobile);
-        padding: 18px 16px;
-    }
 
-    .absences-header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .absences-header h2 {
-        font-size: 18px;
-    }
-}
-
-@media (max-width: 480px) {
-    .absences-section {
-        padding: 16px 14px;
-    }
-
-    .absences-header h2 {
-        font-size: 16px;
-    }
-
-    .absence-avatar {
-        width: 32px;
-        height: 32px;
-        font-size: 0.75rem;
-    }
-
-    .absence-name {
-        font-size: 0.85rem;
-    }
-
-    .absence-reason {
-        font-size: 0.78rem;
-    }
-
-    .absence-date {
-        font-size: 0.65rem;
-    }
-}
 /* =========================================================
-   ABSENCE ITEM — clickable + note badge
+   REFLECTIONS SECTION
 ========================================================= */
 
-.absence-item {
-    cursor: pointer;
-    transition: background 0.2s ease, padding-left 0.3s ease,
-                transform 0.15s ease;
+.reflections-section {
+    margin-left: var(--content-offset);
+    margin-right: var(--content-gap);
+    margin-top: var(--content-gap);
+    margin-bottom: 30px;
+    padding: 24px 30px;
+    background: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
 }
 
-.absence-item:hover {
-    transform: translateX(2px);
+.reflections-section h2 {
+    font-size: 20px;
+    color: var(--text);
+    margin-bottom: 6px;
 }
 
-.absence-item:focus-visible {
-    outline: 2px solid var(--primary, #a51f9e);
-    outline-offset: 2px;
+#reflectionsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
 }
 
-.absence-note-badge {
-    flex-shrink: 0;
+.reflection-card {
+    position: relative;
+    padding: 16px 20px;
+    padding-bottom: 16px;
+    background: #f9fafb;
+    border-left: 4px solid var(--primary);
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+
+.reflection-card:hover {
+    background: #f1f5f9;
+}
+
+.reflection-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.reflection-sender {
+    font-weight: 600;
+    font-size: 14.5px;
+    color: #04d172;
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background: #166534;
-    color: #fff;
-    font-size: 0.7rem;
-    font-weight: 700;
-    line-height: 1;
-    margin-left: auto;
-    box-shadow: 0 1px 4px rgba(22, 101, 52, 0.35);
-    animation: badgePop 0.25s ease;
+    gap: 6px;
 }
 
-@keyframes badgePop {
-    from { transform: scale(0.6); opacity: 0; }
-    to   { transform: scale(1); opacity: 1; }
+.reflection-sender::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #04d172;
+    display: inline-block;
+}
+
+.reflection-content {
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: var(--text);
+    margin-bottom: 8px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.reflection-date {
+    font-size: 12.5px;
+    color: var(--muted);
+}
+
+.loading-text,
+.empty-text {
+    color: var(--muted);
+    font-style: italic;
+    padding: 20px;
+    text-align: center;
+}
+
+.error-text {
+    color: #b91c1c;
+    padding: 16px;
+    background: #fef2f2;
+    border-radius: 8px;
+    border-left: 4px solid #b91c1c;
 }
 
 
 /* =========================================================
-   ABSENCE DETAIL MODAL
+   REFLECTION — REPLY BUTTON & DISPLAY
+========================================================= */
+
+.reflection-reply-btn {
+    margin-top: 10px;
+    padding: 8px 16px;
+    background: transparent;
+    border: 1.5px solid var(--primary);
+    color: var(--primary);
+    font-family: inherit;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease,
+                letter-spacing 0.3s ease, transform 0.15s ease;
+}
+
+.reflection-reply-btn:hover {
+    background: var(--primary);
+    color: #fff;
+    letter-spacing: 1.5px;
+    transform: translateY(-1px);
+}
+
+.reflection-reply-btn:active {
+    transform: translateY(0);
+}
+
+.reflection-reply-display {
+    margin-top: 12px;
+    padding: 12px 14px;
+    background: #fce7f3;
+    border-left: 3px solid var(--primary);
+    border-radius: 6px;
+    animation: replyFadeIn 0.35s ease;
+}
+
+@keyframes replyFadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.reflection-reply-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 6px;
+    padding-bottom: 6px;
+    border-bottom: 1px dashed rgba(226, 0, 113, 0.25);
+    flex-wrap: wrap;
+}
+
+.reflection-reply-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--primary);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.reflection-reply-label::before {
+    content: "↳";
+    font-size: 0.9rem;
+    line-height: 1;
+}
+
+.reflection-reply-date {
+    font-size: 0.68rem;
+    color: #9ca3af;
+    font-weight: 500;
+}
+
+.reflection-reply-text {
+    font-size: 0.86rem;
+    line-height: 1.6;
+    color: #374151;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    margin: 0;
+}
+
+
+/* =========================================================
+   REPLY MODAL
+========================================================= */
+
+.reflection-original {
+    margin-bottom: 1.2rem;
+    padding: 12px 14px;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    max-height: 180px;
+    overflow-y: auto;
+}
+
+.reflection-original-label {
+    display: block;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: #9ca3af;
+    margin-bottom: 6px;
+}
+
+.reflection-original-text {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: #4b5563;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    margin: 0;
+}
+
+.reply-block {
+    margin-bottom: 1.2rem;
+}
+
+.reply-block textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    color: var(--text);
+    resize: vertical;
+    min-height: 100px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    background: #fff;
+}
+
+.reply-block textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(226, 0, 113, 0.12);
+}
+
+.reply-block textarea::placeholder {
+    color: #9ca3af;
+}
+
+
+/* =========================================================
+   MODAL OVERLAY & BOX (shared)
 ========================================================= */
 
 .modal-overlay {
@@ -1118,7 +854,7 @@ body {
 }
 
 .modal-close:hover {
-    color: var(--primary, #a51f9e);
+    color: var(--primary);
     transform: rotate(90deg);
 }
 
@@ -1146,6 +882,11 @@ body {
     font-weight: 300;
     margin-bottom: 1.2rem;
 }
+
+
+/* =========================================================
+   ABSENCE DETAIL MODAL CONTENT
+========================================================= */
 
 .absence-detail-member {
     display: flex;
@@ -1226,7 +967,7 @@ body {
 
 
 /* =========================================================
-   NOTED TOGGLE BUTTON
+   NOTED TOGGLE BUTTON (absence modal)
 ========================================================= */
 
 .absence-noted-btn {
@@ -1252,10 +993,10 @@ body {
 }
 
 .absence-noted-btn:hover {
-    border-color: var(--primary, #a51f9e);
-    color: var(--primary, #a51f9e);
+    border-color: var(--primary);
+    color: var(--primary);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(165, 31, 158, 0.12);
+    box-shadow: 0 4px 12px rgba(226, 0, 113, 0.12);
 }
 
 .absence-noted-btn:active {
@@ -1273,6 +1014,7 @@ body {
     border-color: #166534;
     color: #fff;
     box-shadow: 0 4px 14px rgba(22, 101, 52, 0.28);
+    animation: notedPulse 0.4s ease;
 }
 
 .absence-noted-btn.is-noted:hover {
@@ -1307,10 +1049,6 @@ body {
     100% { transform: scale(1); }
 }
 
-.absence-noted-btn.is-noted {
-    animation: notedPulse 0.4s ease;
-}
-
 .absence-note-hint {
     margin-top: 0.6rem;
     font-size: 0.72rem;
@@ -1337,13 +1075,62 @@ body {
     margin-top: 0.6rem;
 }
 
-.absence-modal-actions .btn-cancel {
+.absence-modal-actions .btn-cancel,
+.absence-modal-actions .btn-confirm {
     flex: 1;
     padding: 0.8rem 1rem;
     font-family: inherit;
     font-size: 0.72rem;
     letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: 1px solid var(--primary);
+    border-radius: 6px;
+    transition: background 0.3s ease, color 0.3s ease,
+                letter-spacing 0.3s ease;
 }
+
+.absence-modal-actions .btn-cancel {
+    background: transparent;
+    color: var(--primary);
+}
+
+.absence-modal-actions .btn-cancel:hover {
+    background: rgba(226, 0, 113, 0.08);
+}
+
+.absence-modal-actions .btn-confirm {
+    background: var(--primary);
+    color: #fff;
+}
+
+.absence-modal-actions .btn-confirm:hover {
+    letter-spacing: 2.5px;
+    background: var(--primary-dark);
+}
+
+.absence-modal-actions .btn-cancel:disabled,
+.absence-modal-actions .btn-confirm:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.commitment-status {
+    margin-top: 0.9rem;
+    font-size: 0.8rem;
+    text-align: center;
+    min-height: 18px;
+    transition: color 0.25s ease;
+}
+
+.commitment-status.success {
+    color: #166534;
+}
+
+.commitment-status.error {
+    color: #b91c1c;
+}
+
 
 /* =========================================================
    FOOTER
@@ -1361,7 +1148,7 @@ footer {
 
 
 /* =========================================================
-   RESPONSIVE — TABLET
+   RESPONSIVE — TABLET (max-width: 1024px)
 ========================================================= */
 
 @media (max-width: 1024px) {
@@ -1381,12 +1168,12 @@ footer {
 
 
 /* =========================================================
-   RESPONSIVE — MOBILE (≤768px)
+   RESPONSIVE — MOBILE (max-width: 768px)
 ========================================================= */
 
 @media (max-width: 768px) {
 
-    /* Sidebar becomes slide-in drawer */
+    /* Sidebar drawer */
     .sidebar {
         transform: translateX(-100%);
         width: 260px;
@@ -1397,7 +1184,6 @@ footer {
         transform: translateX(0);
     }
 
-    /* Hamburger visible */
     .hamburger {
         display: block;
     }
@@ -1418,7 +1204,45 @@ footer {
         font-size: 13.5px;
     }
 
-    /* Reflections */
+    /* Progress section */
+    .progress-section {
+        margin-left: var(--content-gap-mobile);
+        margin-right: var(--content-gap-mobile);
+        margin-top: var(--content-gap-mobile);
+        padding: 18px 16px;
+    }
+
+    .progress-section h2 {
+        font-size: 18px;
+    }
+
+    .progress-table {
+        font-size: 13px;
+    }
+
+    .progress-table th,
+    .progress-table td {
+        padding: 10px 6px;
+    }
+
+    /* Absences section */
+    .absences-section {
+        margin-left: var(--content-gap-mobile);
+        margin-right: var(--content-gap-mobile);
+        margin-top: var(--content-gap-mobile);
+        padding: 18px 16px;
+    }
+
+    .absences-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .absences-header h2 {
+        font-size: 18px;
+    }
+
+    /* Reflections section */
     .reflections-section {
         margin-left: var(--content-gap-mobile);
         margin-right: var(--content-gap-mobile);
@@ -1442,21 +1266,17 @@ footer {
         font-size: 13.5px;
     }
 
-
-
     /* Footer */
     footer {
         margin-left: 0;
         padding: 12px;
         font-size: 12.5px;
     }
-
-
 }
 
 
 /* =========================================================
-   RESPONSIVE — SMALL PHONE (≤480px)
+   RESPONSIVE — SMALL PHONE (max-width: 480px)
 ========================================================= */
 
 @media (max-width: 480px) {
@@ -1479,5 +1299,72 @@ footer {
 
     .reflection-date {
         font-size: 12px;
+    }
+
+    /* Absences */
+    .absences-section {
+        padding: 16px 14px;
+    }
+
+    .absences-header h2 {
+        font-size: 16px;
+    }
+
+    .absence-avatar {
+        width: 32px;
+        height: 32px;
+        font-size: 0.75rem;
+    }
+
+    .absence-name {
+        font-size: 0.85rem;
+    }
+
+    .absence-reason {
+        font-size: 0.78rem;
+    }
+
+    .absence-date {
+        font-size: 0.65rem;
+    }
+
+    /* Reflection reply */
+    .reflection-reply-btn {
+        width: 100%;
+        text-align: center;
+        font-size: 0.7rem;
+    }
+
+    .reflection-reply-text,
+    .reflection-original-text {
+        font-size: 0.8rem;
+    }
+
+    /* Modal */
+    .modal-box {
+        padding: 1.6rem 1.2rem 1.4rem;
+        max-width: 100%;
+    }
+
+    .absence-detail-avatar {
+        width: 38px;
+        height: 38px;
+        font-size: 0.85rem;
+    }
+
+    .absence-detail-name {
+        font-size: 0.9rem;
+    }
+
+    .absence-detail-reason {
+        font-size: 0.82rem;
+        padding: 0.8rem 0.85rem;
+    }
+
+    .absence-modal-actions .btn-cancel,
+    .absence-modal-actions .btn-confirm {
+        padding: 0.7rem 0.8rem;
+        font-size: 0.68rem;
+        letter-spacing: 1.2px;
     }
 }
