@@ -937,9 +937,9 @@ body {
 }
 
 .firstfruit-header h3 {
-    font-family: 'Playfair Display', serif;
+    font-family: Arial, Helvetica, sans-serif;
     font-size: 1.6rem;
-    font-weight: 400;
+    font-weight: 800;
     color: var(--ink);
     letter-spacing: -0.3px;
     margin-bottom: 0.3rem;
@@ -990,7 +990,7 @@ body {
 }
 
 .stat-value {
-    font-family: 'Playfair Display', serif;
+    font-family: Arial, Helvetica, sans-serif;
     font-size: 1.5rem;
     font-weight: 700;
     color: var(--ink);
@@ -1493,6 +1493,7 @@ footer {
 
     .firstfruit-header h3 {
         font-size: 1.3rem;
+        font-family: Arial, Helvetica, sans-serif;
     }
 
     .firstfruit-stats {

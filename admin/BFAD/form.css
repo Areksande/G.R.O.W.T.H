@@ -30,7 +30,7 @@ nav {
 nav .logo {
     font-size: 1.4rem;
     font-weight: 700;
-    color: #2563eb;
+    color: #025244;
     text-decoration: none;
     letter-spacing: 1px;
 }
@@ -51,7 +51,7 @@ nav ul li a {
 
 nav ul li a:hover {
     background: #f0f0f0;
-    color: #2563eb;
+    color:  #2563eb;
 }
 
 /* ---------- LAYOUT ---------- */
@@ -86,7 +86,7 @@ nav ul li a:hover {
 }
 
 .form-card h1 span {
-    color: #2563eb;
+    color: #00a88c;
 }
 
 .form-card .subtitle {
@@ -174,14 +174,14 @@ input[type="number"] {
 }
 
 .btn-primary {
-    background: #2563eb;
+    background: #008371;
     color: #fff;
     width: 100%;
     margin-top: 8px;
 }
 
 .btn-primary:hover {
-    background: #1d4ed8;
+    background: #000000;
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
 }
@@ -235,7 +235,7 @@ input[type="number"] {
 }
 
 .count-badge {
-    background: #2563eb;
+    background: #007544;
     color: #fff;
     font-size: 0.8rem;
     font-weight: 600;
