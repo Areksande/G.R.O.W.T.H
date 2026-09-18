@@ -13,8 +13,8 @@
     --content-offset: 240px;
     --content-gap: 20px;
     --content-gap-mobile: 16px;
-    --primary: #070350;
-    --primary-dark: #070350;
+    --primary: #020077;
+    --primary-dark: #020077;
     --text: #1f2937;
     --muted: #6b7280;
     --bg: #f5f5f5;
@@ -288,6 +288,286 @@ body {
     color: #111827;
 }
 
+/* =========================================================
+   CLICKABLE MEMBER ROWS
+========================================================= */
+
+.members-table .member-row {
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.members-table .member-row:hover {
+    background: #fdf5fd;
+}
+
+.members-table .member-row:focus-visible {
+    outline: 2px solid var(--primary, #a51f9e);
+    outline-offset: -2px;
+}
+
+.members-table .member-row td {
+    transition: padding-left 0.2s ease;
+}
+
+.members-table .member-row:hover td:first-child {
+    padding-left: 14px;
+}
+
+
+/* =========================================================
+   MEMBER PROFILE MODAL
+========================================================= */
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 10, 10, 0.55);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    z-index: 2000;
+    animation: modalFade 0.25s ease;
+}
+
+@keyframes modalFade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.modal-box {
+    position: relative;
+    width: 100%;
+    max-width: 520px;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    padding: 2rem 1.8rem 1.8rem;
+    border-radius: 12px;
+    animation: modalPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+@keyframes modalPop {
+    from { opacity: 0; transform: translateY(20px) scale(0.96); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.modal-close {
+    position: absolute;
+    top: 0.8rem;
+    right: 1rem;
+    background: transparent;
+    border: none;
+    font-size: 1.6rem;
+    line-height: 1;
+    color: #9ca3af;
+    cursor: pointer;
+    padding: 0.2rem 0.5rem;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.modal-close:hover {
+    color: var(--primary, #a51f9e);
+    transform: rotate(90deg);
+}
+
+.section-label {
+    display: inline-block;
+    font-size: 0.68rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #9ca3af;
+    margin-bottom: 0.8rem;
+}
+
+/* Header */
+.member-profile-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.4rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.member-profile-avatar {
+    flex-shrink: 0;
+    width: 56px;
+    height: 56px;
+    border: 1.5px solid var(--text, #1f2937);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text, #1f2937);
+    background: #fafafa;
+}
+
+.member-profile-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--text, #1f2937);
+    letter-spacing: -0.3px;
+    margin: 0 0 0.2rem;
+    line-height: 1.2;
+}
+
+.member-profile-dept {
+    font-size: 0.72rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted, #6b7280);
+    font-weight: 500;
+    margin: 0;
+}
+
+/* Details grid */
+.member-profile-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.9rem 1.2rem;
+    margin-bottom: 1.4rem;
+    padding-bottom: 1.4rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.member-profile-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.member-profile-label {
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted, #6b7280);
+    font-weight: 500;
+}
+
+.member-profile-value {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.88rem;
+    color: var(--text, #1f2937);
+    font-weight: 500;
+    word-wrap: break-word;
+}
+
+/* Stats row */
+.member-profile-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-top: 0.6rem;
+}
+
+.member-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 12px 6px;
+    background: #f9fafb;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.member-stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--primary, #a51f9e);
+    line-height: 1.1;
+}
+
+.member-stat-label {
+    font-size: 0.6rem;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--muted, #6b7280);
+    font-weight: 500;
+}
+
+/* Loading */
+.member-modal-loading {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 2rem 1rem;
+    color: var(--muted, #6b7280);
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.member-modal-loading .loading-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--primary, #a51f9e);
+    margin: 0 2px;
+    animation: modalDotPulse 1.2s infinite ease-in-out;
+}
+
+.member-modal-loading .loading-dot:nth-child(2) { animation-delay: 0.2s; }
+.member-modal-loading .loading-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes modalDotPulse {
+    0%, 80%, 100% { opacity: 0.2; transform: scale(0.85); }
+    40% { opacity: 1; transform: scale(1); }
+}
+
+/* Role badges (assuming they exist in your Profile.css already) */
+.role-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: capitalize;
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    .modal-box {
+        padding: 1.6rem 1.2rem 1.4rem;
+        max-width: 100%;
+    }
+
+    .member-profile-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .member-profile-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .member-profile-avatar {
+        width: 48px;
+        height: 48px;
+        font-size: 1.1rem;
+    }
+
+    .member-profile-name {
+        font-size: 1.15rem;
+    }
+
+    .member-stat-value {
+        font-size: 1rem;
+    }
+}
 
 /* =========================================================
    ROLE BADGES

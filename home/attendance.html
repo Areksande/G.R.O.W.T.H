@@ -12,11 +12,7 @@
     <!-- =========================================
          HAMBURGER (mobile)
     ========================================== -->
-    <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
-        <span></span>
-        <span></span>
-        <span></span>
-    </button>
+    <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">☰</button>
 
     <!-- Overlay for mobile sidebar -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
@@ -108,6 +104,11 @@
                 </div>
 
                 <div>
+                    <span class="legend-dot read"></span>
+                    Read by leader
+                </div>
+
+                <div>
                     <span class="legend-dot today"></span>
                     Today
                 </div>
@@ -159,7 +160,7 @@
                         <span class="progress-amount" id="progressAmount">
                             <strong id="progressGiven">₱0.00</strong>
                             <span class="progress-sep">/</span>
-                            <span id="progressGoal">₱10,000.00</span>
+                            <span id="progressGoal">₱0.00</span>
                         </span>
                     </div>
                     <span class="progress-percent" id="progressPercent">0%</span>
@@ -174,7 +175,7 @@
                 </p>
 
                 <!-- =========================================
-                     EDIT COMMITMENT (new)
+                     EDIT COMMITMENT
                 ========================================== -->
                 <button type="button" class="edit-commitment-btn" id="editCommitmentBtn">
                     <span class="edit-commitment-icon">✎</span>
@@ -254,7 +255,7 @@
     </div>
 
     <!-- =========================================
-         COMMITMENT MODAL (new)
+         COMMITMENT MODAL
     ========================================== -->
     <div class="modal-overlay" id="commitmentModal" style="display:none;">
         <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="commitmentTitle">
@@ -325,10 +326,7 @@
     const ABSENCES_TABLE   = "absences";
     const ATTENDANCE_TABLE = "attendance";
 
-    /* Default commitment — used if the user hasn't set one */
     const DEFAULT_COMMITMENT = 10000;
-
-    /* The current user's commitment goal (loaded from profiles) */
     let userCommitment = DEFAULT_COMMITMENT;
 
 
@@ -425,8 +423,6 @@
             if (!username) { card.style.display = "none"; return; }
 
             currentUsername = username;
-
-            /* Load commitment goal (fallback to default) */
             userCommitment = Number(profile?.commitment_goal) || DEFAULT_COMMITMENT;
 
             const { data, error } = await supabaseClient
@@ -440,7 +436,6 @@
             renderFirstfruitCard(data || []);
             card.style.display = "block";
 
-            /* Realtime channel */
             if (firstfruitsChannel) {
                 supabaseClient.removeChannel(firstfruitsChannel);
             }
@@ -610,7 +605,6 @@
         commitmentModal.style.display = "flex";
         document.body.style.overflow = "hidden";
 
-        /* Prefill with current goal */
         commitmentInput.value = Number(userCommitment).toFixed(2);
         commitmentStatus.textContent = "";
         commitmentStatus.classList.remove("success", "error");
@@ -667,10 +661,8 @@
                 );
             }
 
-            /* Update local state */
             userCommitment = Number(data.commitment_goal) || value;
 
-            /* Redraw progress bar with new goal */
             const totalEl = document.getElementById("firstfruitTotal");
             const total = parseFloat(
                 (totalEl?.textContent || "0").replace(/[₱,]/g, "")
@@ -696,7 +688,6 @@
     }
 
 
-    /* Event listeners */
     if (editCommitmentBtn) {
         editCommitmentBtn.addEventListener("click", openCommitmentModal);
     }
@@ -721,7 +712,6 @@
         });
     }
 
-    /* Preset buttons */
     presetButtons.forEach(btn => {
         btn.addEventListener("click", () => {
             const val = parseFloat(btn.dataset.value);
@@ -785,9 +775,11 @@
 
     /* =========================================================
        ATTENDANCE STATE
+       Format: { "YYYY-MM-DD": { status, reason?, noted? } }
     ========================================================= */
 
     let attendanceData = {};
+
 
     async function loadAttendanceFromSupabase() {
         try {
@@ -801,21 +793,52 @@
 
             currentUserId = user.id;
 
-            const { data, error } = await supabaseClient
+            /* 1. Load attendance */
+            const { data: attendanceRows, error: attendanceErr } = await supabaseClient
                 .from(ATTENDANCE_TABLE)
                 .select("attendance_date, status, reason")
                 .eq("user_id", user.id);
 
-            if (error) throw error;
+            if (attendanceErr) throw attendanceErr;
 
             attendanceData = {};
 
-            (data || []).forEach(row => {
+            (attendanceRows || []).forEach(row => {
                 attendanceData[row.attendance_date] = {
                     status: row.status,
-                    reason: row.reason || undefined
+                    reason: row.reason || undefined,
+                    noted:  false
                 };
             });
+
+            /* 2. Load this user's absences to know which dates the leader noted */
+            const { data: absenceRows, error: absenceErr } = await supabaseClient
+                .from(ABSENCES_TABLE)
+                .select("absence_date, admin_note")
+                .eq("user_id", user.id);
+
+            if (absenceErr) {
+                console.warn("Could not load absence notes:", absenceErr.message);
+            } else {
+                (absenceRows || []).forEach(row => {
+                    const dateKey = row.absence_date;
+                    const hasNote = row.admin_note && row.admin_note.trim().length > 0;
+
+                    if (attendanceData[dateKey]) {
+                        attendanceData[dateKey].noted = hasNote;
+                    } else if (hasNote) {
+                        attendanceData[dateKey] = {
+                            status: "absent",
+                            noted: true
+                        };
+                    }
+                });
+            }
+
+            console.log(
+                "Attendance loaded for user:", user.id,
+                "→", Object.keys(attendanceData).length, "entries"
+            );
 
         } catch (err) {
             console.error("Attendance load error:", err);
@@ -924,6 +947,53 @@
 
 
     /* =========================================================
+       REALTIME — refresh when the leader notes an absence
+    ========================================================= */
+
+    let absenceNoteChannel = null;
+
+    function subscribeAbsenceNotes() {
+        if (!currentUserId) return;
+
+        if (absenceNoteChannel) {
+            supabaseClient.removeChannel(absenceNoteChannel);
+        }
+
+        absenceNoteChannel = supabaseClient
+            .channel("my-absence-notes-" + currentUserId)
+            .on(
+                "postgres_changes",
+                {
+                    event: "UPDATE",
+                    schema: "public",
+                    table: ABSENCES_TABLE,
+                    filter: `user_id=eq.${currentUserId}`
+                },
+                (payload) => {
+                    const row = payload.new;
+                    if (!row) return;
+
+                    const dateKey = row.absence_date;
+                    const hasNote = row.admin_note && row.admin_note.trim().length > 0;
+
+                    if (attendanceData[dateKey]) {
+                        attendanceData[dateKey].noted = hasNote;
+                    } else if (hasNote) {
+                        attendanceData[dateKey] = { status: "absent", noted: true };
+                    }
+
+                    renderCalendar();
+
+                    console.log("Realtime: absence note updated → calendar refreshed");
+                }
+            )
+            .subscribe((status) => {
+                console.log("Absence-notes channel status:", status);
+            });
+    }
+
+
+    /* =========================================================
        CALENDAR
     ========================================================= */
 
@@ -936,6 +1006,16 @@
     const nextMonthButton = document.getElementById("nextMonth");
 
     let currentDate = new Date();
+
+    function formatDisplayDate(dateKey) {
+        const [y, m, d] = dateKey.split("-").map(Number);
+        const date = new Date(y, m - 1, d);
+        return date.toLocaleDateString("en-PH", {
+            month: "long",
+            day: "numeric",
+            year: "numeric"
+        });
+    }
 
     function renderCalendar() {
 
@@ -976,6 +1056,21 @@
                 dayElement.classList.add("attended");
             } else if (entry?.status === "absent") {
                 dayElement.classList.add("absent");
+
+                /* NEW: read-by-leader indicator */
+                if (entry.noted) {
+                    dayElement.classList.add("noted");
+                    dayElement.setAttribute("aria-label",
+                        `Absent on ${formatDisplayDate(dateKey)} — nabasa na ng leader ang iyong dahilan.`);
+
+                    /* Tap to show tooltip on mobile */
+                    dayElement.addEventListener("touchstart", () => {
+                        dayElement.classList.add("tooltip-show");
+                        setTimeout(() => {
+                            dayElement.classList.remove("tooltip-show");
+                        }, 2400);
+                    }, { passive: true });
+                }
             }
 
             const today = new Date();
@@ -1046,26 +1141,31 @@
 
     let activeDateKey = null;
 
-    function formatDisplayDate(dateKey) {
-        const [y, m, d] = dateKey.split("-").map(Number);
-        const date = new Date(y, m - 1, d);
-        return date.toLocaleDateString("en-PH", {
-            month: "long",
-            day: "numeric",
-            year: "numeric"
-        });
-    }
 
     function openAttendanceModal(dateKey) {
         activeDateKey = dateKey;
 
         modalTitle.textContent = formatDisplayDate(dateKey);
 
+        /* Remove any prior read-badge */
+        const existingBadge = document.getElementById("absenceReadBadge");
+        if (existingBadge) existingBadge.remove();
+
         reasonBlock.style.display = "none";
         absentReason.value = "";
         removeMark.style.display = "none";
 
         const entry = attendanceData[dateKey];
+
+        /* Add the read-by-leader badge if applicable */
+        if (entry?.status === "absent" && entry.noted) {
+            const badge = document.createElement("p");
+            badge.id = "absenceReadBadge";
+            badge.className = "absence-read-badge";
+            badge.textContent = "Nabasa na ng leader ang iyong dahilan";
+            modalTitle.insertAdjacentElement("afterend", badge);
+        }
+
         if (entry) {
             removeMark.style.display = "block";
             if (entry.status === "present") {
@@ -1243,6 +1343,11 @@
 
         await loadAttendanceFromSupabase();
         renderCalendar();
+
+        /* Subscribe to leader notes on this user's absences */
+        if (currentUserId) {
+            subscribeAbsenceNotes();
+        }
 
         const logoutBtn = document.getElementById("logoutBtn");
         if (logoutBtn) logoutBtn.addEventListener("click", handleLogout);

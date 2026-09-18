@@ -100,6 +100,54 @@
         </div>
     </section>
 
+    <div class="modal-overlay" id="absenceModal" style="display:none;">
+        <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="absenceModalTitle">
+
+            <button class="modal-close" id="absenceModalClose" aria-label="Close">
+                &times;
+            </button>
+
+            <span class="section-label">Absence Detail</span>
+            <h2 class="modal-title" id="absenceModalTitle">—</h2>
+            <p class="modal-subtitle" id="absenceModalDate">—</p>
+
+            <!-- Member info -->
+            <div class="absence-detail-member">
+                <div class="absence-detail-avatar" id="absenceModalAvatar">?</div>
+                <div class="absence-detail-info">
+                    <span class="absence-detail-name" id="absenceModalName">—</span>
+                    <span class="absence-detail-dept" id="absenceModalDept">—</span>
+                </div>
+            </div>
+
+            <!-- Reason -->
+            <div class="absence-detail-block">
+                <span class="absence-detail-label">Reason</span>
+                <p class="absence-detail-reason" id="absenceModalReason">—</p>
+            </div>
+
+            <!-- Noted toggle button -->
+            <div class="absence-detail-block">
+                <span class="absence-detail-label">Acknowledgment</span>
+
+                <button type="button" class="absence-noted-btn" id="absenceNotedBtn" aria-pressed="false">
+                    <span class="absence-noted-icon" id="absenceNotedIcon">○</span>
+                    <span class="absence-noted-label" id="absenceNotedLabel">Noted</span>
+                </button>
+
+                <p class="absence-note-hint" id="absenceNotedHint">
+                    Mark this absence as acknowledged.
+                </p>
+            </div>
+
+            <!-- Actions -->
+            <div class="absence-modal-actions">
+                <button type="button" class="btn-cancel" id="absenceNoteCancel">Close</button>
+            </div>
+
+        </div>
+    </div>
+
 
     <!-- =========================================
          REFLECTIONS SECTION
@@ -132,8 +180,8 @@
     ========================================== -->
     <script>
         /* =========================================================
-           SUPABASE CONFIG
-        ========================================================= */
+       SUPABASE CONFIG
+    ========================================================= */
 
         const SUPABASE_URL = "https://skoiyiaijqhwqnbziqng.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_wk9YJslv6Ycf4Lffavnmkw_bZFkBK8E";
@@ -143,10 +191,10 @@
             SUPABASE_ANON_KEY
         );
 
-        const DEPARTMENT_NAME  = "Young Men";
-        const ABSENCES_TABLE   = "absences";
+        const DEPARTMENT_NAME = "Young Men";
+        const ABSENCES_TABLE = "absences";
         const ATTENDANCE_TABLE = "attendance";
-        const PROFILES_TABLE   = "profiles";
+        const PROFILES_TABLE = "profiles";
 
 
         /* =========================================================
@@ -199,7 +247,7 @@
                 const dept = String(profile.department || "").toLowerCase();
 
                 if (role !== "admin" || dept !== DEPARTMENT_NAME.toLowerCase()) {
-                    console.warn("Not authorized for Young Men.");
+                    console.warn("Not authorized for Young Ladies.");
                     window.location.href = "../../home/main.html";
                     return;
                 }
@@ -215,18 +263,22 @@
 
 
         /* =========================================================
-           LOAD DEPARTMENT ABSENCES
-           → Primary source: `absences` table
-           → Fallback: `attendance` table joined with profiles
-           This guarantees the reasons show even if the `absences`
-           table is empty, missing, or RLS-blocked.
+           ABSENCES — state
+        ========================================================= */
+
+        let currentAbsences = [];       // cached list
+        let currentAbsenceId = null;     // currently open in modal
+
+
+        /* =========================================================
+           LOAD ABSENCES
         ========================================================= */
 
         async function loadAbsences() {
-            const listEl    = document.getElementById("absencesList");
-            const emptyEl   = document.getElementById("absencesEmpty");
+            const listEl = document.getElementById("absencesList");
+            const emptyEl = document.getElementById("absencesEmpty");
             const loadingEl = document.getElementById("absencesLoading");
-            const countEl   = document.getElementById("absencesCount");
+            const countEl = document.getElementById("absencesCount");
 
             if (!listEl) return;
 
@@ -236,13 +288,11 @@
 
             let rows = [];
 
-            /* -----------------------------------------------------
-               1. Try the `absences` table (preferred)
-            ----------------------------------------------------- */
+            /* 1. Try the `absences` table (preferred) */
             try {
                 const { data, error } = await supabaseClient
                     .from(ABSENCES_TABLE)
-                    .select("id, username, department, absence_date, reason, created_at")
+                    .select("id, username, department, absence_date, reason, admin_note, created_at")
                     .eq("department", DEPARTMENT_NAME)
                     .order("absence_date", { ascending: false })
                     .limit(100);
@@ -258,15 +308,11 @@
                 console.warn("absences fetch threw:", err);
             }
 
-            /* -----------------------------------------------------
-               2. Fallback → pull reasons from `attendance` table
-                  joined with `profiles` for username + department
-            ----------------------------------------------------- */
+            /* 2. Fallback → attendance table */
             if (!rows.length) {
                 try {
                     console.log("↪ Falling back to `attendance` table…");
 
-                    /* Get all members of this department */
                     const { data: members, error: membersErr } = await supabaseClient
                         .from(PROFILES_TABLE)
                         .select("id, username")
@@ -279,7 +325,6 @@
                         const usernameById = {};
                         members.forEach(m => { usernameById[m.id] = m.username; });
 
-                        /* Get absent rows with reasons */
                         const { data: absentRows, error: absentErr } = await supabaseClient
                             .from(ATTENDANCE_TABLE)
                             .select("user_id, attendance_date, status, reason, created_at")
@@ -292,12 +337,13 @@
                         if (absentErr) throw absentErr;
 
                         rows = (absentRows || []).map(r => ({
-                            id:            r.user_id + "_" + r.attendance_date,
-                            username:      usernameById[r.user_id] || "Unknown",
-                            department:    DEPARTMENT_NAME,
-                            absence_date:  r.attendance_date,
-                            reason:        r.reason,
-                            created_at:    r.created_at
+                            id: r.user_id + "_" + r.attendance_date,
+                            username: usernameById[r.user_id] || "Unknown",
+                            department: DEPARTMENT_NAME,
+                            absence_date: r.attendance_date,
+                            reason: r.reason,
+                            admin_note: null,
+                            created_at: r.created_at
                         }));
 
                         console.log("✅ Loaded from `attendance` fallback:", rows.length, "rows");
@@ -308,9 +354,9 @@
                 }
             }
 
-            /* -----------------------------------------------------
-               3. Render
-            ----------------------------------------------------- */
+            /* 3. Cache + render */
+            currentAbsences = rows;
+
             try {
                 countEl.textContent = rows.length;
                 countEl.classList.toggle("has-items", rows.length > 0);
@@ -327,19 +373,37 @@
                 rows.forEach((row) => {
                     const li = document.createElement("li");
                     li.className = "absence-item";
+                    li.dataset.id = row.id;
+                    li.setAttribute("role", "button");
+                    li.setAttribute("tabindex", "0");
+
+                    const hasNote = row.admin_note && row.admin_note.trim().length > 0;
+                    const noteBadge = hasNote
+                        ? `<span class="absence-note-badge" title="Noted">✓</span>`
+                        : "";
 
                     const initial = (row.username || "?").charAt(0).toUpperCase();
 
                     li.innerHTML = `
-                        <div class="absence-avatar">${escapeHtml(initial)}</div>
-                        <div class="absence-info">
-                            <div class="absence-top">
-                                <span class="absence-name">${escapeHtml(row.username)}</span>
-                                <span class="absence-date">${formatAbsenceDate(row.absence_date)}</span>
-                            </div>
-                            <span class="absence-reason">${escapeHtml(row.reason)}</span>
-                        </div>
-                    `;
+                <div class="absence-avatar">${escapeHtml(initial)}</div>
+                <div class="absence-info">
+                    <div class="absence-top">
+                        <span class="absence-name">${escapeHtml(row.username)}</span>
+                        <span class="absence-date">${formatAbsenceDate(row.absence_date)}</span>
+                    </div>
+                    <span class="absence-reason">${escapeHtml(row.reason)}</span>
+                </div>
+                ${noteBadge}
+            `;
+
+                    li.addEventListener("click", () => openAbsenceModal(row.id));
+                    li.addEventListener("keydown", (e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            openAbsenceModal(row.id);
+                        }
+                    });
+
                     listEl.appendChild(li);
                 });
 
@@ -363,12 +427,11 @@
 
 
         /* =========================================================
-           REALTIME — Absences (both tables)
+           REALTIME — Absences
         ========================================================= */
 
         function subscribeAbsences() {
 
-            /* Watch `absences` table */
             supabaseClient
                 .channel("absences-" + DEPARTMENT_NAME)
                 .on(
@@ -384,7 +447,6 @@
                 )
                 .subscribe();
 
-            /* Watch `attendance` table for status='absent' changes */
             supabaseClient
                 .channel("attendance-" + DEPARTMENT_NAME)
                 .on(
@@ -403,7 +465,189 @@
 
 
         /* =========================================================
-           LOAD DEPARTMENT REFLECTIONS (WITH SENDER NAME)
+           ABSENCE DETAIL MODAL — Noted toggle
+        ========================================================= */
+
+        const absenceModal = document.getElementById("absenceModal");
+        const absenceModalClose = document.getElementById("absenceModalClose");
+        const absenceModalTitle = document.getElementById("absenceModalTitle");
+        const absenceModalDate = document.getElementById("absenceModalDate");
+        const absenceModalAvatar = document.getElementById("absenceModalAvatar");
+        const absenceModalName = document.getElementById("absenceModalName");
+        const absenceModalDept = document.getElementById("absenceModalDept");
+        const absenceModalReason = document.getElementById("absenceModalReason");
+
+        const absenceNotedBtn = document.getElementById("absenceNotedBtn");
+        const absenceNotedIcon = document.getElementById("absenceNotedIcon");
+        const absenceNotedLabel = document.getElementById("absenceNotedLabel");
+        const absenceNotedHint = document.getElementById("absenceNotedHint");
+        const absenceNoteCancel = document.getElementById("absenceNoteCancel");
+
+
+        function openAbsenceModal(id) {
+            const row = currentAbsences.find(r => String(r.id) === String(id));
+            if (!row) return;
+
+            currentAbsenceId = id;
+
+            absenceModalTitle.textContent = row.username || "Absence Detail";
+            absenceModalDate.textContent = formatAbsenceDate(row.absence_date);
+
+            absenceModalAvatar.textContent = (row.username || "?").charAt(0).toUpperCase();
+            absenceModalName.textContent = row.username || "—";
+            absenceModalDept.textContent = row.department || DEPARTMENT_NAME;
+            absenceModalReason.textContent = row.reason || "—";
+
+            /* Set the Noted button state from the row */
+            const isNoted = !!(row.admin_note && row.admin_note.trim().length > 0);
+            applyNotedState(isNoted, /* animate = */ false);
+
+            /* Reset hint color in case of a previous error */
+            if (absenceNotedHint) absenceNotedHint.style.color = "";
+
+            absenceModal.style.display = "flex";
+            document.body.style.overflow = "hidden";
+        }
+
+
+        function closeAbsenceModal() {
+            absenceModal.style.display = "none";
+            document.body.style.overflow = "";
+            currentAbsenceId = null;
+        }
+
+
+        function applyNotedState(isNoted, animate = true) {
+            if (!absenceNotedBtn) return;
+
+            absenceNotedBtn.classList.toggle("is-noted", isNoted);
+            absenceNotedBtn.setAttribute("aria-pressed", isNoted ? "true" : "false");
+
+            if (absenceNotedIcon) absenceNotedIcon.textContent = isNoted ? "✓" : "○";
+            if (absenceNotedLabel) absenceNotedLabel.textContent = isNoted ? "Noted" : "Noted";
+
+            if (absenceNotedHint) {
+                absenceNotedHint.textContent = isNoted
+                    ? "This absence has been acknowledged."
+                    : "Mark this absence as acknowledged.";
+                absenceNotedHint.style.color = "";
+            }
+
+            /* Re-trigger the pulse animation when turning on */
+            if (isNoted && animate) {
+                absenceNotedBtn.classList.remove("is-noted");
+                void absenceNotedBtn.offsetWidth;
+                absenceNotedBtn.classList.add("is-noted");
+            }
+        }
+
+
+        /* Toggle handler */
+        if (absenceNotedBtn) {
+            absenceNotedBtn.addEventListener("click", async () => {
+                if (!currentAbsenceId) return;
+
+                const row = currentAbsences.find(r => String(r.id) === String(currentAbsenceId));
+                if (!row) return;
+
+                /* Only real `absences` rows can be toggled */
+                const isRealAbsenceRow =
+                    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(row.id);
+
+                if (!isRealAbsenceRow) {
+                    if (absenceNotedHint) {
+                        absenceNotedHint.textContent =
+                            "This entry comes from the attendance fallback and can't be marked as noted.";
+                        absenceNotedHint.style.color = "#b91c1c";
+                    }
+                    return;
+                }
+
+                const currentlyNoted = !!(row.admin_note && row.admin_note.trim().length > 0);
+                const nextNoted = !currentlyNoted;
+
+                absenceNotedBtn.disabled = true;
+
+                try {
+                    const { data, error } = await supabaseClient
+                        .from(ABSENCES_TABLE)
+                        .update({
+                            admin_note: nextNoted ? "Noted" : null
+                        })
+                        .eq("id", currentAbsenceId)
+                        .select("admin_note")
+                        .single();
+
+                    if (error) throw error;
+
+                    if (!data) {
+                        throw new Error(
+                            "Could not update. Check the `absences` table has an UPDATE policy."
+                        );
+                    }
+
+                    /* Update cached row */
+                    row.admin_note = data.admin_note;
+
+                    /* Refresh button visual */
+                    applyNotedState(nextNoted);
+
+                    /* Refresh the list badge */
+                    refreshAbsenceBadge(currentAbsenceId, nextNoted);
+
+                } catch (err) {
+                    console.error("Noted toggle error:", err);
+                    if (absenceNotedHint) {
+                        absenceNotedHint.textContent =
+                            err.message || "Could not save. Please try again.";
+                        absenceNotedHint.style.color = "#b91c1c";
+                    }
+                } finally {
+                    absenceNotedBtn.disabled = false;
+                }
+            });
+        }
+
+
+        function refreshAbsenceBadge(id, hasNote) {
+            const item = document.querySelector(`.absence-item[data-id="${id}"]`);
+            if (!item) return;
+
+            const existingBadge = item.querySelector(".absence-note-badge");
+
+            if (hasNote && !existingBadge) {
+                const badge = document.createElement("span");
+                badge.className = "absence-note-badge";
+                badge.title = "Noted";
+                badge.textContent = "✓";
+                item.appendChild(badge);
+            } else if (!hasNote && existingBadge) {
+                existingBadge.remove();
+            }
+        }
+
+
+        /* Modal event listeners */
+        if (absenceModalClose) {
+            absenceModalClose.addEventListener("click", closeAbsenceModal);
+        }
+        if (absenceNoteCancel) {
+            absenceNoteCancel.addEventListener("click", closeAbsenceModal);
+        }
+        if (absenceModal) {
+            absenceModal.addEventListener("click", (e) => {
+                if (e.target === absenceModal) closeAbsenceModal();
+            });
+        }
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape" && absenceModal?.style.display === "flex") {
+                closeAbsenceModal();
+            }
+        });
+
+
+        /* =========================================================
+           LOAD DEPARTMENT REFLECTIONS
         ========================================================= */
 
         async function loadDepartmentReflections() {
@@ -458,14 +702,14 @@
                     const dateStr = new Date(r.created_at).toLocaleString();
 
                     return `
-                    <div class="reflection-card">
-                        <div class="reflection-header">
-                            <span class="reflection-sender">${safeName}</span>
-                            <span class="reflection-date">${dateStr}</span>
-                        </div>
-                        <p class="reflection-content">${escapeHtml(r.content)}</p>
-                    </div>
-                `;
+            <div class="reflection-card">
+                <div class="reflection-header">
+                    <span class="reflection-sender">${safeName}</span>
+                    <span class="reflection-date">${dateStr}</span>
+                </div>
+                <p class="reflection-content">${escapeHtml(r.content)}</p>
+            </div>
+        `;
                 }).join("");
 
             } catch (err) {
@@ -677,8 +921,8 @@
             loadAdminGreeting();
             loadDepartmentReflections();
             loadMemberProgress();
-            loadAbsences();         // ← with fallback
-            subscribeAbsences();    // ← watches both tables
+            loadAbsences();
+            subscribeAbsences();
             setupHamburger();
 
             const logoutBtn = document.getElementById("logoutBtn");

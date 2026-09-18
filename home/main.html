@@ -11,6 +11,23 @@
 <body>
 
     <!-- =========================================
+     NOTIFICATION PERMISSION BANNER
+========================================== -->
+    <div class="notif-banner" id="notifBanner" style="display:none;">
+        <div class="notif-banner-content">
+            <span class="notif-banner-icon">🔔</span>
+            <div class="notif-banner-text">
+                <strong>Enable reminders</strong>
+                <small>We'll remind you to use your G.R.O.W.T.H once every hour.</small>
+            </div>
+        </div>
+        <div class="notif-banner-actions">
+            <button type="button" class="notif-btn-later" id="notifLater">Later</button>
+            <button type="button" class="notif-btn-allow" id="notifAllow">Enable</button>
+        </div>
+    </div>
+
+    <!-- =========================================
          HAMBURGER BUTTON (visible only on mobile)
     ========================================== -->
     <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
@@ -51,7 +68,8 @@
     <div class="dashboard">
         <h2>G.R.O.W.T.H</h2>
         <p>
-            Maligayang pagdating sa iyong dashboard! Dito makikita ang pangkalahatang-ideya ng iyong mga aktibidad at pag-unlad.
+            Maligayang pagdating sa iyong dashboard! Dito makikita ang pangkalahatang-ideya ng iyong mga aktibidad at
+            pag-unlad.
         </p>
     </div>
 
@@ -394,9 +412,10 @@
          REFLECTION
     ========================================== -->
     <section class="reflection" id="reflectionSection">
-        <h2>Reflection  at Prayer Request</h2>
+        <h2>Reflection at Prayer Request</h2>
         <p>
-            Maglaan ng ilang sandali upang pagnilayan ang iyong espirituwal na paglalakbay at paglago. Isaalang-alang ang mga sumusunod na tanong:
+            Maglaan ng ilang sandali upang pagnilayan ang iyong espirituwal na paglalakbay at paglago. Isaalang-alang
+            ang mga sumusunod na tanong:
         </p>
 
         <ul>
@@ -954,6 +973,189 @@
 
         });
 
+        /* =========================================================
+   HOURLY GROWTH REMINDER NOTIFICATION
+========================================================= */
+
+        const NOTIFICATION_MESSAGE = "Gamitin mo na ang iyong growth";
+        const NOTIFICATION_INTERVAL = 60 * 60 * 1000;   // 1 hour in ms
+        const LAST_NOTIF_KEY = "growth_last_notif";
+        const NOTIF_PROMPT_KEY = "growth_notif_prompt_dismissed";
+
+        let notificationTimer = null;
+
+
+        /* ---------- Show the permission banner ---------- */
+
+        function setupNotificationBanner() {
+            const banner = document.getElementById("notifBanner");
+            const allowBtn = document.getElementById("notifAllow");
+            const laterBtn = document.getElementById("notifLater");
+
+            if (!banner || !allowBtn || !laterBtn) return;
+
+            /* If the browser doesn't support notifications, hide the banner */
+            if (!("Notification" in window)) {
+                banner.style.display = "none";
+                return;
+            }
+
+            /* If the user already granted or denied, don't show the banner */
+            if (Notification.permission === "granted") {
+                banner.style.display = "none";
+                startHourlyReminders();
+                return;
+            }
+            if (Notification.permission === "denied") {
+                banner.style.display = "none";
+                return;
+            }
+
+            /* If they clicked "Later" before, don't nag them again this session */
+            if (localStorage.getItem(NOTIF_PROMPT_KEY) === "true") {
+                banner.style.display = "none";
+                return;
+            }
+
+            /* Otherwise show it after a short delay */
+            setTimeout(() => {
+                banner.style.display = "flex";
+            }, 1500);
+
+            /* Enable button → request permission */
+            allowBtn.addEventListener("click", async () => {
+                try {
+                    const permission = await Notification.requestPermission();
+
+                    if (permission === "granted") {
+                        banner.style.display = "none";
+                        startHourlyReminders();
+
+                        /* Send a welcome notification so they know it works */
+                        sendReminderNotification("✅ Notifications enabled",
+                            "You'll be reminded every hour to use your G.R.O.W.T.H.");
+
+                    } else {
+                        banner.style.display = "none";
+                        localStorage.setItem(NOTIF_PROMPT_KEY, "true");
+                    }
+                } catch (err) {
+                    console.error("Notification permission error:", err);
+                    banner.style.display = "none";
+                }
+            });
+
+            /* Later button → hide for this session */
+            laterBtn.addEventListener("click", () => {
+                banner.style.display = "none";
+                localStorage.setItem(NOTIF_PROMPT_KEY, "true");
+            });
+        }
+
+
+        /* ---------- Start the hourly reminders ---------- */
+
+        function startHourlyReminders() {
+            /* Clear any previous timer */
+            if (notificationTimer) {
+                clearInterval(notificationTimer);
+            }
+
+            /* Check on load: if it's been more than an hour, fire now */
+            const last = parseInt(localStorage.getItem(LAST_NOTIF_KEY) || "0", 10);
+            const now = Date.now();
+
+            if (!last || (now - last) >= NOTIFICATION_INTERVAL) {
+                fireGrowthReminder();
+            }
+
+            /* Then repeat every hour */
+            notificationTimer = setInterval(fireGrowthReminder, NOTIFICATION_INTERVAL);
+
+            console.log("⏰ Hourly growth reminders started");
+        }
+
+
+        /* ---------- Fire a reminder (browser notification + in-page toast) ---------- */
+
+        function fireGrowthReminder() {
+            /* Only if the user granted permission */
+            if (!("Notification" in window) || Notification.permission !== "granted") {
+                return;
+            }
+
+            /* Skip if the tab is hidden AND the user is idle for a long time?
+               For now, always fire. */
+
+            /* Browser notification */
+            sendReminderNotification("🌱 G.R.O.W.T.H", NOTIFICATION_MESSAGE);
+
+            /* In-page toast as a fallback (visible in the tab) */
+            showInPageToast(NOTIFICATION_MESSAGE);
+
+            /* Record the time */
+            localStorage.setItem(LAST_NOTIF_KEY, Date.now().toString());
+        }
+
+
+        /* ---------- Browser notification helper ---------- */
+
+        function sendReminderNotification(title, body) {
+            try {
+                const notif = new Notification(title, {
+                    body: body,
+                    icon: "/favicon.ico",              // optional — replace with your icon path
+                    badge: "/favicon.ico",             // optional
+                    tag: "growth-reminder",            // replaces previous notification with the same tag
+                    requireInteraction: false,
+                    silent: false
+                });
+
+                /* Optional: click focuses the tab */
+                notif.onclick = () => {
+                    window.focus();
+                    notif.close();
+                };
+
+            } catch (err) {
+                console.error("Notification display error:", err);
+            }
+        }
+
+
+        /* ---------- In-page toast (visible when the tab is open) ---------- */
+
+        function showInPageToast(message) {
+            /* Remove any existing toast */
+            const existing = document.querySelector(".notif-toast");
+            if (existing) existing.remove();
+
+            const toast = document.createElement("div");
+            toast.className = "notif-toast";
+            toast.innerHTML = `
+        <button class="notif-toast-close" aria-label="Close">×</button>
+        <strong>🌱 G.R.O.W.T.H</strong>
+        <small>${message}</small>
+    `;
+
+            document.body.appendChild(toast);
+
+            /* Close button */
+            toast.querySelector(".notif-toast-close").addEventListener("click", () => {
+                toast.remove();
+            });
+
+            /* Auto-dismiss after 8 seconds */
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.style.transition = "opacity 0.3s ease, transform 0.3s ease";
+                    toast.style.opacity = "0";
+                    toast.style.transform = "translateX(40px)";
+                    setTimeout(() => toast.remove(), 300);
+                }
+            }, 8000);
+        }
+
 
         /* =========================================================
            ATTACH REFLECTION LISTENER
@@ -978,6 +1180,7 @@
             setupChecklistListeners();
             setupHamburger();
             setupReflectionForm();
+            setupNotificationBanner();
 
             const logoutBtn = document.getElementById("logoutBtn");
             if (logoutBtn) {

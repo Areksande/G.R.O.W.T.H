@@ -1,26 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="AL.css">
-    <title>Adult Ladies - Page</title>
+    <title>Adult Ladies - Dashboard</title>
 </head>
+
 <body>
 
+    <!-- =========================================
+         HAMBURGER (mobile)
+    ========================================== -->
     <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">☰</button>
 
+
+    <!-- =========================================
+         SIDEBAR
+    ========================================== -->
     <div class="sidebar" id="sidebar">
         <div class="logo">
             <h2>Adult Ladies</h2>
             <p id="greeting-paragraph">
-                <span id="greeting-time">...</span>
-                <span id="greeting-name">...</span>
+                <span id="greeting-time">Hello</span>,
+                <span id="greeting-name">...</span>!
             </p>
         </div>
+
         <nav>
             <ul>
-                <li><a href="AL.html">Dashboard</a></li>
+                <li><a href="YM.html" class="active">Dashboard</a></li>
                 <li><a href="Profile.html">Profile</a></li>
                 <li><a href="reports.html">Reports</a></li>
             </ul>
@@ -29,18 +39,28 @@
         <button id="logoutBtn">
             <a href="../../auth/auth.html">Logout</a>
         </button>
-
     </div>
 
+
+    <!-- =========================================
+         HERO
+    ========================================== -->
     <section class="hero1">
-        <h2>Adult Ladies - Page</h2>
-        <p>Welcome to the Adult Ladies section. Here you can manage users and view reports specific to this department.</p>
+        <h2>Adult Ladies - Dashboard</h2>
+        <p>
+            Welcome to the Adult Ladies section. Here you can manage users
+            and view reports specific to this department.
+        </p>
     </section>
 
+
+    <!-- =========================================
+         MEMBER PROGRESS
+    ========================================== -->
     <section class="progress-section">
         <h2>Member Progress</h2>
         <p class="section-subtitle">
-            Track the progress of adult female members in various programs and initiatives.
+            Number of daily checks completed per G.R.O.W.T.H pillar this month.
         </p>
 
         <div id="progressContainer">
@@ -48,12 +68,16 @@
         </div>
     </section>
 
+
+    <!-- =========================================
+         ABSENCES SECTION
+    ========================================== -->
     <section class="absences-section">
         <div class="absences-header">
             <div>
                 <h2>Member Absences</h2>
                 <p class="section-subtitle">
-                    Absences reported by Young Men members with their reasons.
+                    Absences reported by Adult Ladies members with their reasons.
                 </p>
             </div>
             <span id="absencesCount" class="absences-count-badge">0</span>
@@ -76,11 +100,62 @@
         </div>
     </section>
 
+    <div class="modal-overlay" id="absenceModal" style="display:none;">
+        <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="absenceModalTitle">
 
+            <button class="modal-close" id="absenceModalClose" aria-label="Close">
+                &times;
+            </button>
+
+            <span class="section-label">Absence Detail</span>
+            <h2 class="modal-title" id="absenceModalTitle">—</h2>
+            <p class="modal-subtitle" id="absenceModalDate">—</p>
+
+            <!-- Member info -->
+            <div class="absence-detail-member">
+                <div class="absence-detail-avatar" id="absenceModalAvatar">?</div>
+                <div class="absence-detail-info">
+                    <span class="absence-detail-name" id="absenceModalName">—</span>
+                    <span class="absence-detail-dept" id="absenceModalDept">—</span>
+                </div>
+            </div>
+
+            <!-- Reason -->
+            <div class="absence-detail-block">
+                <span class="absence-detail-label">Reason</span>
+                <p class="absence-detail-reason" id="absenceModalReason">—</p>
+            </div>
+
+            <!-- Noted toggle button -->
+            <div class="absence-detail-block">
+                <span class="absence-detail-label">Acknowledgment</span>
+
+                <button type="button" class="absence-noted-btn" id="absenceNotedBtn" aria-pressed="false">
+                    <span class="absence-noted-icon" id="absenceNotedIcon">○</span>
+                    <span class="absence-noted-label" id="absenceNotedLabel">Noted</span>
+                </button>
+
+                <p class="absence-note-hint" id="absenceNotedHint">
+                    Mark this absence as acknowledged.
+                </p>
+            </div>
+
+            <!-- Actions -->
+            <div class="absence-modal-actions">
+                <button type="button" class="btn-cancel" id="absenceNoteCancel">Close</button>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- =========================================
+         REFLECTIONS SECTION
+    ========================================== -->
     <section class="reflections-section">
         <h2>Department Reflections</h2>
         <p class="section-subtitle">
-            Insights and reflections from the Adult Ladies department.
+            Reflections submitted by Adult Ladies members.
         </p>
 
         <div id="reflectionsContainer">
@@ -88,13 +163,18 @@
         </div>
     </section>
 
+
     <footer>
         <p>&copy; 2026 Multimedia Ministry. All rights reserved.</p>
     </footer>
 
 
+    <!-- =========================================
+         SUPABASE LIBRARY
+    ========================================== -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="AL.js"></script>
 
 </body>
+
 </html>

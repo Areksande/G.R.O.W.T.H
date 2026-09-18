@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="Profile.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <title>Adult Men - Profile</title>
 </head>
 <body>
@@ -45,7 +46,7 @@
     ========================================== -->
     <section class="hero1">
         <h2>Adult Men - Profile</h2>
-        <p>Manage user profiles and settings specific to Adult Men.</p>
+        <p>Manage user profiles and settings specific to Adult Men. Click a member to view their full profile.</p>
     </section>
 
 
@@ -91,6 +92,50 @@
 
 
     <!-- =========================================
+         MEMBER PROFILE MODAL
+    ========================================== -->
+    <div class="modal-overlay" id="memberModal" style="display:none;">
+        <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="memberModalName">
+
+            <button class="modal-close" id="memberModalClose" aria-label="Close">
+                &times;
+            </button>
+
+            <span class="section-label">Member Profile</span>
+
+            <div class="member-profile-header">
+                <div class="member-profile-avatar" id="memberModalAvatar">?</div>
+                <div>
+                    <h2 class="member-profile-name" id="memberModalName">—</h2>
+                    <p class="member-profile-dept" id="memberModalDept">—</p>
+                </div>
+            </div>
+
+            <!-- Details grid -->
+            <div class="member-profile-grid" id="memberProfileGrid">
+                <!-- Injected via JS -->
+            </div>
+
+            <!-- Stats -->
+            <div class="member-profile-stats" id="memberProfileStats">
+                <!-- Injected via JS -->
+            </div>
+
+            <!-- Loading message inside modal -->
+            <div id="memberModalLoading" class="member-modal-loading" style="display:none;">
+                <div class="loading-dots">
+                    <span class="loading-dot"></span>
+                    <span class="loading-dot"></span>
+                    <span class="loading-dot"></span>
+                </div>
+                <small>Loading profile details…</small>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- =========================================
          SUPABASE LIBRARY
     ========================================== -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -112,9 +157,54 @@
         SUPABASE_ANON_KEY
     );
 
-    const DEPARTMENT_NAME = "Adult Men";
+    const DEPARTMENT_NAME  = "Adult Men";
+    const PROFILES_TABLE   = "profiles";
+    const ATTENDANCE_TABLE = "attendance";
+    const TABLE            = "firstfruits";
 
     let allMembers = [];
+
+
+    /* =========================================================
+       HELPERS
+    ========================================================= */
+
+    const formatPeso = (n) =>
+        "₱" + Number(n).toLocaleString("en-PH", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+
+    const formatDate = (iso) => {
+        if (!iso) return "—";
+        const d = new Date(iso);
+        if (isNaN(d)) return "—";
+        return d.toLocaleDateString("en-PH", {
+            month: "long",
+            day: "numeric",
+            year: "numeric"
+        });
+    };
+
+    const formatDateShort = (iso) => {
+        if (!iso) return "—";
+        const d = new Date(iso);
+        if (isNaN(d)) return "—";
+        return d.toLocaleDateString("en-PH", {
+            month: "short",
+            day: "numeric",
+            year: "numeric"
+        });
+    };
+
+    function escapeHtml(str) {
+        return String(str)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
 
 
     /* =========================================================
@@ -151,7 +241,7 @@
 
         const { data: profile, error: profileError } =
             await supabaseClient
-                .from("profiles")
+                .from(PROFILES_TABLE)
                 .select("username, role, department")
                 .eq("id", user.id)
                 .maybeSingle();
@@ -171,7 +261,6 @@
             return false;
         }
 
-        // Show the admin's name in the sidebar greeting
         if (nameSpan) {
             const displayName = (profile.username || "Admin").split(/[._-]/)[0];
             nameSpan.textContent = displayName;
@@ -182,7 +271,7 @@
 
 
     /* =========================================================
-       LOAD ALL MEMBERS IN THIS DEPARTMENT
+       LOAD ALL MEMBERS
     ========================================================= */
 
     async function loadMembers() {
@@ -193,7 +282,7 @@
         try {
 
             const { data: members, error } = await supabaseClient
-                .from("profiles")
+                .from(PROFILES_TABLE)
                 .select("id, username, department, role, created_at")
                 .eq("department", DEPARTMENT_NAME)
                 .order("created_at", { ascending: true });
@@ -229,7 +318,7 @@
 
 
     /* =========================================================
-       RENDER MEMBERS INTO THE TABLE
+       RENDER MEMBERS INTO THE TABLE (clickable rows)
     ========================================================= */
 
     function renderMembers(members) {
@@ -264,7 +353,13 @@
                     : "—";
 
                 return `
-                    <tr>
+                    <tr
+                        class="member-row"
+                        data-id="${escapeHtml(member.id)}"
+                        role="button"
+                        tabindex="0"
+                        title="Click to view profile"
+                    >
                         <td>${index + 1}</td>
                         <td class="username-cell">${escapeHtml(member.username || "—")}</td>
                         <td>${escapeHtml(member.department || "—")}</td>
@@ -278,21 +373,189 @@
                 `;
             })
             .join("");
+
+        /* Attach click + keyboard handlers */
+        container.querySelectorAll(".member-row").forEach(row => {
+            row.addEventListener("click", () => {
+                const id = row.dataset.id;
+                if (id) openMemberModal(id);
+            });
+            row.addEventListener("keydown", (e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    const id = row.dataset.id;
+                    if (id) openMemberModal(id);
+                }
+            });
+        });
     }
 
 
     /* =========================================================
-       ESCAPE HTML
+       MEMBER PROFILE MODAL
     ========================================================= */
 
-    function escapeHtml(str) {
-        return String(str)
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
+    const memberModal        = document.getElementById("memberModal");
+    const memberModalClose   = document.getElementById("memberModalClose");
+    const memberModalAvatar  = document.getElementById("memberModalAvatar");
+    const memberModalName    = document.getElementById("memberModalName");
+    const memberModalDept    = document.getElementById("memberModalDept");
+    const memberProfileGrid  = document.getElementById("memberProfileGrid");
+    const memberProfileStats = document.getElementById("memberProfileStats");
+    const memberModalLoading = document.getElementById("memberModalLoading");
+
+
+    async function openMemberModal(userId) {
+        if (!userId) return;
+
+        /* Reset + show modal */
+        memberModalName.textContent   = "—";
+        memberModalDept.textContent   = "—";
+        memberModalAvatar.textContent = "?";
+        memberProfileGrid.innerHTML   = "";
+        memberProfileStats.innerHTML  = "";
+        memberModalLoading.style.display = "flex";
+
+        memberModal.style.display = "flex";
+        document.body.style.overflow = "hidden";
+
+        try {
+            /* 1. Fetch full profile */
+            const { data: profile, error: profileErr } = await supabaseClient
+                .from(PROFILES_TABLE)
+                .select("id, username, department, role, birthday, date_of_salvation, date_of_baptism, commitment_goal, created_at")
+                .eq("id", userId)
+                .maybeSingle();
+
+            if (profileErr) throw profileErr;
+
+            if (!profile) {
+                memberModalName.textContent = "Profile not found";
+                memberModalLoading.style.display = "none";
+                return;
+            }
+
+            /* 2. Fetch attendance count */
+            const { data: attendanceRows } = await supabaseClient
+                .from(ATTENDANCE_TABLE)
+                .select("attendance_date, status")
+                .eq("user_id", userId);
+
+            let presentCount = 0;
+            let absentCount  = 0;
+
+            (attendanceRows || []).forEach(r => {
+                if (r.status === "present") presentCount++;
+                if (r.status === "absent") absentCount++;
+            });
+
+            /* 3. Fetch firstfruit totals */
+            const { data: firstfruitRows } = await supabaseClient
+                .from(TABLE)
+                .select("amount")
+                .eq("name", profile.username);
+
+            const totalGiven = (firstfruitRows || []).reduce(
+                (sum, r) => sum + Number(r.amount), 0
+            );
+
+            const commitment = Number(profile.commitment_goal) || 10000;
+            const pct = commitment > 0
+                ? Math.round((totalGiven / commitment) * 100)
+                : 0;
+
+            /* 4. Update the modal */
+            memberModalName.textContent = profile.username || "—";
+            memberModalDept.textContent = profile.department || "—";
+            memberModalAvatar.textContent =
+                (profile.username || "?").charAt(0).toUpperCase();
+
+            const role = String(profile.role || "member").toLowerCase();
+
+            memberProfileGrid.innerHTML = `
+                <div class="member-profile-field">
+                    <span class="member-profile-label">Role</span>
+                    <span class="member-profile-value">
+                        <span class="role-badge role-${role}">
+                            ${escapeHtml(profile.role || "member")}
+                        </span>
+                    </span>
+                </div>
+
+                <div class="member-profile-field">
+                    <span class="member-profile-label">Birthday</span>
+                    <span class="member-profile-value">${escapeHtml(formatDate(profile.birthday))}</span>
+                </div>
+
+                <div class="member-profile-field">
+                    <span class="member-profile-label">Date of Salvation</span>
+                    <span class="member-profile-value">${escapeHtml(formatDate(profile.date_of_salvation))}</span>
+                </div>
+
+                <div class="member-profile-field">
+                    <span class="member-profile-label">Date of Baptism</span>
+                    <span class="member-profile-value">${escapeHtml(formatDate(profile.date_of_baptism))}</span>
+                </div>
+
+                <div class="member-profile-field">
+                    <span class="member-profile-label">Joined</span>
+                    <span class="member-profile-value">${escapeHtml(formatDateShort(profile.created_at))}</span>
+                </div>
+
+                <div class="member-profile-field">
+                    <span class="member-profile-label">Commitment Goal</span>
+                    <span class="member-profile-value">${formatPeso(commitment)}</span>
+                </div>
+            `;
+
+            memberProfileStats.innerHTML = `
+                <div class="member-stat">
+                    <span class="member-stat-value">${presentCount}</span>
+                    <small class="member-stat-label">Days Present</small>
+                </div>
+                <div class="member-stat">
+                    <span class="member-stat-value">${absentCount}</span>
+                    <small class="member-stat-label">Days Absent</small>
+                </div>
+                <div class="member-stat">
+                    <span class="member-stat-value">${formatPeso(totalGiven)}</span>
+                    <small class="member-stat-label">Firstfruits Given</small>
+                </div>
+                <div class="member-stat">
+                    <span class="member-stat-value">${pct}%</span>
+                    <small class="member-stat-label">Commitment Progress</small>
+                </div>
+            `;
+
+            memberModalLoading.style.display = "none";
+
+        } catch (err) {
+            console.error("Member profile load error:", err);
+            memberModalName.textContent = "Could not load profile";
+            memberModalLoading.style.display = "none";
+        }
     }
+
+
+    function closeMemberModal() {
+        memberModal.style.display = "none";
+        document.body.style.overflow = "";
+    }
+
+
+    if (memberModalClose) {
+        memberModalClose.addEventListener("click", closeMemberModal);
+    }
+    if (memberModal) {
+        memberModal.addEventListener("click", (e) => {
+            if (e.target === memberModal) closeMemberModal();
+        });
+    }
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && memberModal?.style.display === "flex") {
+            closeMemberModal();
+        }
+    });
 
 
     /* =========================================================

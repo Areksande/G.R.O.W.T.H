@@ -928,6 +928,137 @@ body {
     line-height: 1;
 }
 
+
+/* =========================================================
+   CALENDAR DAY — "READ BY LEADER" INDICATOR
+========================================================= */
+
+.calendar-day.absent.noted::before {
+    content: "";
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #166534;
+    box-shadow: 0 0 0 2px #fff, 0 0 0 3px rgba(22, 101, 52, 0.25);
+    z-index: 4;
+    animation: readPulse 2s ease-in-out infinite;
+}
+
+@keyframes readPulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50%      { transform: scale(1.15); opacity: 0.85; }
+}
+
+.calendar-day.absent.noted::after {
+    content: "Nabasa na ng leader ang iyong dahilan";
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    background: #0a0a0a;
+    color: #fafafa;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    padding: 0.5rem 0.75rem;
+    border-radius: 4px;
+    white-space: nowrap;
+    max-width: 220px;
+    text-align: center;
+    line-height: 1.4;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+    z-index: 20;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
+.calendar-day.absent.noted:hover::after,
+.calendar-day.absent.noted:focus-within::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+.calendar-day.absent.noted.tooltip-show::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* Legend entry */
+.legend-dot.read {
+    background: #166534;
+    border-color: #166534;
+    position: relative;
+}
+
+.legend-dot.read::after {
+    content: "";
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    border: 1px solid #166534;
+    opacity: 0.4;
+}
+
+/* Badge inside the attendance modal */
+.absence-read-badge {
+    display: inline-block;
+    margin: 0.4rem 0 1rem;
+    padding: 0.4rem 0.8rem;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    color: #166534;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+    border-radius: 4px;
+    animation: readPulse 2s ease-in-out infinite;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .calendar-day.absent.noted::after {
+        font-size: 0.62rem;
+        padding: 0.4rem 0.6rem;
+        max-width: 180px;
+        bottom: auto;
+        top: calc(100% + 8px);
+        transform: translateX(-50%) translateY(-4px);
+    }
+
+    .calendar-day.absent.noted:hover::after,
+    .calendar-day.absent.noted.tooltip-show::after {
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+@media (max-width: 480px) {
+    .calendar-day.absent.noted::before {
+        top: 4px;
+        right: 4px;
+        width: 6px;
+        height: 6px;
+    }
+
+    .calendar-day.absent.noted::after {
+        font-size: 0.58rem;
+        padding: 0.35rem 0.5rem;
+        max-width: 150px;
+    }
+
+    .absence-read-badge {
+        font-size: 0.68rem;
+        padding: 0.35rem 0.65rem;
+    }
+}
 /* =========================================================
    COMMITMENT MODAL — input & presets
 ========================================================= */
